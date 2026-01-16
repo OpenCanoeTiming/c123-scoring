@@ -38,3 +38,12 @@ export {
   type UseCheckedStateOptions,
   type UseCheckedStateReturn,
 } from './useCheckedState'
+export {
+  useSettings,
+  type Settings,
+  type UseSettingsReturn,
+} from './useSettings'
+export {
+  useSettingsShortcut,
+  type UseSettingsShortcutOptions,
+} from './useSettingsShortcut'

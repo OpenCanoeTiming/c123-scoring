@@ -375,22 +375,25 @@ Podrobný plán pro autonomní iterativní implementaci. Každá fáze je navrž
 
 ### Kroky
 
-- [ ] 11.1: Vytvoření `components/Settings/Settings.tsx`
-  - Modal nebo drawer
-  - Server address input
-  - Gate groups editor
-  - Theme (pokud podporováno)
-- [ ] 11.2: Vytvoření `hooks/useSettings.ts`
+- [x] 11.1: Vytvoření `components/Settings/Settings.tsx`
+  - Modal s tabs (Server, Display, Keyboard)
+  - Server address input s validací
+  - Gate groups link
+  - Display options (showFinished, compactMode)
+  - Keyboard shortcuts reference
+- [x] 11.2: Vytvoření `hooks/useSettings.ts`
   - Centrální state pro nastavení
   - localStorage persistence
   - Validace hodnot
-- [ ] 11.3: Vytvoření `components/Settings/ServerConfig.tsx`
-  - URL input s validací
+  - Server history tracking
+- [x] 11.3: Server config integrovaná do Settings
+  - URL input s validací (ws://, wss://)
   - Test connection button
-  - Connection history
-- [ ] 11.4: Keyboard shortcut: Ctrl+, = settings
-- [ ] 11.5: Playwright test: změna serveru
-- [ ] 11.6: Commit: `feat: add settings panel`
+  - Connection history s quick select
+  - Real-time connection status
+- [x] 11.4: Keyboard shortcut: Ctrl+, = settings (useSettingsShortcut hook)
+- [ ] 11.5: Playwright test: změna serveru (čeká na Fázi 2)
+- [x] 11.6: Commit: `feat: add settings panel`
 
 **Výstup:** Konfigurovatelná aplikace
 

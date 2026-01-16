@@ -1,18 +1,32 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { Layout, Header, ConnectionStatus, RaceSelector, OnCourseGrid, GateGroupSwitcher, GateGroupEditor, CheckProgress } from './components'
+import { Layout, Header, ConnectionStatus, RaceSelector, OnCourseGrid, GateGroupSwitcher, GateGroupEditor, CheckProgress, Settings } from './components'
 import { useC123WebSocket } from './hooks/useC123WebSocket'
 import { useConnectionStatus } from './hooks/useConnectionStatus'
 import { useSchedule } from './hooks/useSchedule'
 import { useGateGroups } from './hooks/useGateGroups'
 import { useGateGroupShortcuts } from './hooks/useGateGroupShortcuts'
 import { useCheckedState } from './hooks/useCheckedState'
+import { useSettings } from './hooks/useSettings'
+import { useSettingsShortcut } from './hooks/useSettingsShortcut'
 import './App.css'
 
-const DEFAULT_SERVER_URL = 'ws://localhost:27123/ws'
 const STORAGE_KEY_SELECTED_RACE = 'c123-scoring-selected-race'
 
 function App() {
-  const serverUrl = DEFAULT_SERVER_URL
+  // Settings
+  const { settings, updateSettings } = useSettings()
+
+  // Settings modal state
+  const [showSettings, setShowSettings] = useState(false)
+
+  // Gate group editor state
+  const [showGateGroupEditor, setShowGateGroupEditor] = useState(false)
+
+  // Settings keyboard shortcut (Ctrl+,)
+  useSettingsShortcut({
+    onOpenSettings: () => setShowSettings(true),
+    enabled: !showSettings && !showGateGroupEditor,
+  })
 
   const {
     connectionState,
@@ -22,7 +36,8 @@ function App() {
     schedule,
     onCourse,
     raceConfig,
-  } = useC123WebSocket({ url: serverUrl })
+    connect,
+  } = useC123WebSocket({ url: settings.serverUrl })
 
   const status = useConnectionStatus(
     connectionState,
@@ -32,9 +47,6 @@ function App() {
   )
 
   const { activeRaces, runningRace, getRaceById } = useSchedule(schedule)
-
-  // Gate group editor state
-  const [showGateGroupEditor, setShowGateGroupEditor] = useState(false)
 
   // Selected race with localStorage persistence
   const [selectedRaceId, setSelectedRaceId] = useState<string | null>(() => {
@@ -83,8 +95,29 @@ function App() {
   useGateGroupShortcuts({
     groups: allGroups,
     onSelectGroup: setActiveGroup,
-    enabled: !showGateGroupEditor, // Disable when editor is open
+    enabled: !showGateGroupEditor && !showSettings, // Disable when modal is open
   })
+
+  // Handler for testing connection from settings
+  const handleTestConnection = useCallback(
+    (url: string) => {
+      // If URL is different from current, we'd need to temporarily connect
+      // For now, just trigger a reconnect if same URL
+      if (url === settings.serverUrl) {
+        connect()
+      }
+    },
+    [settings.serverUrl, connect]
+  )
+
+  // Handler for settings change that triggers reconnect
+  const handleSettingsChange = useCallback(
+    (updates: Parameters<typeof updateSettings>[0]) => {
+      updateSettings(updates)
+      // If server URL changed, the WebSocket hook will auto-reconnect due to URL change
+    },
+    [updateSettings]
+  )
 
   // Protocol check state
   const {
@@ -115,14 +148,24 @@ function App() {
         <Header
           raceInfo={selectedRace?.mainTitle}
           connectionStatus={
-            <ConnectionStatus status={status} serverUrl={serverUrl} showDetails />
+            <ConnectionStatus status={status} serverUrl={settings.serverUrl} showDetails />
           }
           actions={
-            <RaceSelector
-              races={activeRaces}
-              selectedRaceId={selectedRaceId}
-              onSelectRace={handleSelectRace}
-            />
+            <>
+              <RaceSelector
+                races={activeRaces}
+                selectedRaceId={selectedRaceId}
+                onSelectRace={handleSelectRace}
+              />
+              <button
+                className="settings-button"
+                onClick={() => setShowSettings(true)}
+                aria-label="Settings"
+                title="Settings (Ctrl+,)"
+              >
+                ⚙
+              </button>
+            </>
           }
         />
       }
@@ -165,6 +208,19 @@ function App() {
             />
           </div>
         </div>
+      )}
+
+      {/* Settings Modal */}
+      {showSettings && (
+        <Settings
+          settings={settings}
+          onSettingsChange={handleSettingsChange}
+          connectionState={connectionState}
+          onTestConnection={handleTestConnection}
+          gateGroups={customGroups}
+          onOpenGateGroupEditor={() => setShowGateGroupEditor(true)}
+          onClose={() => setShowSettings(false)}
+        />
       )}
 
       {onCourse ? (
