@@ -15,7 +15,7 @@ export function ConnectionStatus({
   const indicatorClass = styles[`indicator--${status.statusClass}`] || ''
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-testid="connection-status" data-status={status.statusClass}>
       <div className={`${styles.indicator} ${indicatorClass}`} />
       <div className={styles.content}>
         <span className={styles.text}>{status.statusText}</span>

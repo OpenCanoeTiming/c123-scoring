@@ -137,7 +137,7 @@ export function Settings({
       aria-modal="true"
       aria-labelledby="settings-title"
     >
-      <div ref={modalRef} className={styles.modal} onClick={(e) => e.stopPropagation()}>
+      <div ref={modalRef} className={styles.modal} data-testid="settings-panel" onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
           <h2 id="settings-title" className={styles.title}>
             Settings
@@ -146,27 +146,37 @@ export function Settings({
             className={styles.closeButton}
             onClick={onClose}
             aria-label="Close settings"
+            data-testid="settings-close"
           >
             ×
           </button>
         </div>
 
-        <div className={styles.tabs}>
+        <div className={styles.tabs} role="tablist">
           <button
             className={`${styles.tab} ${activeTab === 'server' ? styles.tabActive : ''}`}
             onClick={() => setActiveTab('server')}
+            role="tab"
+            aria-selected={activeTab === 'server'}
+            data-testid="settings-tab-server"
           >
             Server
           </button>
           <button
             className={`${styles.tab} ${activeTab === 'display' ? styles.tabActive : ''}`}
             onClick={() => setActiveTab('display')}
+            role="tab"
+            aria-selected={activeTab === 'display'}
+            data-testid="settings-tab-display"
           >
             Display
           </button>
           <button
             className={`${styles.tab} ${activeTab === 'keyboard' ? styles.tabActive : ''}`}
             onClick={() => setActiveTab('keyboard')}
+            role="tab"
+            aria-selected={activeTab === 'keyboard'}
+            data-testid="settings-tab-keyboard"
           >
             Keyboard
           </button>
@@ -190,6 +200,7 @@ export function Settings({
                     onChange={handleUrlChange}
                     placeholder="ws://localhost:27123/ws"
                     autoComplete="url"
+                    data-testid="settings-server-url"
                   />
                   <span className={`${styles.status} ${connectionStatus.className}`}>
                     {connectionStatus.text}
@@ -318,7 +329,7 @@ export function Settings({
           )}
 
           {activeTab === 'keyboard' && (
-            <div className={styles.section}>
+            <div className={styles.section} data-testid="settings-keyboard-content">
               <h3 className={styles.sectionTitle}>Keyboard Shortcuts</h3>
 
               <div className={styles.shortcutList}>

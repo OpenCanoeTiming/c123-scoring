@@ -44,7 +44,7 @@ export function EmptyState({
   const content = defaultContent[variant]
 
   return (
-    <div className={`empty-state empty-state--${variant}`}>
+    <div className={`empty-state empty-state--${variant}`} data-testid="empty-state" data-variant={variant}>
       <span className="empty-state__icon" aria-hidden="true">
         {content.icon}
       </span>
@@ -54,6 +54,7 @@ export function EmptyState({
         <button
           type="button"
           className="empty-state__action"
+          data-testid="empty-state-action"
           onClick={action.onClick}
         >
           {action.label}

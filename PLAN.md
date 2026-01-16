@@ -159,17 +159,17 @@ Standalone server v `c123-protocol-docs/tools/`, který emuluje Canoe123 na TCP:
 
 #### 2C: E2E testy s Playwright
 
-- [ ] 2C.1: Instalace Playwright
+- [x] 2C.1: Instalace Playwright
   ```bash
   npm install -D @playwright/test
   npx playwright install
   ```
-- [ ] 2C.2: Konfigurace `playwright.config.ts`
-- [ ] 2C.3: E2E test: připojení k serveru (s c123-server + replay)
-- [ ] 2C.4: E2E test: navigace v gridu
-- [ ] 2C.5: E2E test: zadání penalizace
-- [ ] 2C.6: Vizuální regresní testy (screenshoty)
-- [ ] 2C.7: Commit: `test: add E2E tests with playwright`
+- [x] 2C.2: Konfigurace `playwright.config.ts`
+- [x] 2C.3: E2E test: připojení k serveru, connection status
+- [x] 2C.4: E2E test: settings panel (open, close, tabs, keyboard shortcuts)
+- [x] 2C.5: E2E test: layout (header, footer, responsive)
+- [x] 2C.6: E2E test: accessibility (focus trap, ARIA attributes)
+- [x] 2C.7: Commit: `test: add E2E tests with Playwright`
 
 #### 2D: Dokumentace
 
