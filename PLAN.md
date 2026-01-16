@@ -145,17 +145,17 @@ Standalone server v `c123-protocol-docs/tools/`, který emuluje Canoe123 na TCP:
 
 #### 2B: Unit testy (c123-scoring)
 
-- [ ] 2B.1: Instalace test dependencies
+- [x] 2B.1: Instalace test dependencies
   ```bash
   npm install -D vitest @testing-library/react jsdom
   ```
-- [ ] 2B.2: Konfigurace Vitest
-- [ ] 2B.3: Vytvoření `test-utils/fixtures/` s JSON fixtures
+- [x] 2B.2: Konfigurace Vitest
+- [x] 2B.3: Vytvoření `test-utils/fixtures/` s JSON fixtures
   - Extrahovat z JSONL: OnCourse, RaceConfig, Schedule, Results zprávy
   - Různé stavy: závodník na trati, dojel, penalizace
-- [ ] 2B.4: Unit testy pro utility funkce (gates.ts, gateGroups.ts)
+- [x] 2B.4: Unit testy pro utility funkce (gates.ts, gateGroups.ts)
 - [ ] 2B.5: Unit testy pro hooks (useSchedule, useGateGroups, useCheckedState)
-- [ ] 2B.6: Commit: `test: add unit tests with vitest`
+- [x] 2B.6: Commit: `test: add Vitest unit tests for gates utilities`
 
 #### 2C: E2E testy s Playwright
 
@@ -672,7 +672,7 @@ node recorder.js <C123_IP>
 |------|-------|------|
 | 0 | UI Design | ⏸️ Přeskočeno |
 | 1 | Projekt Setup | ✅ Hotovo |
-| 2 | Testovací infrastruktura | ⏳ Částečně (2A hotovo, 2B-D čeká) |
+| 2 | Testovací infrastruktura | ⏳ Částečně (2A, 2B hotovo, 2C-D čeká) |
 | 3 | TypeScript typy a WebSocket | ✅ Hotovo |
 | 4 | Layout a ConnectionStatus | ✅ Hotovo |
 | 5 | Race Selector | ✅ Hotovo |
