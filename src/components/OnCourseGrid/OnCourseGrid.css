@@ -1,0 +1,119 @@
+.on-course-grid {
+  overflow-x: auto;
+  padding: var(--spacing-md);
+}
+
+.on-course-grid--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--color-text-secondary);
+}
+
+.on-course-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-md);
+  font-family: var(--font-family-mono);
+}
+
+.on-course-table th,
+.on-course-table td {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  text-align: center;
+  border: 1px solid var(--color-border);
+}
+
+.on-course-table th {
+  background: var(--color-surface-secondary);
+  font-weight: var(--font-weight-semibold);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* Column widths */
+.col-pos {
+  width: 40px;
+}
+
+.col-bib {
+  width: 60px;
+  font-weight: var(--font-weight-bold);
+}
+
+.col-name {
+  text-align: left;
+  min-width: 180px;
+}
+
+.col-name .name {
+  display: block;
+  font-weight: var(--font-weight-semibold);
+}
+
+.col-name .club {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.col-time,
+.col-pen {
+  width: 80px;
+  font-variant-numeric: tabular-nums;
+}
+
+.col-pen {
+  color: var(--color-danger);
+}
+
+.col-gate {
+  width: 36px;
+  min-width: 36px;
+}
+
+/* Gate types */
+.gate-reverse {
+  background: var(--color-warning-subtle, rgba(255, 193, 7, 0.1));
+}
+
+.gate-reverse th {
+  color: var(--color-warning);
+}
+
+/* Penalty states */
+.penalty-empty {
+  background: var(--color-surface);
+}
+
+.penalty-clear {
+  background: var(--color-success-subtle, rgba(40, 167, 69, 0.1));
+  color: var(--color-success);
+}
+
+.penalty-touch {
+  background: var(--color-warning-subtle, rgba(255, 193, 7, 0.15));
+  color: var(--color-warning);
+  font-weight: var(--font-weight-bold);
+}
+
+.penalty-miss {
+  background: var(--color-danger-subtle, rgba(220, 53, 69, 0.15));
+  color: var(--color-danger);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Row states */
+.competitor-row.completed {
+  opacity: 0.7;
+}
+
+.competitor-row.on-course {
+  background: var(--color-surface);
+}
+
+.competitor-row:hover {
+  background: var(--color-surface-hover);
+}

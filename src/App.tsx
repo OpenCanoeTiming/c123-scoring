@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Layout, Header, ConnectionStatus, RaceSelector } from './components'
+import { Layout, Header, ConnectionStatus, RaceSelector, OnCourseGrid } from './components'
 import { useC123WebSocket } from './hooks/useC123WebSocket'
 import { useConnectionStatus } from './hooks/useConnectionStatus'
 import { useSchedule } from './hooks/useSchedule'
@@ -17,6 +17,8 @@ function App() {
     lastMessageTime,
     lastError,
     schedule,
+    onCourse,
+    raceConfig,
   } = useC123WebSocket({ url: serverUrl })
 
   const status = useConnectionStatus(
@@ -77,11 +79,19 @@ function App() {
         <span>C123 Scoring v0.1.0 &bull; Open Canoe Timing</span>
       }
     >
-      <p className="placeholder">
-        {selectedRace
-          ? `Selected: ${selectedRace.mainTitle}`
-          : 'Select a race to start scoring'}
-      </p>
+      {onCourse ? (
+        <OnCourseGrid
+          competitors={onCourse.competitors}
+          raceConfig={raceConfig}
+          selectedRaceId={selectedRaceId}
+        />
+      ) : (
+        <p className="placeholder">
+          {selectedRace
+            ? 'Waiting for competitors on course...'
+            : 'Select a race to start scoring'}
+        </p>
+      )}
     </Layout>
   )
 }
