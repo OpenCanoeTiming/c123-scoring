@@ -122,6 +122,39 @@ Viz PLAN.md - zbývají fáze 12-15:
 
 ---
 
+## 2026-01-16 - Oprava dokumentace
+
+### Cíl
+
+Opravit chybějící dokumentaci a aktualizovat testovací plán.
+
+### Dokončeno
+
+- [x] Opraveny checkboxy v PLAN.md (fáze 1-11 označeny jako hotové)
+- [x] Vytvořen DEVLOG.md se shrnutím iterace 1
+- [x] Rozšířen CLAUDE.md o explicitní dokumentační proces
+- [x] Přepsána Fáze 2 (Testovací infrastruktura) s rozlišením:
+  - **Captures** = statické XML (funguje teď)
+  - **Recordings** = JSONL nahrávky (vyžaduje ReplaySource v c123-server)
+- [x] Aktualizována sekce "Testovací data" s instrukcemi pro oba módy
+
+### Poznámky
+
+**Zjištění:** c123-server nepodporuje přehrávání recordings - má pouze:
+- `TcpSource` - připojení k živému C123
+- `XmlFileSource` - statické XML soubory
+
+**Řešení:** Vytvořit standalone `replay-server.js` v c123-protocol-docs/tools:
+- TCP server na portu 27333 (emuluje C123)
+- c123-server se připojí jako k autentickému C123
+- Žádné změny v c123-server potřeba
+
+```
+replay-server (TCP:27333) → c123-server → c123-scoring
+```
+
+---
+
 ## Template pro další záznamy
 
 ```markdown

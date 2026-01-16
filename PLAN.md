@@ -83,37 +83,99 @@ Podrobný plán pro autonomní iterativní implementaci. Každá fáze je navrž
 
 ## Fáze 2: Testovací infrastruktura
 
-**Cíl:** Systém pro přehrávání závodních dat a vizuální testování.
+**Cíl:** Systém pro testování s reálnými závodními daty.
 
-**Zdroje:**
-- `../c123-protocol-docs/captures/xboardtest02_jarni_v1.xml`
-- `../c123-protocol-docs/captures/2024-LODM-fin.xml`
+### Dostupné zdroje dat
+
+| Typ | Umístění | Popis | Použití |
+|-----|----------|-------|---------|
+| **Captures (XML)** | `../c123-protocol-docs/captures/` | Statické XML soubory - finální stav závodu | Manuální testování, unit testy |
+| **Recordings (JSONL)** | `../c123-protocol-docs/recordings/` | Nahrávky průběhu závodu s timestampy | Simulace živého závodu |
+
+### Captures - statická data
+
+Soubory:
+- `xboardtest02_jarni_v1.xml` - Jarní slalomy 2024
+- `2024-LODM-fin.xml` - LODM 2024 (komplexní závod s Cross)
+
+**Aktuálně funkční:** c123-server podporuje `--xml` parametr pro načtení statického XML.
+
+### Recordings - živá simulace
+
+Soubory:
+- `rec-2025-12-28T09-34-10.jsonl` - 4 minuty závodu, ~6000 zpráv
+
+**Formát JSONL:**
+```jsonl
+{"_meta": {"version": 2, "recorded": "...", "host": "..."}}
+{"ts": 0, "src": "tcp", "type": "RaceConfig", "data": "<xml>...</xml>"}
+{"ts": 5, "src": "tcp", "type": "OnCourse", "data": "<xml>...</xml>"}
+```
+
+**Vyžaduje:** replay-server (viz Fáze 2A níže)
 
 ### Kroky
 
-- [ ] 2.1: Instalace test dependencies
-  ```bash
-  npm install -D vitest @testing-library/react @playwright/test
-  ```
-- [ ] 2.2: Konfigurace Vitest pro unit testy
-- [ ] 2.3: Konfigurace Playwright pro E2E a vizuální testy
-- [ ] 2.4: Vytvoření `test-utils/MockWebSocket.ts`
-  - Simulace WebSocket připojení
-  - Přehrávání zpráv ze souboru
-- [ ] 2.5: Vytvoření `test-utils/fixtures/` s testovacími daty
-  - Parsování XML captures na JSON fixtures
-  - OnCourse zprávy s různými stavy
-  - RaceConfig zprávy
-- [ ] 2.6: Vytvoření `test-utils/TestHarness.tsx`
-  - Wrapper pro komponenty s mock daty
-  - Kontroly přehrávaných stavů
-- [ ] 2.7: Nastavení Playwright screenshot testů
-  - Konfigurace `playwright.config.ts`
-  - Baseline screenshoty
-- [ ] 2.8: Dokumentace testovacího workflow do `docs/TESTING.md`
-- [ ] 2.9: Commit: `test: add testing infrastructure with replay system`
+#### 2A: C123 Replay Server (standalone)
 
-**Výstup:** Funkční test pipeline s mock WebSocket a Playwright
+Samostatný server, který emuluje Canoe123 na TCP:27333. C123-server se k němu připojí jako k autentickému C123.
+
+**Umístění:** `../c123-protocol-docs/tools/replay-server.js`
+
+```
+┌─────────────────┐      TCP:27333      ┌─────────────────┐
+│  replay-server  │ ─────────────────▶  │   c123-server   │
+│  (JSONL replay) │                     │   (beze změny)  │
+└─────────────────┘                     └─────────────────┘
+```
+
+- [ ] 2A.1: Vytvořit `replay-server.js` v c123-protocol-docs/tools
+  - TCP server na portu 27333
+  - Parsování JSONL souboru
+  - Filtrování na `src: "tcp"` zprávy
+  - Přehrávání s respektováním `ts` timestampů
+  - Podpora zrychlení (`--speed 2`)
+  - Podpora loopování (`--loop`)
+- [ ] 2A.2: Dokumentace v `recordings/README.md`
+- [ ] 2A.3: Commit do c123-protocol-docs: `feat: add replay-server for JSONL recordings`
+
+#### 2B: Unit testy (c123-scoring)
+
+- [ ] 2B.1: Instalace test dependencies
+  ```bash
+  npm install -D vitest @testing-library/react jsdom
+  ```
+- [ ] 2B.2: Konfigurace Vitest
+- [ ] 2B.3: Vytvoření `test-utils/fixtures/` s JSON fixtures
+  - Extrahovat z JSONL: OnCourse, RaceConfig, Schedule, Results zprávy
+  - Různé stavy: závodník na trati, dojel, penalizace
+- [ ] 2B.4: Unit testy pro utility funkce (gates.ts, gateGroups.ts)
+- [ ] 2B.5: Unit testy pro hooks (useSchedule, useGateGroups, useCheckedState)
+- [ ] 2B.6: Commit: `test: add unit tests with vitest`
+
+#### 2C: E2E testy s Playwright
+
+- [ ] 2C.1: Instalace Playwright
+  ```bash
+  npm install -D @playwright/test
+  npx playwright install
+  ```
+- [ ] 2C.2: Konfigurace `playwright.config.ts`
+- [ ] 2C.3: E2E test: připojení k serveru (s c123-server + replay)
+- [ ] 2C.4: E2E test: navigace v gridu
+- [ ] 2C.5: E2E test: zadání penalizace
+- [ ] 2C.6: Vizuální regresní testy (screenshoty)
+- [ ] 2C.7: Commit: `test: add E2E tests with playwright`
+
+#### 2D: Dokumentace
+
+- [ ] 2D.1: Vytvořit `docs/TESTING.md`
+  - Popis testovacích dat (captures vs recordings)
+  - Jak spustit testy
+  - Jak přidat nové fixtures
+- [ ] 2D.2: Commit: `docs: add testing documentation`
+
+**Výstup:** Kompletní testovací pipeline s unit testy, E2E testy a replay simulací
 
 ---
 
@@ -503,23 +565,64 @@ Podrobný plán pro autonomní iterativní implementaci. Každá fáze je navrž
 
 ## Testovací data
 
-### Dostupné captures
+### Přehled zdrojů
 
-| Soubor | Obsah | Použití |
-|--------|-------|---------|
-| `xboardtest02_jarni_v1.xml` | Jarní slalomy 2024 | Hlavní testovací data |
-| `2024-LODM-fin.xml` | LODM 2024 | Komplexní závod s Cross |
+| Typ | Soubor | Popis | Stav |
+|-----|--------|-------|------|
+| **Capture** | `captures/xboardtest02_jarni_v1.xml` | Jarní slalomy 2024 | ✅ Funkční |
+| **Capture** | `captures/2024-LODM-fin.xml` | LODM 2024 (s Cross) | ✅ Funkční |
+| **Recording** | `recordings/rec-2025-12-28T09-34-10.jsonl` | 4 min živého závodu | ⏳ Vyžaduje ReplaySource |
 
-### Spuštění s testovacími daty
+### Manuální testování se statickým XML
 
 ```bash
-# Terminal 1: c123-server s XML souborem
+# Terminal 1: c123-server s XML souborem (statická data)
 cd ../c123-server
 npm start -- --xml ../c123-protocol-docs/captures/xboardtest02_jarni_v1.xml
 
 # Terminal 2: c123-scoring dev server
 cd ../c123-scoring
 npm run dev
+```
+
+**Omezení:** Statické XML = vidíte finální stav závodu, ne průběh.
+
+### Testování s replay (po implementaci Fáze 2A)
+
+```bash
+# Terminal 1: replay-server emuluje C123 na TCP:27333
+cd ../c123-protocol-docs/tools
+node replay-server.js ../recordings/rec-2025-12-28T09-34-10.jsonl
+
+# Volitelně: zrychlené přehrávání (2× rychlost)
+node replay-server.js ../recordings/rec-2025-12-28T09-34-10.jsonl --speed 2
+
+# Volitelně: loop pro nekonečné přehrávání
+node replay-server.js ../recordings/rec-2025-12-28T09-34-10.jsonl --loop
+
+# Terminal 2: c123-server se připojí k replay-server jako k C123
+cd ../c123-server
+npm start -- --host localhost
+
+# Terminal 3: c123-scoring dev server
+cd ../c123-scoring
+npm run dev
+```
+
+**Výhody:**
+- Simuluje reálný průběh závodu - závodníci startují, jedou, dojíždějí
+- c123-server zůstává beze změny (replay-server je "fake C123")
+- Jednoduchá architektura, snadné debugování
+
+### Vytváření nových nahrávek
+
+Pro nahrávání živého závodu použijte recorder:
+
+```bash
+cd ../c123-protocol-docs/tools
+node recorder.js <C123_IP>
+# Ctrl+C pro ukončení
+# Výstup: recordings/rec-YYYY-MM-DDTHH-MM-SS.jsonl
 ```
 
 ---
@@ -546,7 +649,7 @@ npm run dev
 |------|-------|------|
 | 0 | UI Design | ⏸️ Přeskočeno |
 | 1 | Projekt Setup | ✅ Hotovo |
-| 2 | Testovací infrastruktura | ⏸️ Odloženo |
+| 2 | Testovací infrastruktura | 🔲 Čeká (2A vyžaduje c123-server) |
 | 3 | TypeScript typy a WebSocket | ✅ Hotovo |
 | 4 | Layout a ConnectionStatus | ✅ Hotovo |
 | 5 | Race Selector | ✅ Hotovo |
