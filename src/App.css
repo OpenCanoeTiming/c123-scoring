@@ -59,3 +59,32 @@
   outline: none;
   box-shadow: 0 0 0 2px var(--color-primary, #2563eb);
 }
+
+/* Footer version with loading indicator */
+.footer-version {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 0.5rem);
+}
+
+/* Loading indicator in footer */
+.loading-indicator {
+  display: inline-flex;
+  align-items: center;
+  margin-left: var(--spacing-xs, 0.25rem);
+}
+
+.loading-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--color-border, #d1d5db);
+  border-top-color: var(--color-primary, #2563eb);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

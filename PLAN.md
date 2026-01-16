@@ -519,7 +519,7 @@ Správné chování: hlavní use case je kontrola penalizací u DOJETÝCH závod
 
 #### Další kroky
 
-- [ ] 13.1: Loading states pro všechny async operace
+- [x] 13.1: Loading states pro všechny async operace
 - [ ] 13.2: Error boundaries a fallback UI
 - [ ] 13.3: Empty states (žádný závod, žádní závodníci)
 - [ ] 13.4: Animace a transitions (respektovat reduced-motion)

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { Layout, Header, ConnectionStatus, RaceSelector, OnCourseGrid, GateGroupSwitcher, GateGroupEditor, CheckProgress, Settings } from './components'
+import { Layout, Header, ConnectionStatus, RaceSelector, OnCourseGrid, GateGroupSwitcher, GateGroupEditor, CheckProgress, Settings, useToast } from './components'
 import { useC123WebSocket } from './hooks/useC123WebSocket'
 import { useConnectionStatus } from './hooks/useConnectionStatus'
 import { useSchedule } from './hooks/useSchedule'
@@ -8,6 +8,7 @@ import { useGateGroupShortcuts } from './hooks/useGateGroupShortcuts'
 import { useCheckedState } from './hooks/useCheckedState'
 import { useSettings } from './hooks/useSettings'
 import { useSettingsShortcut } from './hooks/useSettingsShortcut'
+import { useScoring } from './hooks/useScoring'
 import './App.css'
 
 const STORAGE_KEY_SELECTED_RACE = 'c123-scoring-selected-race'
@@ -15,6 +16,19 @@ const STORAGE_KEY_SELECTED_RACE = 'c123-scoring-selected-race'
 function App() {
   // Settings
   const { settings, updateSettings } = useSettings()
+
+  // Toast notifications
+  const { showSuccess, showError } = useToast()
+
+  // Scoring API integration
+  const {
+    setGatePenalty,
+    removeFromCourse: removeFromCourseApi,
+    sendTimingImpulse,
+    isLoading: isScoringLoading,
+    lastError: scoringError,
+    clearError: clearScoringError,
+  } = useScoring()
 
   // Settings modal state
   const [showSettings, setShowSettings] = useState(false)
@@ -142,6 +156,50 @@ function App() {
     return getProgress(finishedCompetitorBibs)
   }, [getProgress, finishedCompetitorBibs])
 
+  // Show scoring errors via toast
+  useEffect(() => {
+    if (scoringError) {
+      showError(`Scoring error: ${scoringError.message}`)
+      clearScoringError()
+    }
+  }, [scoringError, showError, clearScoringError])
+
+  // Handler for penalty submission
+  const handlePenaltySubmit = useCallback(
+    async (bib: string, gate: number, value: import('./types/scoring').PenaltyValue) => {
+      const success = await setGatePenalty(bib, gate, value)
+      if (success) {
+        showSuccess(`Gate ${gate}: ${value === 0 ? 'Clear' : value === 50 ? 'Miss (50)' : `+${value}`}`)
+      }
+    },
+    [setGatePenalty, showSuccess]
+  )
+
+  // Handler for remove from course
+  const handleRemoveFromCourse = useCallback(
+    async (bib: string, reason: import('./types/scoring').RemoveReason) => {
+      const success = await removeFromCourseApi(bib, reason)
+      if (success) {
+        showSuccess(`Bib ${bib}: ${reason}`)
+      }
+    },
+    [removeFromCourseApi, showSuccess]
+  )
+
+  // Handler for manual timing
+  const handleTiming = useCallback(
+    async (bib: string, position: import('./types/scoring').ChannelPosition) => {
+      const success = await sendTimingImpulse(bib, position)
+      if (success) {
+        showSuccess(`Bib ${bib}: ${position} impulse sent`)
+      }
+    },
+    [sendTimingImpulse, showSuccess]
+  )
+
+  // C123 connection status (for enabling/disabling actions)
+  const isC123Connected = serverInfo?.c123Connected ?? false
+
   return (
     <Layout
       header={
@@ -171,7 +229,14 @@ function App() {
       }
       footer={
         <div className="footer-content">
-          <span>C123 Scoring v0.1.0 &bull; Open Canoe Timing</span>
+          <span className="footer-version">
+            C123 Scoring v0.1.0 &bull; Open Canoe Timing
+            {isScoringLoading && (
+              <span className="loading-indicator" title="Sending...">
+                <span className="loading-spinner" aria-hidden="true" />
+              </span>
+            )}
+          </span>
           {finishedCompetitorBibs.length > 0 && (
             <CheckProgress
               progress={checkProgress}
@@ -234,6 +299,10 @@ function App() {
           onToggleChecked={toggleChecked}
           showFinished={settings.showFinished}
           showOnCourse={settings.showOnCourse}
+          onPenaltySubmit={handlePenaltySubmit}
+          onRemoveFromCourse={handleRemoveFromCourse}
+          onTiming={handleTiming}
+          isC123Connected={isC123Connected}
         />
       ) : (
         <p className="placeholder">
