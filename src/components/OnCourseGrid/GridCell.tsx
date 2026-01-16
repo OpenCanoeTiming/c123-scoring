@@ -13,6 +13,8 @@ export interface GridCellProps {
   gateType: 'N' | 'R'
   /** Whether this cell has focus */
   isFocused: boolean
+  /** Whether this cell is at a group boundary (shows right border) */
+  isGroupBoundary?: boolean
   /** Cell ID for accessibility */
   id: string
   /** Click handler */
@@ -29,7 +31,7 @@ export interface GridCellProps {
  */
 export const GridCell = forwardRef<HTMLTableCellElement, GridCellProps>(
   function GridCell(
-    { gate, value, pendingValue, gateType, isFocused, id, onClick },
+    { gate, value, pendingValue, gateType, isFocused, isGroupBoundary, id, onClick },
     ref
   ) {
     // Use pending value if available, otherwise use current value
@@ -37,12 +39,13 @@ export const GridCell = forwardRef<HTMLTableCellElement, GridCellProps>(
 
     const penaltyClass = displayValue !== null ? getPenaltyClass(displayValue) : 'penalty-empty'
     const gateTypeClass = gateType === 'R' ? 'gate-reverse' : 'gate-normal'
+    const boundaryClass = isGroupBoundary ? 'gate-group-boundary' : ''
 
     return (
       <td
         ref={ref}
         id={id}
-        className={`col-gate ${penaltyClass} ${gateTypeClass} ${isFocused ? 'cell-focused' : ''} ${pendingValue !== null ? 'cell-pending' : ''}`}
+        className={`col-gate ${penaltyClass} ${gateTypeClass} ${isFocused ? 'cell-focused' : ''} ${pendingValue !== null ? 'cell-pending' : ''} ${boundaryClass}`}
         role="gridcell"
         aria-selected={isFocused}
         aria-label={`Gate ${gate}: ${displayValue !== null ? formatPenalty(displayValue) : 'empty'}`}

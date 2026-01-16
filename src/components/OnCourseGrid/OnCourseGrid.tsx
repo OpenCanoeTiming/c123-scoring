@@ -1,11 +1,13 @@
-import { useRef, useEffect, useCallback } from 'react'
+import { useRef, useEffect, useCallback, useMemo } from 'react'
 import type { C123OnCourseCompetitor, C123RaceConfigData } from '../../types/c123server'
+import type { GateGroup } from '../../types/ui'
 import {
   useFocusNavigation,
   useKeyboardInput,
   type PenaltyValue,
 } from '../../hooks'
 import { parseGatesWithConfig } from '../../utils/gates'
+import { isGateInGroup } from '../../types/gateGroups'
 import { GridCell } from './GridCell'
 import './OnCourseGrid.css'
 
@@ -13,6 +15,10 @@ export interface OnCourseGridProps {
   competitors: C123OnCourseCompetitor[]
   raceConfig: C123RaceConfigData | null
   selectedRaceId: string | null
+  /** Active gate group for filtering (null = all gates) */
+  activeGateGroup?: GateGroup | null
+  /** All available gate groups for detecting group boundaries */
+  allGateGroups?: GateGroup[]
   /** Callback when a penalty is submitted */
   onPenaltySubmit?: (bib: string, gate: number, value: PenaltyValue) => void
 }
@@ -21,6 +27,8 @@ export function OnCourseGrid({
   competitors,
   raceConfig,
   selectedRaceId,
+  activeGateGroup = null,
+  allGateGroups = [],
   onPenaltySubmit,
 }: OnCourseGridProps) {
   const gridRef = useRef<HTMLDivElement>(null)
@@ -39,7 +47,47 @@ export function OnCourseGrid({
   const nrGates = raceConfig?.nrGates ?? 0
   const gateConfig = raceConfig?.gateConfig ?? ''
 
-  // Focus navigation
+  // Filter gate indices based on active group
+  const visibleGateIndices = useMemo(() => {
+    const allIndices = Array.from({ length: nrGates }, (_, i) => i)
+    if (!activeGateGroup || activeGateGroup.gates.length === 0) {
+      return allIndices
+    }
+    return allIndices.filter((i) => isGateInGroup(i + 1, activeGateGroup))
+  }, [nrGates, activeGateGroup])
+
+  // Create a mapping from visible column index to actual gate index
+  const visibleColumnToGate = useMemo(() => {
+    return visibleGateIndices.map((i) => i + 1) // 1-based gate numbers
+  }, [visibleGateIndices])
+
+  // Detect group boundaries for visual separators
+  const groupBoundaries = useMemo(() => {
+    const boundaries = new Set<number>()
+    const customGroups = allGateGroups.filter((g) => g.gates.length > 0)
+
+    if (customGroups.length === 0) return boundaries
+
+    // For each visible gate, check if it's the last gate of any group
+    for (let i = 0; i < visibleGateIndices.length - 1; i++) {
+      const currentGate = visibleGateIndices[i] + 1
+      const nextGate = visibleGateIndices[i + 1] + 1
+
+      for (const group of customGroups) {
+        const currentInGroup = group.gates.includes(currentGate)
+        const nextInGroup = group.gates.includes(nextGate)
+
+        // If current is in group but next is not, mark as boundary
+        if (currentInGroup && !nextInGroup) {
+          boundaries.add(currentGate)
+        }
+      }
+    }
+
+    return boundaries
+  }, [visibleGateIndices, allGateGroups])
+
+  // Focus navigation uses visible columns
   const {
     position,
     setPosition,
@@ -49,12 +97,13 @@ export function OnCourseGrid({
     activeCellId,
   } = useFocusNavigation({
     rowCount: sortedCompetitors.length,
-    columnCount: nrGates,
+    columnCount: visibleGateIndices.length,
   })
 
   // Get current competitor and gate info for keyboard input
   const currentCompetitor = sortedCompetitors[position.row]
-  const currentGate = position.column + 1 // 1-based
+  // Map visible column position to actual gate number
+  const currentGate = visibleColumnToGate[position.column] ?? 1
 
   // Keyboard input for penalty values
   const {
@@ -128,15 +177,17 @@ export function OnCourseGrid({
             <th className="col-name" role="columnheader">Name</th>
             <th className="col-time" role="columnheader">Time</th>
             <th className="col-pen" role="columnheader">Pen</th>
-            {Array.from({ length: nrGates }, (_, i) => {
-              const gateType = gateConfig[i] ?? 'N'
+            {visibleGateIndices.map((gateIndex) => {
+              const gateNum = gateIndex + 1
+              const gateType = gateConfig[gateIndex] ?? 'N'
+              const isBoundary = groupBoundaries.has(gateNum)
               return (
                 <th
-                  key={i + 1}
-                  className={`col-gate ${gateType === 'R' ? 'gate-reverse' : 'gate-normal'}`}
+                  key={gateNum}
+                  className={`col-gate ${gateType === 'R' ? 'gate-reverse' : 'gate-normal'} ${isBoundary ? 'gate-group-boundary' : ''}`}
                   role="columnheader"
                 >
-                  {i + 1}
+                  {gateNum}
                 </th>
               )
             })}
@@ -162,43 +213,27 @@ export function OnCourseGrid({
                 <td className="col-pen" role="gridcell">
                   {competitor.pen > 0 ? `+${competitor.pen}` : ''}
                 </td>
-                {penalties.map((penalty, colIndex) => {
-                  const cellIsFocused = isFocused(rowIndex, colIndex)
+                {visibleGateIndices.map((gateIndex, visibleColIndex) => {
+                  const gateNum = gateIndex + 1
+                  const penalty = penalties.find((p) => p.gate === gateNum)
+                  const cellIsFocused = isFocused(rowIndex, visibleColIndex)
+                  const isBoundary = groupBoundaries.has(gateNum)
+
                   return (
                     <GridCell
-                      key={penalty.gate}
+                      key={gateNum}
                       ref={cellIsFocused ? focusedCellRef : undefined}
-                      gate={penalty.gate}
-                      value={penalty.value as PenaltyValue | null}
-                      pendingValue={
-                        cellIsFocused ? pendingValue : null
-                      }
-                      gateType={penalty.type}
+                      gate={gateNum}
+                      value={(penalty?.value as PenaltyValue | null) ?? null}
+                      pendingValue={cellIsFocused ? pendingValue : null}
+                      gateType={(penalty?.type ?? gateConfig[gateIndex] ?? 'N') as 'N' | 'R'}
                       isFocused={cellIsFocused}
-                      id={getCellId(rowIndex, colIndex)}
-                      onClick={() => handleCellClick(rowIndex, colIndex)}
+                      isGroupBoundary={isBoundary}
+                      id={getCellId(rowIndex, visibleColIndex)}
+                      onClick={() => handleCellClick(rowIndex, visibleColIndex)}
                     />
                   )
                 })}
-                {/* Fill remaining columns if competitor has fewer gates than config */}
-                {penalties.length < nrGates &&
-                  Array.from({ length: nrGates - penalties.length }, (_, i) => {
-                    const colIndex = penalties.length + i
-                    const cellIsFocused = isFocused(rowIndex, colIndex)
-                    return (
-                      <GridCell
-                        key={`empty-${i}`}
-                        ref={cellIsFocused ? focusedCellRef : undefined}
-                        gate={penalties.length + i + 1}
-                        value={null}
-                        pendingValue={cellIsFocused ? pendingValue : null}
-                        gateType={(gateConfig[penalties.length + i] as 'N' | 'R') ?? 'N'}
-                        isFocused={cellIsFocused}
-                        id={getCellId(rowIndex, colIndex)}
-                        onClick={() => handleCellClick(rowIndex, colIndex)}
-                      />
-                    )
-                  })}
               </tr>
             )
           })}

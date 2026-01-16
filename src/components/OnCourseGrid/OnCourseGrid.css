@@ -163,3 +163,8 @@
 .col-gate:hover:not(.cell-focused) {
   filter: brightness(0.95);
 }
+
+/* Group boundary separator */
+.gate-group-boundary {
+  border-right: 3px solid var(--color-primary, #0066cc);
+}
