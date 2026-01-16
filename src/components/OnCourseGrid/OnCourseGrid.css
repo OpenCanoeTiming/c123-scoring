@@ -117,3 +117,49 @@
 .competitor-row:hover {
   background: var(--color-surface-hover);
 }
+
+/* Focus states */
+.on-course-grid:focus {
+  outline: none;
+}
+
+.cell-focused {
+  outline: 3px solid var(--color-primary, #0066cc);
+  outline-offset: -3px;
+  box-shadow: inset 0 0 0 2px var(--color-surface, white);
+  position: relative;
+  z-index: 2;
+}
+
+.cell-focused::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-primary-subtle, rgba(0, 102, 204, 0.1));
+  pointer-events: none;
+}
+
+/* Pending edit state */
+.cell-pending {
+  animation: cell-pulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes cell-pulse {
+  from {
+    box-shadow: inset 0 0 0 2px var(--color-surface, white);
+  }
+  to {
+    box-shadow: inset 0 0 8px var(--color-primary, #0066cc);
+  }
+}
+
+/* Clickable cells */
+.col-gate {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.1s ease;
+}
+
+.col-gate:hover:not(.cell-focused) {
+  filter: brightness(0.95);
+}
