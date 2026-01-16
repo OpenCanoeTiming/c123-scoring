@@ -314,6 +314,31 @@ Přidat animace a transitions pro lepší UX, s respektováním `prefers-reduced
 
 ---
 
+## 2026-01-16 - Fáze 13.5: Focus trap v modalech
+
+### Cíl iterace
+
+Přidat focus trap do všech modalů pro lepší klávesnicovou navigaci a přístupnost.
+
+### Dokončeno
+
+- [x] Vytvořen `useFocusTrap` hook
+  - Automatické zaměření prvního focusable elementu při otevření
+  - Cyklování focusu mezi prvním a posledním elementem při Tab/Shift+Tab
+  - Obnovení focusu na předchozí element při zavření modalu
+  - Podpora pro enabled/autoFocus/restoreFocus options
+- [x] Integrováno do Settings modalu
+- [x] Integrováno do GateGroupEditor modalu
+- [x] Export z hooks/index.ts
+
+### Poznámky
+
+- Hook používá `requestAnimationFrame` pro správné načasování focusu
+- Focusable elementy jsou detekovány pomocí standardního selektoru (a, button, input, select, textarea, [tabindex])
+- Elementy s `display: none` nebo `visibility: hidden` jsou filtrovány
+
+---
+
 ## Template pro další záznamy
 
 ```markdown

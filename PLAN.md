@@ -523,7 +523,7 @@ Správné chování: hlavní use case je kontrola penalizací u DOJETÝCH závod
 - [x] 13.2: Error boundaries a fallback UI
 - [x] 13.3: Empty states (žádný závod, žádní závodníci)
 - [x] 13.4: Animace a transitions (respektovat reduced-motion)
-- [ ] 13.5: Focus trap v modalech
+- [x] 13.5: Focus trap v modalech
 - [ ] 13.6: Screen reader testing
 - [ ] 13.7: High contrast mode testing
 - [ ] 13.8: Touch device optimalizace

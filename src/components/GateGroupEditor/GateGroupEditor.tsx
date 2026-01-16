@@ -8,6 +8,7 @@
 import { useState, useCallback } from 'react'
 import type { GateGroup } from '../../types/ui'
 import { GROUP_COLORS, validateGateGroup } from '../../types/gateGroups'
+import { useFocusTrap } from '../../hooks/useFocusTrap'
 import styles from './GateGroupEditor.module.css'
 
 export interface GateGroupEditorProps {
@@ -53,6 +54,9 @@ export function GateGroupEditor({
 }: GateGroupEditorProps) {
   const [editingGroup, setEditingGroup] = useState<EditingGroup | null>(null)
   const [error, setError] = useState<string | null>(null)
+
+  // Focus trap for modal accessibility
+  const editorRef = useFocusTrap<HTMLDivElement>({ enabled: true })
 
   const startNewGroup = useCallback(() => {
     setEditingGroup({
@@ -155,7 +159,7 @@ export function GateGroupEditor({
   const gateNumbers = Array.from({ length: totalGates }, (_, i) => i + 1)
 
   return (
-    <div className={styles.editor}>
+    <div ref={editorRef} className={styles.editor}>
       <div className={styles.header}>
         <h3 className={styles.title}>Gate Groups</h3>
         {onClose && (

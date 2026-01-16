@@ -47,3 +47,7 @@ export {
   useSettingsShortcut,
   type UseSettingsShortcutOptions,
 } from './useSettingsShortcut'
+export {
+  useFocusTrap,
+  type UseFocusTrapOptions,
+} from './useFocusTrap'

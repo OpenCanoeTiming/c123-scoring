@@ -10,6 +10,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import type { GateGroup } from '../../types/ui'
 import type { Settings as SettingsType } from '../../hooks/useSettings'
+import { useFocusTrap } from '../../hooks/useFocusTrap'
 import styles from './Settings.module.css'
 
 export interface SettingsProps {
@@ -44,6 +45,9 @@ export function Settings({
   const [serverUrl, setServerUrl] = useState(settings.serverUrl)
   const [urlError, setUrlError] = useState<string | null>(null)
   const [isTesting, setIsTesting] = useState(false)
+
+  // Focus trap for modal accessibility
+  const modalRef = useFocusTrap<HTMLDivElement>({ enabled: true })
 
   // Reset form when settings change externally
   useEffect(() => {
@@ -133,7 +137,7 @@ export function Settings({
       aria-modal="true"
       aria-labelledby="settings-title"
     >
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+      <div ref={modalRef} className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
           <h2 id="settings-title" className={styles.title}>
             Settings
