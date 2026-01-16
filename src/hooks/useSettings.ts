@@ -17,6 +17,8 @@ export interface Settings {
   serverHistory: string[]
   /** Whether to show finished competitors in the grid */
   showFinished: boolean
+  /** Whether to show on-course competitors (still racing) in the grid */
+  showOnCourse: boolean
   /** Use compact cell sizes */
   compactMode: boolean
 }
@@ -25,6 +27,7 @@ const DEFAULT_SETTINGS: Settings = {
   serverUrl: DEFAULT_SERVER_URL,
   serverHistory: [],
   showFinished: true,
+  showOnCourse: true,
   compactMode: false,
 }
 

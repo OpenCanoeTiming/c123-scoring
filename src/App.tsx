@@ -232,6 +232,8 @@ function App() {
           allGateGroups={allGroups}
           isChecked={isChecked}
           onToggleChecked={toggleChecked}
+          showFinished={settings.showFinished}
+          showOnCourse={settings.showOnCourse}
         />
       ) : (
         <p className="placeholder">

@@ -25,6 +25,10 @@ export interface OnCourseGridProps {
   isChecked?: (bib: string) => boolean
   /** Callback when a competitor's checked state changes */
   onToggleChecked?: (bib: string) => void
+  /** Whether to show finished competitors (default: true) */
+  showFinished?: boolean
+  /** Whether to show on-course competitors (default: true) */
+  showOnCourse?: boolean
 }
 
 export function OnCourseGrid({
@@ -36,6 +40,8 @@ export function OnCourseGrid({
   onPenaltySubmit,
   isChecked,
   onToggleChecked,
+  showFinished = true,
+  showOnCourse = true,
 }: OnCourseGridProps) {
   const gridRef = useRef<HTMLDivElement>(null)
   const focusedCellRef = useRef<HTMLTableCellElement>(null)
@@ -46,13 +52,17 @@ export function OnCourseGrid({
     : competitors
 
   // Separate finished and on-course competitors
-  const finishedCompetitors = filteredCompetitors
-    .filter((c) => c.completed)
-    .sort((a, b) => a.rank - b.rank) // Sort finished by rank
+  const finishedCompetitors = showFinished
+    ? filteredCompetitors
+        .filter((c) => c.completed)
+        .sort((a, b) => a.rank - b.rank) // Sort finished by rank
+    : []
 
-  const onCourseCompetitors = filteredCompetitors
-    .filter((c) => !c.completed)
-    .sort((a, b) => a.position - b.position) // Sort on-course by position (1 = closest to finish)
+  const onCourseCompetitors = showOnCourse
+    ? filteredCompetitors
+        .filter((c) => !c.completed)
+        .sort((a, b) => a.position - b.position) // Sort on-course by position (1 = closest to finish)
+    : []
 
   // Primary view: finished first, then on-course
   const sortedCompetitors = [...finishedCompetitors, ...onCourseCompetitors]

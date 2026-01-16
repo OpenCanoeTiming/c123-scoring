@@ -283,6 +283,22 @@ export function Settings({
                 <label className={styles.checkboxLabel}>
                   <input
                     type="checkbox"
+                    checked={settings.showOnCourse ?? true}
+                    onChange={(e) =>
+                      onSettingsChange({ showOnCourse: e.target.checked })
+                    }
+                  />
+                  <span>Show on-course competitors</span>
+                </label>
+                <p className={styles.helpText}>
+                  Display competitors who are still racing on the course.
+                </p>
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.checkboxLabel}>
+                  <input
+                    type="checkbox"
                     checked={settings.compactMode ?? false}
                     onChange={(e) =>
                       onSettingsChange({ compactMode: e.target.checked })
