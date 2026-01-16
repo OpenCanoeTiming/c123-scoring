@@ -11,8 +11,8 @@ export interface GatePenalty {
 }
 
 /**
- * Parse the gates string from C123 into an array of penalty values
- * Format: "0,0,0,2,0,0,2,0,50,,,,,,,,,,,,,,,"
+ * Parse the gates string from C123 OnCourse into an array of penalty values
+ * Format: "0,0,0,2,0,0,2,0,50,,,,,,,,,,,,,,," (comma-separated)
  * Empty values represent gates not yet judged
  */
 export function parseGatesString(gates: string): (number | null)[] {
@@ -23,6 +23,39 @@ export function parseGatesString(gates: string): (number | null)[] {
     const num = parseInt(val, 10)
     return isNaN(num) ? null : num
   })
+}
+
+/**
+ * Parse the gates string from C123 Results into an array of penalty values
+ * Format: "0 0 0 2 0 0 2 0 50" (space-separated)
+ * All gates should have values in Results
+ */
+export function parseResultsGatesString(gates: string): (number | null)[] {
+  if (!gates) return []
+
+  return gates.split(' ').map((val) => {
+    if (val === '' || val === undefined) return null
+    const num = parseInt(val, 10)
+    return isNaN(num) ? null : num
+  })
+}
+
+/**
+ * Combine Results gates string and config into structured penalty data
+ */
+export function parseResultsGatesWithConfig(
+  gates: string,
+  gateConfig: string
+): GatePenalty[] {
+  const values = parseResultsGatesString(gates)
+  const types = parseGateConfig(gateConfig)
+  const nrGates = types.length || values.length
+
+  return Array.from({ length: nrGates }, (_, i) => ({
+    gate: i + 1,
+    value: values[i] ?? null,
+    type: types[i] ?? 'N',
+  }))
 }
 
 /**

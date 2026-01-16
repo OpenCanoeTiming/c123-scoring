@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { Layout, Header, ConnectionStatus, RaceSelector, OnCourseGrid, GateGroupSwitcher, GateGroupEditor, CheckProgress, Settings, EmptyState, useToast } from './components'
+import { Layout, Header, ConnectionStatus, RaceSelector, ResultsGrid, GateGroupSwitcher, GateGroupEditor, CheckProgress, Settings, EmptyState, useToast } from './components'
 import { useC123WebSocket } from './hooks/useC123WebSocket'
 import { useConnectionStatus } from './hooks/useConnectionStatus'
 import { useSchedule } from './hooks/useSchedule'
@@ -48,7 +48,7 @@ function App() {
     lastMessageTime,
     lastError,
     schedule,
-    onCourse,
+    results,
     raceConfig,
     connect,
   } = useC123WebSocket({ url: settings.serverUrl })
@@ -89,6 +89,9 @@ function App() {
   }, [])
 
   const selectedRace = selectedRaceId ? getRaceById(selectedRaceId) : null
+
+  // Get results data for selected race
+  const selectedRaceResults = selectedRaceId ? results.get(selectedRaceId) : undefined
 
   // Gate groups hook
   const {
@@ -143,13 +146,14 @@ function App() {
     groupId: activeGroupId,
   })
 
-  // Get list of finished competitor bibs for progress calculation
+  // Get list of finished competitor bibs for progress calculation (from Results)
   const finishedCompetitorBibs = useMemo(() => {
-    if (!onCourse?.competitors) return []
-    return onCourse.competitors
-      .filter((c) => c.completed && c.raceId === selectedRaceId)
-      .map((c) => c.bib)
-  }, [onCourse?.competitors, selectedRaceId])
+    if (!selectedRaceResults?.rows) return []
+    // Results rows without status (DNS/DNF/DSQ) are finished competitors
+    return selectedRaceResults.rows
+      .filter((r) => !r.status)
+      .map((r) => r.bib)
+  }, [selectedRaceResults?.rows])
 
   // Calculate check progress
   const checkProgress = useMemo(() => {
@@ -307,19 +311,16 @@ function App() {
           title="Select a race"
           message="Choose a race from the selector above to start scoring."
         />
-      ) : !onCourse || onCourse.competitors.filter(c => c.raceId === selectedRaceId).length === 0 ? (
+      ) : !selectedRaceResults || selectedRaceResults.rows.length === 0 ? (
         <EmptyState variant="no-competitors" />
       ) : (
-        <OnCourseGrid
-          competitors={onCourse.competitors}
+        <ResultsGrid
+          rows={selectedRaceResults.rows}
           raceConfig={raceConfig}
-          selectedRaceId={selectedRaceId}
           activeGateGroup={activeGroup}
           allGateGroups={allGroups}
           isChecked={isChecked}
           onToggleChecked={toggleChecked}
-          showFinished={settings.showFinished}
-          showOnCourse={settings.showOnCourse}
           onPenaltySubmit={handlePenaltySubmit}
           onRemoveFromCourse={handleRemoveFromCourse}
           onTiming={handleTiming}

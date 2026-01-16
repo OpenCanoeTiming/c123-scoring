@@ -457,6 +457,41 @@ Implementovat Playwright testy a vytvořit screenshoty všech stavů aplikace pr
 
 ---
 
+## 2026-01-16 - Results-based grid refactoring
+
+### Cíl iterace
+
+Refaktoring hlavního gridu z OnCourse dat na Results data pro správnou kontrolu penalizací. OnCourse data jsou vhodná pro live sledování závodníků na trati, ale Results obsahují kompletní výsledky závodu.
+
+### Dokončeno
+
+- [x] Přidány utility funkce pro parsování Results gates formátu (mezery místo čárek)
+  - `parseResultsGatesString()` v utils/gates.ts
+  - `parseResultsGatesWithConfig()` v utils/gates.ts
+- [x] Vytvořena nová komponenta `ResultsGrid`
+  - Používá Results data místo OnCourse
+  - Řadí závodníky: platné výsledky podle rank, DNS/DNF/DSQ na konec
+  - Zobrazuje status (DNS/DNF/DSQ) ve sloupci #
+  - Sdílí CSS styly s OnCourseGrid
+- [x] App.tsx upraven pro použití Results dat
+  - ResultsGrid nahrazuje OnCourseGrid jako hlavní grid
+  - finishedCompetitorBibs nyní počítá z Results
+
+### Změny souborů
+
+- `src/utils/gates.ts` - nové funkce pro Results format
+- `src/components/ResultsGrid/` - nová komponenta
+- `src/components/index.ts` - export ResultsGrid
+- `src/App.tsx` - použití ResultsGrid místo OnCourseGrid
+
+### Poznámky
+
+- OnCourseGrid zůstává v codebase pro potenciální použití jako doplňkový panel
+- Results data mají gates oddělené mezerami ("0 0 2 0 50"), OnCourse čárkami ("0,0,2,0,50")
+- Zbývá upravit Race selector na shortTitle
+
+---
+
 ## Template pro další záznamy
 
 ```markdown
