@@ -689,7 +689,69 @@ node recorder.js <C123_IP>
 
 ---
 
-## Hotovo: Opravy OnCourse zpracování (commit 8147057)
+## TODO: Zásadní refaktoring - Results místo OnCourse
 
-- ✅ Detekce finished závodníků: použit `dtFinish` místo `completed`
-- ✅ Race selector: použit `shortTitle` pro zobrazení jednotlivých jízd
+### Zjištění z analýzy originálu (resources-private)
+
+Původní Canoe123Term aplikace má **4 panely**:
+- **treeSchedule** (vlevo) - výběr závodu
+- **gridOnCourse** (vlevo nahoře) - malý panel s live závodníky na trati
+- **gridImpulses** (vlevo dole) - historie impulzů
+- **gridControl** (hlavní, vpravo dole) - **KONTROLA PENALIZACÍ**
+
+**Klíčové zjištění:** Hlavní kontrolní grid (`gridControl`) zobrazuje **Results** data, NE OnCourse!
+
+### Rozdíl Results vs OnCourse
+
+| Aspekt | Results | OnCourse |
+|--------|---------|----------|
+| Účel | Kontrola penalizací | Real-time stav |
+| Obsahuje | Kompletní výsledky závodu | Jen běžící závodníky |
+| Frekvence | Při změně | ~2x/s |
+| Použití | Hlavní grid | Malý info panel |
+
+### Co je třeba změnit v c123-scoring
+
+1. **Hlavní grid** - přepsat na Results data místo OnCourse
+   - Zdroj: `Results` zpráva z WebSocket
+   - Obsahuje všechny závodníky závodu (i ty co nedojeli - DNS/DNF)
+   - Řazeno podle rank/startOrder
+
+2. **OnCourse panel** - ponechat jako doplňkový info panel
+   - Zobrazuje kdo je právě na trati
+   - Není hlavní editační grid
+
+3. **Race selector** - použít `shortTitle` místo `mainTitle + subTitle`
+   - Zobrazí "K1m - střední trať - 2. jízda" místo "K1m - střední trať - 1st and 2nd Run"
+
+### Implementační kroky
+
+1. [ ] Vytvořit novou komponentu `ResultsGrid` pro hlavní kontrolní panel
+2. [ ] Přidat Results state do App.tsx (již existuje `results` state)
+3. [ ] ResultsGrid bude používat `C123ResultsData.rows` jako zdroj
+4. [ ] OnCourseGrid ponechat jako menší info panel (nebo skrýt)
+5. [ ] Race selector - upravit na shortTitle
+6. [ ] Otestovat s replay-serverem
+
+### Reference z originálu
+
+**Results zpráva struktura:**
+```typescript
+interface C123ResultRow {
+  rank: number
+  bib: string
+  name: string
+  club: string
+  nat: string
+  startOrder: number
+  gates: string    // "0 0 0 2 0 50 0..."
+  pen: number
+  time: string
+  total: string
+  behind: string
+  status?: string  // "DNS", "DNF", "DSQ"
+}
+```
+
+**gridControl sloupce:**
+- RaceID, Bib, Jméno, Nat, Pen, Time, Total, GATE1...GATE24
