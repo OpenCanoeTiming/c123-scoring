@@ -113,7 +113,7 @@ POST /api/c123/timing
 
 - **React** + TypeScript
 - **Vite** jako build tool
-- **@opencanoe/timing-design-system** pro UI
+- **@opencanoetiming/timing-design-system** pro UI
 - **localStorage** pro persistence
 - **WebSocket** pro real-time data
 - **fetch** pro REST API

@@ -151,13 +151,13 @@ c123-scoring/
 
 ## Design system
 
-Striktně využívat `@opencanoe/timing-design-system`:
+Striktně využívat `@opencanoetiming/timing-design-system`:
 - Základní komponenty z design systému
 - Specifické komponenty (PenaltyGrid) stylovat podle tokenů
 - Chybějící komponenty → vytvořit podnět pro rozšíření DS
 
 ```bash
-npm install @opencanoe/timing-design-system
+npm install @opencanoetiming/timing-design-system
 ```
 
 ---
