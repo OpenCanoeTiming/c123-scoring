@@ -243,6 +243,31 @@ Přidat ErrorBoundary komponentu pro zachytávání React chyb a zobrazení fall
 
 ---
 
+## 2026-01-16 - Fáze 13.3: Empty States
+
+### Cíl iterace
+
+Přidat EmptyState komponenty pro různé prázdné stavy aplikace.
+
+### Dokončeno
+
+- [x] Vytvořena EmptyState komponenta s variantami:
+  - `disconnected` - není připojení k serveru
+  - `no-races` - žádné aktivní závody
+  - `no-competitors` - žádní závodníci ve vybraném závodě
+  - `loading` - probíhá připojování
+- [x] Každá varianta má ikonu, title a message
+- [x] Disconnected stav má akční tlačítko pro otevření nastavení
+- [x] Integrace do App.tsx s kaskádovitou logikou zobrazení
+
+### Poznámky
+
+- Stavy jsou hierarchicky řazeny: loading → disconnected → no-races → no-competitors → grid
+- Ikony jsou emoji pro jednoduchost (bez závislostí na icon library)
+- CSS animace pro loading stav (pulse efekt)
+
+---
+
 ## Template pro další záznamy
 
 ```markdown
