@@ -327,15 +327,15 @@ Podrobný plán pro autonomní iterativní implementaci. Každá fáze je navrž
   - Vizuální editor skupin
   - Checkboxy s quick range selectory
   - Pojmenování skupin a výběr barvy
-- [ ] 9.4: Update `PenaltyGrid.tsx`
-  - Zobrazení pouze vybraných branek
-  - Vizuální oddělovače skupin
-  - Quick switch mezi skupinami
+- [x] 9.4: Update `OnCourseGrid.tsx` s gate group filteringem
+  - Zobrazení pouze vybraných branek z aktivní skupiny
+  - Vizuální oddělovače skupin (modré okraje)
+  - GateGroupSwitcher pro rychlé přepínání
 - [ ] 9.5: Keyboard shortcuts pro přepínání skupin (1-9)
-- [ ] 9.6: Persistence skupin do localStorage
+- [x] 9.6: Persistence skupin do localStorage (součást useGateGroups)
 - [ ] 9.7: Playwright test: vytvoření skupiny
 - [ ] 9.8: Playwright screenshot: filtrovaný grid
-- [ ] 9.9: Commit: `feat: add gate grouping for judges`
+- [x] 9.9: Commit: `feat: integrate gate grouping into penalty grid`
 
 **Výstup:** Konfigurovatelné skupiny branek
 
