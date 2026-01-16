@@ -405,6 +405,58 @@ Analyzovat a optimalizovat velikost produkčního bundlu.
 
 ---
 
+## 2026-01-16 - Fáze 14: Vizuální testy (Playwright)
+
+### Cíl iterace
+
+Implementovat Playwright testy a vytvořit screenshoty všech stavů aplikace pro dokumentaci.
+
+### Dokončeno
+
+- [x] Instalace Playwright a závislostí (@playwright/test, ws, tsx)
+- [x] Konfigurace playwright.config.ts
+- [x] Vytvoření mock WebSocket serveru pro testy (tests/mock-ws-server.ts)
+- [x] Vytvoření testovacích fixtures (tests/fixtures/mock-data.ts)
+- [x] Playwright testy pro statické stavy (screenshots-static.spec.ts)
+- [x] Playwright testy pro stavy s daty (screenshots-with-data.spec.ts)
+- [x] 15 dokumentačních screenshotů v docs/screenshots/
+
+### Vytvořené screenshoty
+
+| Soubor | Popis |
+|--------|-------|
+| 01-disconnected.png | Stav bez připojení |
+| 02-connecting.png | Připojování |
+| 03-settings-panel.png | Settings modal - Server tab |
+| 04-settings-keyboard.png | Settings modal - Keyboard tab |
+| 05-no-races.png | Připojeno, žádné závody |
+| 07-race-selector.png | Race selector s více závody |
+| 08-grid-finished.png | Grid se závodníky |
+| 09-grid-cell-focus.png | Grid s focusem na buňce |
+| 10-grid-oncourse-section.png | Grid - sekce On Course |
+| 11-gate-group-switcher.png | Gate group switcher |
+| 12-gate-group-editor.png | Gate group editor modal |
+| 13-competitor-actions.png | Competitor actions menu |
+| 14-check-progress.png | Check progress ve footeru |
+| 15-mobile-view.png | Mobile view |
+| 16-mobile-settings.png | Mobile settings |
+
+### Problémy a řešení
+
+1. **Problém:** Mock WebSocket server kolidoval s portem při paralelních testech
+   **Řešení:** Rozdělení testů na dva soubory - statické (bez serveru) a s daty (vyžadují běžící c123-server + replay-server)
+
+2. **Problém:** Check buttons jsou disabled pro závodníky na trati
+   **Řešení:** Test 14 upraven aby přeskočil disabled buttons
+
+### Poznámky
+
+- Testy s daty vyžadují běžící replay-server + c123-server
+- Statické testy lze spustit samostatně: `npm run test -- screenshots-static.spec.ts`
+- Screenshot 06-no-competitors.png chybí (obtížné vytvořit specifický stav)
+
+---
+
 ## Template pro další záznamy
 
 ```markdown

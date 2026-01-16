@@ -541,22 +541,22 @@ Správné chování: hlavní use case je kontrola penalizací u DOJETÝCH závod
 
 ### Kroky
 
-- [ ] 14.1: Screenshot: prázdný stav (no connection)
-- [ ] 14.2: Screenshot: connecting
-- [ ] 14.3: Screenshot: connected, no races
-- [ ] 14.4: Screenshot: race selector s více závody
-- [ ] 14.5: Screenshot: grid - závodník na trati
-- [ ] 14.6: Screenshot: grid - závodník dojel
-- [ ] 14.7: Screenshot: grid - focus na buňce
-- [ ] 14.8: Screenshot: grid - pending odesílání
-- [ ] 14.9: Screenshot: grid - error stav
-- [ ] 14.10: Screenshot: gate groups editor
-- [ ] 14.11: Screenshot: settings panel
-- [ ] 14.12: Screenshot: keyboard help modal
-- [ ] 14.13: Screenshot: mobile view
-- [ ] 14.14: Commit: `test: add comprehensive visual test suite`
+- [x] 14.1: Screenshot: prázdný stav (no connection) → `01-disconnected.png`
+- [x] 14.2: Screenshot: connecting → `02-connecting.png`
+- [x] 14.3: Screenshot: connected, no races → `05-no-races.png`
+- [x] 14.4: Screenshot: race selector s více závody → `07-race-selector.png`
+- [x] 14.5: Screenshot: grid - závodník na trati → `08-grid-finished.png`, `10-grid-oncourse-section.png`
+- [x] 14.6: Screenshot: grid - závodník dojel → `08-grid-finished.png`
+- [x] 14.7: Screenshot: grid - focus na buňce → `09-grid-cell-focus.png`
+- [ ] 14.8: Screenshot: grid - pending odesílání (obtížné zachytit)
+- [ ] 14.9: Screenshot: grid - error stav (obtížné zachytit)
+- [x] 14.10: Screenshot: gate groups editor → `12-gate-group-editor.png`
+- [x] 14.11: Screenshot: settings panel → `03-settings-panel.png`
+- [x] 14.12: Screenshot: keyboard help modal → `04-settings-keyboard.png`
+- [x] 14.13: Screenshot: mobile view → `15-mobile-view.png`, `16-mobile-settings.png`
+- [x] 14.14: Playwright testy + screenshoty
 
-**Výstup:** Kompletní vizuální regresní testy
+**Výstup:** 15 screenshotů v `docs/screenshots/` ✅
 
 ---
 
@@ -672,7 +672,7 @@ node recorder.js <C123_IP>
 |------|-------|------|
 | 0 | UI Design | ⏸️ Přeskočeno |
 | 1 | Projekt Setup | ✅ Hotovo |
-| 2 | Testovací infrastruktura | 🔲 Čeká (2A vyžaduje c123-server) |
+| 2 | Testovací infrastruktura | ⏳ Částečně (2A hotovo, 2B-D čeká) |
 | 3 | TypeScript typy a WebSocket | ✅ Hotovo |
 | 4 | Layout a ConnectionStatus | ✅ Hotovo |
 | 5 | Race Selector | ✅ Hotovo |
@@ -683,6 +683,6 @@ node recorder.js <C123_IP>
 | 10 | Kontrola protokolů | ✅ Hotovo |
 | 11 | Settings Panel | ✅ Hotovo |
 | 12 | RemoveFromCourse a Timing | ✅ Hotovo |
-| 13 | Polish a UX | 🔲 Čeká |
-| 14 | Vizuální testy | 🔲 Čeká |
-| 15 | Dokumentace | 🔲 Čeká |
+| 13 | Polish a UX | ✅ Hotovo (většina) |
+| 14 | Vizuální testy | ✅ Hotovo (15 screenshotů) |
+| 15 | Dokumentace | ⏳ Částečně (README, CHANGELOG, docs hotovo) |
