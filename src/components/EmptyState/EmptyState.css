@@ -69,3 +69,15 @@
     transform: scale(1.1);
   }
 }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .empty-state--loading .empty-state__icon {
+    animation: none;
+    opacity: 0.8;
+  }
+
+  .empty-state__action {
+    transition: none;
+  }
+}

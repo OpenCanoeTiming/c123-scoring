@@ -268,6 +268,52 @@ Přidat EmptyState komponenty pro různé prázdné stavy aplikace.
 
 ---
 
+## 2026-01-16 - Fáze 13.4: Animace a transitions
+
+### Cíl iterace
+
+Přidat animace a transitions pro lepší UX, s respektováním `prefers-reduced-motion`.
+
+### Dokončeno
+
+- [x] Modal animace (fade-in overlay, scale-in content) v App.css
+- [x] Connection status indicator - pulsing animace pro connecting stav
+- [x] Penalty cell transitions - plynulé přechody mezi stavy (empty/clear/touch/miss)
+- [x] Competitor row transitions - plynulé hover a state změny
+- [x] `@media (prefers-reduced-motion: reduce)` ve všech relevantních CSS souborech:
+  - App.css
+  - ConnectionStatus.module.css
+  - OnCourseGrid.css
+  - EmptyState.css
+  - Settings.module.css
+  - Toast.css (již existovalo)
+
+### Změny
+
+**App.css:**
+- Přidána `fade-in` animace pro modal overlay
+- Přidána `modal-scale-in` animace pro modal content
+- Reduced-motion sekce pro vypnutí animací
+
+**ConnectionStatus.module.css:**
+- Přidána `indicator--connecting` třída s pulse animací
+- Transition pro indikátor při změně stavu
+
+**useConnectionStatus.ts:**
+- Přidán nový statusClass `'connecting'` pro animovaný stav
+
+**OnCourseGrid.css:**
+- Transitions pro penalty stavy a competitor rows
+- Reduced-motion sekce
+
+### Poznámky
+
+- Všechny animace jsou krátké (150-200ms) pro responsivní pocit
+- Reduced-motion uživatelé vidí statické stavy bez animací
+- Toast.css již měl reduced-motion podporu z předchozí iterace
+
+---
+
 ## Template pro další záznamy
 
 ```markdown

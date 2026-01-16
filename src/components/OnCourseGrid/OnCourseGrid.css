@@ -91,26 +91,34 @@
 /* Penalty states */
 .penalty-empty {
   background: var(--color-surface);
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .penalty-clear {
   background: var(--color-success-subtle, rgba(40, 167, 69, 0.1));
   color: var(--color-success);
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .penalty-touch {
   background: var(--color-warning-subtle, rgba(255, 193, 7, 0.15));
   color: var(--color-warning);
   font-weight: var(--font-weight-bold);
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .penalty-miss {
   background: var(--color-danger-subtle, rgba(220, 53, 69, 0.15));
   color: var(--color-danger);
   font-weight: var(--font-weight-bold);
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 /* Row states */
+.competitor-row {
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
 .competitor-row.completed {
   background: var(--color-surface);
 }
@@ -256,4 +264,22 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* Reduced motion - disable animations for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .competitor-row,
+  .penalty-empty,
+  .penalty-clear,
+  .penalty-touch,
+  .penalty-miss,
+  .col-gate,
+  .check-button {
+    transition: none;
+  }
+
+  .cell-pending {
+    animation: none;
+    box-shadow: inset 0 0 4px var(--color-primary, #0066cc);
+  }
 }

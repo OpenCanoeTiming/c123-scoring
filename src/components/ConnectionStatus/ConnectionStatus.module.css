@@ -12,6 +12,7 @@
   height: 10px;
   border-radius: 50%;
   flex-shrink: 0;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .indicator--success {
@@ -56,4 +57,33 @@
 
 .latency {
   opacity: 0.8;
+}
+
+/* Connecting state - pulsing indicator */
+.indicator--connecting {
+  background-color: var(--color-warning, #eab308);
+  animation: pulse-connecting 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse-connecting {
+  0%, 100% {
+    opacity: 0.4;
+    box-shadow: 0 0 2px var(--color-warning, #eab308);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 8px var(--color-warning, #eab308);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .indicator {
+    transition: none;
+  }
+
+  .indicator--connecting {
+    animation: none;
+    opacity: 1;
+  }
 }

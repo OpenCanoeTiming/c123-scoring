@@ -522,7 +522,7 @@ Správné chování: hlavní use case je kontrola penalizací u DOJETÝCH závod
 - [x] 13.1: Loading states pro všechny async operace
 - [x] 13.2: Error boundaries a fallback UI
 - [x] 13.3: Empty states (žádný závod, žádní závodníci)
-- [ ] 13.4: Animace a transitions (respektovat reduced-motion)
+- [x] 13.4: Animace a transitions (respektovat reduced-motion)
 - [ ] 13.5: Focus trap v modalech
 - [ ] 13.6: Screen reader testing
 - [ ] 13.7: High contrast mode testing

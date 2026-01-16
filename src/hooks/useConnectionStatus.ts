@@ -22,7 +22,7 @@ export interface ConnectionStatus {
   /** Time since last message (ms), null if never received */
   latency: number | null
   /** CSS class for status indicator */
-  statusClass: 'success' | 'warning' | 'error' | 'neutral'
+  statusClass: 'success' | 'warning' | 'error' | 'neutral' | 'connecting'
 }
 
 // =============================================================================
@@ -76,7 +76,7 @@ export function useConnectionStatus(
       case 'connecting':
         statusText = 'Connecting...'
         isHealthy = false
-        statusClass = 'neutral'
+        statusClass = 'connecting'
         break
 
       case 'error':
