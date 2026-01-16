@@ -52,17 +52,17 @@ Podrobný plán pro autonomní iterativní implementaci. Každá fáze je navrž
 
 ### Kroky
 
-- [ ] 1.1: Inicializace Vite + React + TypeScript
+- [x] 1.1: Inicializace Vite + React + TypeScript
   ```bash
   npm create vite@latest . -- --template react-ts
   ```
-- [ ] 1.2: Instalace závislostí
+- [x] 1.2: Instalace závislostí
   ```bash
   npm install @opencanoetiming/timing-design-system
   ```
-- [ ] 1.3: Konfigurace TypeScript (strict mode)
-- [ ] 1.4: Konfigurace ESLint + Prettier
-- [ ] 1.5: Vytvoření adresářové struktury
+- [x] 1.3: Konfigurace TypeScript (strict mode)
+- [x] 1.4: Konfigurace ESLint + Prettier
+- [x] 1.5: Vytvoření adresářové struktury
   ```
   src/
   ├── components/
@@ -72,12 +72,12 @@ Podrobný plán pro autonomní iterativní implementaci. Každá fáze je navrž
   ├── types/
   └── utils/
   ```
-- [ ] 1.6: Import design system CSS a fontů
-- [ ] 1.7: Základní App.tsx s design system komponentami
-- [ ] 1.8: Ověření buildu a dev serveru
-- [ ] 1.9: Commit: `feat: initial project setup with design system`
+- [x] 1.6: Import design system CSS a fontů
+- [x] 1.7: Základní App.tsx s design system komponentami
+- [x] 1.8: Ověření buildu a dev serveru
+- [x] 1.9: Commit: `feat: initial project setup with design system`
 
-**Výstup:** Běžící dev server s design system styly
+**Výstup:** Běžící dev server s design system styly ✅
 
 ---
 
@@ -125,28 +125,28 @@ Podrobný plán pro autonomní iterativní implementaci. Každá fáze je navrž
 
 ### Kroky
 
-- [ ] 3.1: Vytvoření `types/c123server.ts`
+- [x] 3.1: Vytvoření `types/c123server.ts`
   - Zkopírovat a adaptovat z c123-scoreboard
   - OnCourseMessage, ResultsMessage, RaceConfigMessage, ScheduleMessage
-- [ ] 3.2: Vytvoření `types/scoring.ts`
+- [x] 3.2: Vytvoření `types/scoring.ts`
   - ScoringRequest, RemoveFromCourseRequest, TimingRequest
   - PenaltyValue (0 | 2 | 50)
   - CompetitorState (waiting, onCourse, finished, checked)
-- [ ] 3.3: Vytvoření `types/ui.ts`
+- [x] 3.3: Vytvoření `types/ui.ts`
   - GridCell, GridRow
   - FocusPosition
   - GateGroup
-- [ ] 3.4: Vytvoření `hooks/useC123WebSocket.ts`
+- [x] 3.4: Vytvoření `hooks/useC123WebSocket.ts`
   - Připojení k ws://server:27123/ws
   - Reconnect logika s exponential backoff
   - Message parsing a dispatch
-- [ ] 3.5: Vytvoření `hooks/useConnectionStatus.ts`
+- [x] 3.5: Vytvoření `hooks/useConnectionStatus.ts`
   - ConnectionState: connecting, connected, disconnected, error
   - Latency tracking
 - [ ] 3.6: Unit testy pro WebSocket hook s MockWebSocket
-- [ ] 3.7: Commit: `feat: add TypeScript types and WebSocket hook`
+- [x] 3.7: Commit: `feat: add TypeScript types and WebSocket hook`
 
-**Výstup:** Typy a funkční WebSocket připojení
+**Výstup:** Typy a funkční WebSocket připojení ✅
 
 ---
 
@@ -156,27 +156,27 @@ Podrobný plán pro autonomní iterativní implementaci. Každá fáze je navrž
 
 ### Kroky
 
-- [ ] 4.1: Vytvoření `components/Layout/Layout.tsx`
+- [x] 4.1: Vytvoření `components/Layout/Layout.tsx`
   - Header s názvem aplikace
   - Main content area
   - Footer se stavem
-- [ ] 4.2: Vytvoření `components/Layout/Layout.module.css`
+- [x] 4.2: Vytvoření `components/Layout/Layout.module.css`
   - CSS Grid layout
   - Responsivní breakpoints
-- [ ] 4.3: Vytvoření `components/ConnectionStatus/ConnectionStatus.tsx`
+- [x] 4.3: Vytvoření `components/ConnectionStatus/ConnectionStatus.tsx`
   - Vizuální indikátor (zelená/žlutá/červená)
   - Server adresa
   - Latency
-- [ ] 4.4: Vytvoření `components/Header/Header.tsx`
+- [x] 4.4: Vytvoření `components/Header/Header.tsx`
   - Logo/název
   - Aktuální závod
   - Settings button
-- [ ] 4.5: Integrace do App.tsx
+- [x] 4.5: Integrace do App.tsx
 - [ ] 4.6: Playwright screenshot test: prázdný stav
 - [ ] 4.7: Playwright screenshot test: connecting stav
-- [ ] 4.8: Commit: `feat: add basic layout with connection status`
+- [x] 4.8: Commit: `feat: add basic layout with connection status`
 
-**Výstup:** Základní layout s fungujícím connection statusem
+**Výstup:** Základní layout s fungujícím connection statusem ✅
 
 ---
 
@@ -186,24 +186,24 @@ Podrobný plán pro autonomní iterativní implementaci. Každá fáze je navrž
 
 ### Kroky
 
-- [ ] 5.1: Vytvoření `hooks/useSchedule.ts`
+- [x] 5.1: Vytvoření `hooks/useSchedule.ts`
   - Parsování Schedule zpráv
   - Filtrování aktivních závodů (RaceStatus 4-9)
   - Řazení podle RaceOrder
-- [ ] 5.2: Vytvoření `components/RaceSelector/RaceSelector.tsx`
+- [x] 5.2: Vytvoření `components/RaceSelector/RaceSelector.tsx`
   - Dropdown nebo tab list
   - Indikace aktivního závodu (InProgress)
   - Počet závodníků na trati
-- [ ] 5.3: Vytvoření `components/RaceSelector/RaceSelector.module.css`
+- [x] 5.3: Vytvoření `components/RaceSelector/RaceSelector.module.css`
   - Styling podle design system
   - Active/hover stavy
-- [ ] 5.4: Integrace do Header
-- [ ] 5.5: Persistence vybraného závodu do localStorage
+- [x] 5.4: Integrace do Header
+- [x] 5.5: Persistence vybraného závodu do localStorage
 - [ ] 5.6: Unit testy pro useSchedule
 - [ ] 5.7: Playwright test: přepínání závodů
-- [ ] 5.8: Commit: `feat: add race selector with schedule integration`
+- [x] 5.8: Commit: `feat: add race selector with schedule integration`
 
-**Výstup:** Funkční přepínání mezi závody
+**Výstup:** Funkční přepínání mezi závody ✅
 
 ---
 
@@ -213,33 +213,37 @@ Podrobný plán pro autonomní iterativní implementaci. Každá fáze je navrž
 
 ### Kroky
 
-- [ ] 6.1: Vytvoření `hooks/useOnCourse.ts`
+- [x] 6.1: Vytvoření `hooks/useOnCourse.ts`
   - Parsování OnCourse zpráv
   - Extrakce Gates pole na array penalizací
   - Mapování na GridRow[]
-- [ ] 6.2: Vytvoření `hooks/useRaceConfig.ts`
+  - *Poznámka: Implementováno jako součást OnCourseGrid komponenty*
+- [x] 6.2: Vytvoření `hooks/useRaceConfig.ts`
   - Parsování RaceConfig
   - Počet branek, typy (N/R)
-- [ ] 6.3: Vytvoření `components/PenaltyGrid/PenaltyGrid.tsx`
+  - *Poznámka: Implementováno v rámci useC123WebSocket*
+- [x] 6.3: Vytvoření `components/PenaltyGrid/PenaltyGrid.tsx`
   - Tabulka: řádky = závodníci, sloupce = branky
   - Sticky header s čísly branek
   - Sticky first column s jmény
-- [ ] 6.4: Vytvoření `components/PenaltyGrid/GridCell.tsx`
+  - *Poznámka: Implementováno jako OnCourseGrid*
+- [x] 6.4: Vytvoření `components/PenaltyGrid/GridCell.tsx`
   - Zobrazení hodnoty (0/2/50 nebo prázdné)
   - Barevné kódování podle hodnoty
   - Typ branky (N/R) v headeru
-- [ ] 6.5: Vytvoření `components/PenaltyGrid/GridRow.tsx`
+- [x] 6.5: Vytvoření `components/PenaltyGrid/GridRow.tsx`
   - Jméno závodníka, startovní číslo
   - Barevné kódování stavu (onCourse, finished)
-- [ ] 6.6: Vytvoření `components/PenaltyGrid/PenaltyGrid.module.css`
+  - *Poznámka: Integrováno do OnCourseGrid*
+- [x] 6.6: Vytvoření `components/PenaltyGrid/PenaltyGrid.module.css`
   - Grid layout s overflow scroll
   - Sticky positioning
   - Velké, čitelné buňky (min 48px)
-- [ ] 6.7: Integrace do Layout
+- [x] 6.7: Integrace do Layout
 - [ ] 6.8: Playwright screenshot: grid s daty
-- [ ] 6.9: Commit: `feat: add penalty grid with read-only display`
+- [x] 6.9: Commit: `feat: add OnCourseGrid component for displaying competitors with penalties`
 
-**Výstup:** Funkční zobrazení penalizací
+**Výstup:** Funkční zobrazení penalizací ✅
 
 ---
 
@@ -249,33 +253,34 @@ Podrobný plán pro autonomní iterativní implementaci. Každá fáze je navrž
 
 ### Kroky
 
-- [ ] 7.1: Vytvoření `hooks/useFocusNavigation.ts`
+- [x] 7.1: Vytvoření `hooks/useFocusNavigation.ts`
   - FocusPosition state (row, column)
   - Arrow key handlers
   - Tab/Shift+Tab
   - Home/End, PageUp/PageDown
-- [ ] 7.2: Vytvoření `hooks/useKeyboardInput.ts`
+- [x] 7.2: Vytvoření `hooks/useKeyboardInput.ts`
   - Numpad/number row pro hodnoty
   - 0 = čistě, 2 = dotek, 5 = nejetí (50)
   - Enter = potvrdit, Escape = zrušit
   - Delete/Backspace = vymazat
-- [ ] 7.3: Update `GridCell.tsx`
+- [x] 7.3: Update `GridCell.tsx`
   - Focus ring styling (výrazný, 3px+)
   - Focused state animation
   - aria-selected, role="gridcell"
-- [ ] 7.4: Update `PenaltyGrid.tsx`
+- [x] 7.4: Update `PenaltyGrid.tsx`
   - role="grid"
   - aria-activedescendant
   - Focus management
-- [ ] 7.5: Vytvoření `components/KeyboardHelp/KeyboardHelp.tsx`
+- [x] 7.5: Vytvoření `components/KeyboardHelp/KeyboardHelp.tsx`
   - Modal s přehledem zkratek
   - Trigger: ? nebo F1
+  - *Poznámka: Implementováno jako součást Settings panelu (Keyboard tab)*
 - [ ] 7.6: Unit testy pro useFocusNavigation
 - [ ] 7.7: Playwright test: navigace šipkami
 - [ ] 7.8: Playwright test: zadání hodnoty
-- [ ] 7.9: Commit: `feat: add keyboard navigation to penalty grid`
+- [x] 7.9: Commit: `feat: add keyboard navigation to penalty grid`
 
-**Výstup:** Plně ovladatelný grid klávesnicí
+**Výstup:** Plně ovladatelný grid klávesnicí ✅
 
 ---
 
@@ -306,7 +311,7 @@ Podrobný plán pro autonomní iterativní implementaci. Každá fáze je navrž
 - [ ] 8.6: Playwright test: zadání penalizace E2E (čeká na Fázi 2)
 - [x] 8.7: Commit: `feat: add scoring API integration` + `feat: add Toast notification component`
 
-**Výstup:** Funkční odesílání penalizací
+**Výstup:** Funkční odesílání penalizací ✅
 
 ---
 
@@ -337,7 +342,7 @@ Podrobný plán pro autonomní iterativní implementaci. Každá fáze je navrž
 - [ ] 9.8: Playwright screenshot: filtrovaný grid
 - [x] 9.9: Commit: `feat: integrate gate grouping into penalty grid`
 
-**Výstup:** Konfigurovatelné skupiny branek
+**Výstup:** Konfigurovatelné skupiny branek ✅
 
 ---
 
@@ -365,7 +370,7 @@ Podrobný plán pro autonomní iterativní implementaci. Každá fáze je navrž
 - [ ] 10.6: Playwright test: označení jako zkontrolováno (čeká na Fázi 2)
 - [x] 10.7: Commit: `feat: add protocol check tracking`
 
-**Výstup:** Sledování postupu kontroly
+**Výstup:** Sledování postupu kontroly ✅
 
 ---
 
@@ -395,7 +400,7 @@ Podrobný plán pro autonomní iterativní implementaci. Každá fáze je navrž
 - [ ] 11.5: Playwright test: změna serveru (čeká na Fázi 2)
 - [x] 11.6: Commit: `feat: add settings panel`
 
-**Výstup:** Konfigurovatelná aplikace
+**Výstup:** Konfigurovatelná aplikace ✅
 
 ---
 
@@ -532,3 +537,26 @@ npm run dev
 
 *Vytvořeno: 2026-01-16*
 *Poslední aktualizace: 2026-01-16*
+
+---
+
+## Stav implementace
+
+| Fáze | Název | Stav |
+|------|-------|------|
+| 0 | UI Design | ⏸️ Přeskočeno |
+| 1 | Projekt Setup | ✅ Hotovo |
+| 2 | Testovací infrastruktura | ⏸️ Odloženo |
+| 3 | TypeScript typy a WebSocket | ✅ Hotovo |
+| 4 | Layout a ConnectionStatus | ✅ Hotovo |
+| 5 | Race Selector | ✅ Hotovo |
+| 6 | Penalty Grid - zobrazení | ✅ Hotovo |
+| 7 | Penalty Grid - keyboard | ✅ Hotovo |
+| 8 | REST API integrace | ✅ Hotovo |
+| 9 | Gate Grouping | ✅ Hotovo |
+| 10 | Kontrola protokolů | ✅ Hotovo |
+| 11 | Settings Panel | ✅ Hotovo |
+| 12 | RemoveFromCourse a Timing | 🔲 Čeká |
+| 13 | Polish a UX | 🔲 Čeká |
+| 14 | Vizuální testy | 🔲 Čeká |
+| 15 | Dokumentace | 🔲 Čeká |

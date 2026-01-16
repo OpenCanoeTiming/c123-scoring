@@ -187,18 +187,61 @@ cd ../c123-server && npm start
 
 ## Proces
 
-Vždy, zejména u dodatečných požadavků a změn:
-1. Nejprve aktualizovat dokumentaci jako plán a záměr
-2. Doplnit kroky do plánu
-3. Realizovat po blocích (cca 70% kontextu)
-4. Commit nejpozději po každém bloku
+### Před začátkem práce
+
+1. Přečíst `PLAN.md` - zjistit aktuální stav a co je další na řadě
+2. Přečíst `DEVLOG.md` - pochopit kontext z předchozích iterací
+
+### Během práce
+
+1. **Plánování:** Nejprve aktualizovat `PLAN.md` s novými kroky
+2. **Realizace:** Pracovat po blocích (cca 70% kontextu)
+3. **Commit:** Nejpozději po každém bloku
+4. **Aktualizace PLAN.md:** Po dokončení kroku označit `- [x]`
 5. Nedělat víc než jeden blok před clear/compact
 
-Pokud se zjistí odchylka nebo větší problém:
-- Aktualizovat plán o nové sekce a kroky
+### Po dokončení bloku/iterace
+
+1. **PLAN.md:** Označit dokončené kroky jako `- [x]`
+2. **DEVLOG.md:** Přidat záznam o tom co bylo uděláno:
+   - Co se podařilo
+   - Jaké byly problémy a jak se řešily
+   - Poznámky k rozhodnutím
+3. **Commit:** Commitnout změny včetně dokumentace
+
+### Formát záznamu v DEVLOG.md
+
+```markdown
+## YYYY-MM-DD - Iterace X / Popis práce
+
+### Dokončeno
+- [x] Popis úkolu 1
+- [x] Popis úkolu 2
+
+### Problémy a řešení
+1. **Problém:** [popis]
+   **Řešení:** [jak bylo vyřešeno]
+
+### Poznámky
+[Důležitá rozhodnutí, odchylky od plánu, TODO pro příště]
+```
+
+### Při problémech
+
+- Aktualizovat `PLAN.md` o nové sekce a kroky
+- Zapsat do `DEVLOG.md` co nefungovalo
 - Skončit a nechat práci na čerstvé instance
 
-Psát deníček vývoje - co šlo, co nešlo, co se zkusilo.
+---
+
+## Projektové soubory
+
+| Soubor | Účel |
+|--------|------|
+| `PROJECT.md` | Projektový záměr a motivace (stabilní) |
+| `PLAN.md` | Implementační plán s checkboxy (aktualizovat průběžně) |
+| `DEVLOG.md` | Deníček vývoje (přidávat záznamy po každé iteraci) |
+| `CLAUDE.md` | Instrukce pro Claude Code (tento soubor) |
 
 ---
 
