@@ -1,0 +1,234 @@
+/**
+ * CompetitorActions Component Styles
+ *
+ * Styles for toolbar and context menu variants of competitor actions.
+ */
+
+/* Container variants */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm, 8px);
+  font-family: var(--font-family, system-ui, sans-serif);
+}
+
+.toolbar {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-md, 12px);
+}
+
+.menu {
+  position: fixed;
+  z-index: 1000;
+  background: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: var(--radius-md, 8px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  padding: var(--spacing-sm, 8px);
+  min-width: 180px;
+}
+
+/* Menu header */
+.menuHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 8px);
+  padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
+  border-bottom: 1px solid var(--color-border, #e0e0e0);
+  margin-bottom: var(--spacing-sm, 8px);
+}
+
+.menuBib {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--color-text-primary, #1a1a1a);
+}
+
+.menuName {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #666666);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Sections */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs, 4px);
+}
+
+.toolbar .section {
+  flex-direction: row;
+  align-items: center;
+}
+
+.sectionLabel {
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary, #999999);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
+}
+
+/* Button group */
+.buttonGroup {
+  display: flex;
+  gap: var(--spacing-xs, 4px);
+}
+
+.menu .buttonGroup {
+  flex-direction: column;
+}
+
+/* Action buttons */
+.actionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm, 4px);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-height: 32px;
+  min-width: 48px;
+}
+
+.menu .actionButton {
+  justify-content: flex-start;
+  width: 100%;
+  min-width: unset;
+}
+
+.actionButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.actionButton:focus-visible {
+  outline: 2px solid var(--color-primary, #0066cc);
+  outline-offset: 2px;
+}
+
+/* Remove buttons - warning/danger colors */
+.removeButton {
+  background: var(--color-warning-bg, #fff3e0);
+  color: var(--color-warning-text, #e65100);
+  border-color: var(--color-warning-border, #ffcc80);
+}
+
+.removeButton:hover:not(:disabled) {
+  background: var(--color-warning-hover, #ffe0b2);
+}
+
+.removeButton:active:not(:disabled) {
+  background: var(--color-warning-active, #ffcc80);
+}
+
+/* Timing buttons - neutral/info colors */
+.timingButton {
+  background: var(--color-info-bg, #e3f2fd);
+  color: var(--color-info-text, #1565c0);
+  border-color: var(--color-info-border, #90caf9);
+}
+
+.timingButton:hover:not(:disabled) {
+  background: var(--color-info-hover, #bbdefb);
+}
+
+.timingButton:active:not(:disabled) {
+  background: var(--color-info-active, #90caf9);
+}
+
+/* Confirmation dialog */
+.confirmDialog {
+  padding: var(--spacing-sm, 8px);
+}
+
+.confirmText {
+  margin: 0 0 var(--spacing-md, 12px);
+  font-size: 0.875rem;
+  color: var(--color-text-primary, #1a1a1a);
+  line-height: 1.5;
+}
+
+.confirmActions {
+  display: flex;
+  gap: var(--spacing-sm, 8px);
+  justify-content: flex-end;
+}
+
+.cancelButton {
+  padding: var(--spacing-xs, 4px) var(--spacing-md, 12px);
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: var(--color-surface, #ffffff);
+  color: var(--color-text-secondary, #666666);
+  border: 1px solid var(--color-border, #e0e0e0);
+  border-radius: var(--radius-sm, 4px);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cancelButton:hover {
+  background: var(--color-surface-hover, #f5f5f5);
+}
+
+.cancelButton:focus-visible {
+  outline: 2px solid var(--color-primary, #0066cc);
+  outline-offset: 2px;
+}
+
+.confirmButton {
+  padding: var(--spacing-xs, 4px) var(--spacing-md, 12px);
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: var(--color-danger, #d32f2f);
+  color: white;
+  border: 1px solid var(--color-danger, #d32f2f);
+  border-radius: var(--radius-sm, 4px);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.confirmButton:hover {
+  background: var(--color-danger-hover, #c62828);
+}
+
+.confirmButton:focus-visible {
+  outline: 2px solid var(--color-danger, #d32f2f);
+  outline-offset: 2px;
+}
+
+/* Specific styling for DNS/DNF/CAP confirm buttons */
+.confirmButton[data-reason="DNS"] {
+  background: var(--color-warning, #ed6c02);
+  border-color: var(--color-warning, #ed6c02);
+}
+
+.confirmButton[data-reason="DNS"]:hover {
+  background: var(--color-warning-dark, #e65100);
+}
+
+.confirmButton[data-reason="DNF"] {
+  background: var(--color-danger, #d32f2f);
+  border-color: var(--color-danger, #d32f2f);
+}
+
+.confirmButton[data-reason="DNF"]:hover {
+  background: var(--color-danger-hover, #c62828);
+}
+
+.confirmButton[data-reason="CAP"] {
+  background: var(--color-danger, #d32f2f);
+  border-color: var(--color-danger, #d32f2f);
+}
+
+.confirmButton[data-reason="CAP"]:hover {
+  background: var(--color-danger-hover, #c62828);
+}

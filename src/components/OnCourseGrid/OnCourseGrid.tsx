@@ -1,6 +1,7 @@
-import { useRef, useEffect, useCallback, useMemo, Fragment } from 'react'
+import { useRef, useEffect, useCallback, useMemo, Fragment, useState } from 'react'
 import type { C123OnCourseCompetitor, C123RaceConfigData } from '../../types/c123server'
 import type { GateGroup } from '../../types/ui'
+import type { RemoveReason, ChannelPosition } from '../../types/scoring'
 import {
   useFocusNavigation,
   useKeyboardInput,
@@ -9,6 +10,7 @@ import {
 import { parseGatesWithConfig } from '../../utils/gates'
 import { isGateInGroup } from '../../types/gateGroups'
 import { GridCell } from './GridCell'
+import { CompetitorActions } from '../CompetitorActions'
 import './OnCourseGrid.css'
 
 export interface OnCourseGridProps {
@@ -29,6 +31,12 @@ export interface OnCourseGridProps {
   showFinished?: boolean
   /** Whether to show on-course competitors (default: true) */
   showOnCourse?: boolean
+  /** Callback when remove from course action is triggered */
+  onRemoveFromCourse?: (bib: string, reason: RemoveReason) => void
+  /** Callback when manual timing action is triggered */
+  onTiming?: (bib: string, position: ChannelPosition) => void
+  /** Whether C123 is connected (enables/disables actions) */
+  isC123Connected?: boolean
 }
 
 export function OnCourseGrid({
@@ -42,9 +50,21 @@ export function OnCourseGrid({
   onToggleChecked,
   showFinished = true,
   showOnCourse = true,
+  onRemoveFromCourse,
+  onTiming,
+  isC123Connected = true,
 }: OnCourseGridProps) {
   const gridRef = useRef<HTMLDivElement>(null)
   const focusedCellRef = useRef<HTMLTableCellElement>(null)
+
+  // Context menu state
+  const [contextMenu, setContextMenu] = useState<{
+    bib: string
+    name: string
+    isOnCourse: boolean
+    isFinished: boolean
+    position: { x: number; y: number }
+  } | null>(null)
 
   // Filter competitors by selected race
   const filteredCompetitors = selectedRaceId
@@ -147,16 +167,58 @@ export function OnCourseGrid({
     },
   })
 
+  // Handle context menu open
+  const handleContextMenu = useCallback(
+    (event: React.MouseEvent, competitor: C123OnCourseCompetitor) => {
+      event.preventDefault()
+      setContextMenu({
+        bib: competitor.bib,
+        name: competitor.name,
+        isOnCourse: !competitor.completed,
+        isFinished: competitor.completed,
+        position: { x: event.clientX, y: event.clientY },
+      })
+    },
+    []
+  )
+
+  // Close context menu
+  const handleCloseContextMenu = useCallback(() => {
+    setContextMenu(null)
+  }, [])
+
   // Combined keyboard handler
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
+      // Close context menu on any key
+      if (contextMenu) {
+        setContextMenu(null)
+      }
+
+      // Competitor action shortcuts (D = DNS, F = DNF, C = CAP)
+      if (currentCompetitor && onRemoveFromCourse && !currentCompetitor.completed) {
+        const key = event.key.toUpperCase()
+        if (key === 'D' && !event.ctrlKey && !event.metaKey && !event.altKey) {
+          event.preventDefault()
+          // Open context menu for DNS confirmation
+          setContextMenu({
+            bib: currentCompetitor.bib,
+            name: currentCompetitor.name,
+            isOnCourse: true,
+            isFinished: false,
+            position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+          })
+          return
+        }
+      }
+
       // First try input handling (numbers, enter, escape)
       if (handleInputKeyDown(event)) return
 
       // Then try navigation (arrows, home, end, etc)
       handleNavKeyDown(event)
     },
-    [handleInputKeyDown, handleNavKeyDown]
+    [handleInputKeyDown, handleNavKeyDown, contextMenu, currentCompetitor, onRemoveFromCourse]
   )
 
   // Focus the grid when it mounts or when position changes
@@ -240,6 +302,7 @@ export function OnCourseGrid({
                   key={competitor.bib}
                   className={`competitor-row ${competitor.completed ? 'completed' : 'on-course'} ${isChecked?.(competitor.bib) ? 'row-checked' : ''}`}
                   role="row"
+                  onContextMenu={(e) => handleContextMenu(e, competitor)}
                 >
                   <td className="col-check" role="gridcell">
                     <button
@@ -296,6 +359,22 @@ export function OnCourseGrid({
           })}
         </tbody>
       </table>
+
+      {/* Context menu for competitor actions */}
+      {contextMenu && (
+        <CompetitorActions
+          bib={contextMenu.bib}
+          name={contextMenu.name}
+          isOnCourse={contextMenu.isOnCourse}
+          isFinished={contextMenu.isFinished}
+          onRemove={onRemoveFromCourse}
+          onTiming={onTiming}
+          disabled={!isC123Connected}
+          variant="menu"
+          menuPosition={contextMenu.position}
+          onClose={handleCloseContextMenu}
+        />
+      )}
     </div>
   )
 }

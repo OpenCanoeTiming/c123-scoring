@@ -476,19 +476,19 @@ Standalone server v `c123-protocol-docs/tools/`, který emuluje Canoe123 na TCP:
 
 ### Kroky
 
-- [ ] 12.1: Vytvoření `components/CompetitorActions/CompetitorActions.tsx`
+- [x] 12.1: Vytvoření `components/CompetitorActions/CompetitorActions.tsx`
   - Context menu nebo toolbar
   - DNS/DNF/CAP buttons
   - Manual timing trigger
-- [ ] 12.2: Update `GridRow.tsx`
+- [x] 12.2: Update `OnCourseGrid.tsx` (ne GridRow - ten není oddělený)
   - Right-click context menu
-  - Keyboard: D = DNS, F = DNF, C = CAP
-- [ ] 12.3: Vytvoření `components/TimingPanel/TimingPanel.tsx`
+  - Keyboard: D = otevře context menu pro akci
+- [x] 12.3: Vytvoření `components/TimingPanel/TimingPanel.tsx`
   - Manual start/finish buttons
   - Pro případ selhání fotobunky
-- [ ] 12.4: Confirmation dialogy pro destruktivní akce
+- [x] 12.4: Confirmation dialogy pro destruktivní akce
 - [ ] 12.5: Playwright test: označení DNS
-- [ ] 12.6: Commit: `feat: add remove-from-course and timing actions`
+- [x] 12.6: Commit: `feat: add remove-from-course and timing actions`
 
 **Výstup:** Kompletní funkčnost terminálu
 
@@ -514,7 +514,7 @@ Správné chování: hlavní use case je kontrola penalizací u DOJETÝCH závod
 - [x] 13.0.3: Vizuální oddělení sekcí
   - "Dojetí" - hlavní sekce pro kontrolu
   - "Na trati" - volitelně viditelná sekce
-- [ ] 13.0.4: Toggle v Settings nebo tlačítko pro zobrazení závodníků na trati
+- [x] 13.0.4: Toggle v Settings nebo tlačítko pro zobrazení závodníků na trati
 - [x] 13.0.5: Commit: `fix: show finished competitors primarily for penalty checking`
 
 #### Další kroky
@@ -682,7 +682,7 @@ node recorder.js <C123_IP>
 | 9 | Gate Grouping | ✅ Hotovo |
 | 10 | Kontrola protokolů | ✅ Hotovo |
 | 11 | Settings Panel | ✅ Hotovo |
-| 12 | RemoveFromCourse a Timing | 🔲 Čeká |
+| 12 | RemoveFromCourse a Timing | ✅ Hotovo |
 | 13 | Polish a UX | 🔲 Čeká |
 | 14 | Vizuální testy | 🔲 Čeká |
 | 15 | Dokumentace | 🔲 Čeká |
