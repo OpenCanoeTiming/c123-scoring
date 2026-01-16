@@ -379,3 +379,64 @@
   outline: 2px solid var(--color-primary, #0066cc);
   outline-offset: 2px;
 }
+
+/* Touch device optimizations */
+@media (pointer: coarse) {
+  .closeButton {
+    width: 44px;
+    height: 44px;
+    font-size: 24px;
+  }
+
+  .groupButton {
+    padding: var(--spacing-md, 12px);
+    min-height: 48px;
+  }
+
+  .iconButton {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  .addButton {
+    min-height: 44px;
+    padding: var(--spacing-md, 12px) var(--spacing-lg, 20px);
+  }
+
+  .input {
+    min-height: 44px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .colorSwatch {
+    width: 44px;
+    height: 44px;
+  }
+
+  .gatesGrid {
+    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+    gap: var(--spacing-xs, 4px);
+  }
+
+  .gateCheckbox {
+    height: 44px;
+    min-width: 44px;
+  }
+
+  .rangeButton {
+    min-height: 36px;
+    padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
+  }
+
+  .cancelButton,
+  .saveButton {
+    min-height: 44px;
+    padding: var(--spacing-md, 12px) var(--spacing-lg, 20px);
+  }
+
+  .textButton {
+    min-height: 36px;
+    padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
+  }
+}

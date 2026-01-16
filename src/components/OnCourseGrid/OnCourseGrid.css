@@ -266,6 +266,36 @@
   border: 0;
 }
 
+/* Touch device optimizations - ensure 44px minimum touch targets */
+@media (pointer: coarse) {
+  .col-gate {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    padding: var(--spacing-sm);
+  }
+
+  .check-button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .col-check {
+    width: 52px;
+  }
+
+  .on-course-table th,
+  .on-course-table td {
+    padding: var(--spacing-sm);
+  }
+
+  /* Increase row height for easier touch */
+  .competitor-row td {
+    min-height: 48px;
+    vertical-align: middle;
+  }
+}
+
 /* Reduced motion - disable animations for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
   .competitor-row,

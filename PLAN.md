@@ -524,9 +524,9 @@ Správné chování: hlavní use case je kontrola penalizací u DOJETÝCH závod
 - [x] 13.3: Empty states (žádný závod, žádní závodníci)
 - [x] 13.4: Animace a transitions (respektovat reduced-motion)
 - [x] 13.5: Focus trap v modalech
+- [x] 13.8: Touch device optimalizace
 - [ ] 13.6: Screen reader testing
 - [ ] 13.7: High contrast mode testing
-- [ ] 13.8: Touch device optimalizace
 - [ ] 13.9: Performance profiling (React DevTools)
 - [ ] 13.10: Bundle size optimalizace
 - [ ] 13.11: Commit: `refactor: polish UX and accessibility`

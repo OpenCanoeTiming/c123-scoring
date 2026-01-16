@@ -349,3 +349,38 @@
     transition: none;
   }
 }
+
+/* Touch device optimizations */
+@media (pointer: coarse) {
+  .tab {
+    padding: var(--spacing-md, 1rem) var(--spacing-lg, 1.25rem);
+    min-height: 44px;
+  }
+
+  .closeButton {
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 1.75rem;
+  }
+
+  .input {
+    min-height: 44px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    min-height: 44px;
+    padding: var(--spacing-md, 0.75rem) var(--spacing-lg, 1.25rem);
+  }
+
+  .historyItem {
+    min-height: 44px;
+    padding: var(--spacing-sm, 0.5rem) var(--spacing-md, 0.75rem);
+  }
+
+  .checkboxLabel input[type='checkbox'] {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}

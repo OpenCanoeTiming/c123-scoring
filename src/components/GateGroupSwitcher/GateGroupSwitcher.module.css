@@ -80,3 +80,23 @@
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
+
+/* Touch device optimizations */
+@media (pointer: coarse) {
+  .groupButton {
+    padding: var(--spacing-sm) var(--spacing-md);
+    min-height: 44px;
+    font-size: var(--font-size-md);
+  }
+
+  .editButton {
+    min-width: 44px;
+    min-height: 44px;
+    padding: var(--spacing-sm);
+  }
+
+  .colorDot {
+    width: 12px;
+    height: 12px;
+  }
+}

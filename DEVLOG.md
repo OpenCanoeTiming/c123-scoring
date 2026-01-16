@@ -339,6 +339,37 @@ Přidat focus trap do všech modalů pro lepší klávesnicovou navigaci a pří
 
 ---
 
+## 2026-01-16 - Fáze 13.8: Touch device optimalizace
+
+### Cíl iterace
+
+Zajistit, aby všechny interaktivní prvky měly minimální touch target 44×44px na dotykových zařízeních.
+
+### Dokončeno
+
+- [x] OnCourseGrid.css - gate cells (44px), check buttons (44px), row heights (48px)
+- [x] RaceSelector.module.css - select height (44px), larger padding
+- [x] GateGroupSwitcher.module.css - group buttons (44px), edit button (44px)
+- [x] Settings.module.css - tabs, buttons, inputs, checkboxes
+- [x] CompetitorActions.module.css - action buttons (44px), menu sizing
+- [x] GateGroupEditor.module.css - všechny interaktivní prvky včetně gates gridu
+- [x] TimingPanel.module.css - timing buttons (48px), confirm buttons
+
+### Implementace
+
+Použit `@media (pointer: coarse)` media query pro detekci dotykových zařízení:
+- Zvětšení touch targetů na min 44×44px (WCAG doporučení)
+- Input font-size 16px pro prevenci zoomu na iOS
+- Větší padding pro pohodlnější ovládání
+
+### Poznámky
+
+- `pointer: coarse` je spolehlivější než `hover: none` pro detekci touch zařízení
+- Timing buttons mají 48px pro lepší ergonomii (kritické akce)
+- iOS automaticky zoomuje při focusu na input s font-size < 16px
+
+---
+
 ## Template pro další záznamy
 
 ```markdown

@@ -56,3 +56,12 @@
   background-color: var(--color-warning-bg, #fff3cd);
   color: var(--color-warning, #856404);
 }
+
+/* Touch device optimizations */
+@media (pointer: coarse) {
+  .select {
+    padding: var(--spacing-sm, 8px) var(--spacing-md, 12px);
+    font-size: var(--font-size-md, 16px);
+    min-height: 44px;
+  }
+}

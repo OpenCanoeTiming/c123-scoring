@@ -167,3 +167,18 @@
   outline: 2px solid var(--color-primary, #0066cc);
   outline-offset: 2px;
 }
+
+/* Touch device optimizations */
+@media (pointer: coarse) {
+  .timingButton {
+    min-height: 48px;
+    padding: var(--spacing-md, 12px) var(--spacing-lg, 16px);
+    font-size: 1rem;
+  }
+
+  .cancelButton,
+  .confirmButton {
+    min-height: 44px;
+    padding: var(--spacing-sm, 8px) var(--spacing-lg, 16px);
+  }
+}
