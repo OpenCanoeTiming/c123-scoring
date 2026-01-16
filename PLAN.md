@@ -689,45 +689,7 @@ node recorder.js <C123_IP>
 
 ---
 
-## TODO: Opravy OnCourse zpracování (PRIORITA)
+## Hotovo: Opravy OnCourse zpracování (commit 8147057)
 
-### Problém 1: Špatná detekce finished závodníků
-
-**Aktuální stav:** `OnCourseGrid.tsx` používá `c.completed` pro rozlišení finished vs on-course.
-
-**Správná logika (z c123-scoreboard):**
-- **Na trati:** `dtFinish === null || dtFinish === ''`
-- **Dojel:** `dtFinish !== null && dtFinish !== ''`
-
-**Oprava:**
-```typescript
-// OnCourseGrid.tsx, řádky 75-84
-const finishedCompetitors = filteredCompetitors
-  .filter((c) => c.dtFinish !== null && c.dtFinish !== '')
-  .sort((a, b) => a.rank - b.rank)
-
-const onCourseCompetitors = filteredCompetitors
-  .filter((c) => c.dtFinish === null || c.dtFinish === '')
-  .sort((a, b) => a.position - b.position)
-```
-
-### Problém 2: Race selector ukazuje "1st and 2nd Run"
-
-**Aktuální stav:** Zobrazuje `mainTitle` + `subTitle` ze serveru, což vede k zobrazení "K1m - střední trať / 1st and 2nd Run".
-
-**Správná logika:** Pro scoring se kontroluje vždy jedna jízda (jeden `raceId`), ne kombinace jízd.
-
-**Oprava:** Použít `shortTitle` nebo `race` (obsahuje "K1m - střední trať - 2. jízda") místo kombinace `mainTitle`/`subTitle`.
-
-### Reference: c123-scoreboard datový model
-
-Soubory k prostudování:
-- `../c123-scoreboard/src/types/c123server.ts` - typy
-- `../c123-scoreboard/src/services/c123ServerMapper.ts` - mapování OnCourse
-- `../c123-scoreboard/src/context/ScoreboardContext.tsx` - state management
-
-Klíčové funkce:
-- `dtFinish` - timestamp nebo null
-- `dtStart` - timestamp nebo null
-- `_pos` - pozice na trati (1 = nejblíže cíli)
-- `Rank` - pořadí (jen pro finished)
+- ✅ Detekce finished závodníků: použit `dtFinish` místo `completed`
+- ✅ Race selector: použit `shortTitle` pro zobrazení jednotlivých jízd
