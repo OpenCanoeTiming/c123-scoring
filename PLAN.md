@@ -347,23 +347,23 @@ Podrobný plán pro autonomní iterativní implementaci. Každá fáze je navrž
 
 ### Kroky
 
-- [ ] 10.1: Rozšíření `types/scoring.ts`
+- [x] 10.1: Rozšíření `types/scoring.ts`
   - CheckedState per competitor per group
   - Timestamp kontroly
-- [ ] 10.2: Vytvoření `hooks/useCheckedState.ts`
+- [x] 10.2: Vytvoření `hooks/useCheckedState.ts`
   - Local state pro kontroly
   - Persistence do localStorage
   - Reset při novém závodě
-- [ ] 10.3: Update `GridRow.tsx`
+- [x] 10.3: Update `OnCourseGrid.tsx`
   - Checkbox pro "zkontrolováno"
   - Vizuální odlišení zkontrolovaných
-  - Keyboard: Space = toggle check
-- [ ] 10.4: Vytvoření `components/CheckProgress/CheckProgress.tsx`
+  - Keyboard: Space = toggle check (TODO)
+- [x] 10.4: Vytvoření `components/CheckProgress/CheckProgress.tsx`
   - Progress bar: X/Y zkontrolováno
   - Per-group statistiky
-- [ ] 10.5: Integrace do Header nebo Footer
-- [ ] 10.6: Playwright test: označení jako zkontrolováno
-- [ ] 10.7: Commit: `feat: add protocol check tracking`
+- [x] 10.5: Integrace do Footer
+- [ ] 10.6: Playwright test: označení jako zkontrolováno (čeká na Fázi 2)
+- [x] 10.7: Commit: `feat: add protocol check tracking`
 
 **Výstup:** Sledování postupu kontroly
 
