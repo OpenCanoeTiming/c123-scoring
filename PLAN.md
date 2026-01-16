@@ -154,7 +154,7 @@ Standalone server v `c123-protocol-docs/tools/`, který emuluje Canoe123 na TCP:
   - Extrahovat z JSONL: OnCourse, RaceConfig, Schedule, Results zprávy
   - Různé stavy: závodník na trati, dojel, penalizace
 - [x] 2B.4: Unit testy pro utility funkce (gates.ts, gateGroups.ts)
-- [ ] 2B.5: Unit testy pro hooks (useSchedule, useGateGroups, useCheckedState)
+- [x] 2B.5: Unit testy pro hooks (useSchedule, useGateGroups, useCheckedState)
 - [x] 2B.6: Commit: `test: add Vitest unit tests for gates utilities`
 
 #### 2C: E2E testy s Playwright
