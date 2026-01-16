@@ -4,6 +4,7 @@ import { useC123WebSocket } from './hooks/useC123WebSocket'
 import { useConnectionStatus } from './hooks/useConnectionStatus'
 import { useSchedule } from './hooks/useSchedule'
 import { useGateGroups } from './hooks/useGateGroups'
+import { useGateGroupShortcuts } from './hooks/useGateGroupShortcuts'
 import './App.css'
 
 const DEFAULT_SERVER_URL = 'ws://localhost:27123/ws'
@@ -75,6 +76,13 @@ function App() {
   } = useGateGroups({
     raceConfig,
     raceId: selectedRaceId,
+  })
+
+  // Gate group keyboard shortcuts (1-9, 0)
+  useGateGroupShortcuts({
+    groups: allGroups,
+    onSelectGroup: setActiveGroup,
+    enabled: !showGateGroupEditor, // Disable when editor is open
   })
 
   return (

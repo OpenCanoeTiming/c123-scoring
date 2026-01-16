@@ -29,3 +29,7 @@ export {
   type UseGateGroupsOptions,
   type UseGateGroupsReturn,
 } from './useGateGroups'
+export {
+  useGateGroupShortcuts,
+  type UseGateGroupShortcutsOptions,
+} from './useGateGroupShortcuts'

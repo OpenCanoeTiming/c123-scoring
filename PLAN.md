@@ -331,7 +331,7 @@ Podrobný plán pro autonomní iterativní implementaci. Každá fáze je navrž
   - Zobrazení pouze vybraných branek z aktivní skupiny
   - Vizuální oddělovače skupin (modré okraje)
   - GateGroupSwitcher pro rychlé přepínání
-- [ ] 9.5: Keyboard shortcuts pro přepínání skupin (1-9)
+- [x] 9.5: Keyboard shortcuts pro přepínání skupin (1-9)
 - [x] 9.6: Persistence skupin do localStorage (součást useGateGroups)
 - [ ] 9.7: Playwright test: vytvoření skupiny
 - [ ] 9.8: Playwright screenshot: filtrovaný grid
