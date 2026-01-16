@@ -157,6 +157,38 @@ replay-server (TCP:27333) → c123-server → c123-scoring
 
 ---
 
+## 2026-01-16 - Fáze 2A: Replay Server
+
+### Cíl iterace
+
+Implementovat replay-server pro přehrávání JSONL nahrávek jako simulace živého C123.
+
+### Dokončeno
+
+- [x] Vytvořen `c123-protocol-docs/tools/replay-server.js`
+  - TCP server na portu 27333
+  - Parsování JSONL, filtrování `src: "tcp"` zpráv
+  - Přehrávání s respektováním timestampů
+  - CLI parametry: --speed, --loop, --port
+- [x] Otestováno s c123-server a c123-scoring
+- [x] Aktualizován `recordings/README.md` s dokumentací
+- [x] Screenshot fungující aplikace: `docs/screenshots/scoring-live-replay.png`
+
+### Architektura
+
+```
+replay-server (TCP:27333) → c123-server (:27123) → c123-scoring (:5173)
+```
+
+### Poznámky
+
+- Replay-server filtruje pouze `src: "tcp"` zprávy (C123 protokol)
+- Používá oddělovač `|` jako autentické C123
+- Nahrávka `rec-2025-12-28T09-34-10.jsonl` obsahuje 1051 TCP zpráv (4m 7s)
+- S `--speed 5` se 4 minuty přehrají za ~50s
+
+---
+
 ## Template pro další záznamy
 
 ```markdown
