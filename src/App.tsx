@@ -231,6 +231,7 @@ function App() {
       }
       footer={
         <div className="footer-content">
+          {/* Left: Version and organization */}
           <span className="footer-version">
             C123 Scoring v0.1.0 &bull; Open Canoe Timing
             {isScoringLoading && (
@@ -239,6 +240,8 @@ function App() {
               </span>
             )}
           </span>
+
+          {/* Center: Check progress */}
           {finishedCompetitorBibs.length > 0 && (
             <CheckProgress
               progress={checkProgress}
@@ -246,19 +249,20 @@ function App() {
               compact
             />
           )}
+
+          {/* Right: Gate group switcher */}
+          {raceConfig && (
+            <GateGroupSwitcher
+              groups={allGroups}
+              activeGroupId={activeGroupId}
+              onSelectGroup={setActiveGroup}
+              onOpenEditor={() => setShowGateGroupEditor(true)}
+              compact
+            />
+          )}
         </div>
       }
     >
-      {/* Gate Group Switcher */}
-      {raceConfig && (
-        <GateGroupSwitcher
-          groups={allGroups}
-          activeGroupId={activeGroupId}
-          onSelectGroup={setActiveGroup}
-          onOpenEditor={() => setShowGateGroupEditor(true)}
-        />
-      )}
-
       {/* Gate Group Editor Modal */}
       {showGateGroupEditor && raceConfig && (
         <div className="modal-overlay" onClick={() => setShowGateGroupEditor(false)}>

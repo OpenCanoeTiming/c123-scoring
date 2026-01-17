@@ -18,6 +18,8 @@ export interface GateGroupSwitcherProps {
   onSelectGroup: (groupId: string | null) => void
   /** Optional callback to open the gate group editor */
   onOpenEditor?: () => void
+  /** Compact mode for footer display */
+  compact?: boolean
 }
 
 /**
@@ -29,12 +31,13 @@ export function GateGroupSwitcher({
   activeGroupId,
   onSelectGroup,
   onOpenEditor,
+  compact = false,
 }: GateGroupSwitcherProps) {
   // Filter to only show groups with gates (exclude "all" as it's the default)
   const customGroups = groups.filter((g) => g.gates.length > 0)
 
   return (
-    <div className={styles.switcher} role="toolbar" aria-label="Gate group switcher">
+    <div className={`${styles.switcher} ${compact ? styles.compact : ''}`} role="toolbar" aria-label="Gate group switcher">
       {/* All Gates button */}
       <button
         type="button"

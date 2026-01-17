@@ -7,6 +7,24 @@
   border-bottom: 1px solid var(--color-border);
 }
 
+/* Compact mode for footer */
+.compact {
+  padding: 0;
+  background: transparent;
+  border-bottom: none;
+  gap: var(--spacing-2xs, 0.125rem);
+}
+
+.compact .groupButton {
+  padding: var(--spacing-2xs, 0.125rem) var(--spacing-xs);
+  font-size: var(--font-size-xs);
+}
+
+.compact .colorDot {
+  width: 6px;
+  height: 6px;
+}
+
 .groupButton {
   display: inline-flex;
   align-items: center;
