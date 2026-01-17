@@ -686,7 +686,7 @@ node recorder.js <C123_IP>
 | 13 | Polish a UX | ✅ Hotovo |
 | 14 | Vizuální testy | ✅ Hotovo (15 screenshotů) |
 | 15 | Dokumentace | ✅ Hotovo (README, CHANGELOG, CI, docs, code review, v1.0.0 tag) |
-| **16** | **Vizuální redesign** | ⏳ **V průběhu** (16B, 16C hotovo) |
+| **16** | **Vizuální redesign** | ⏳ **V průběhu** (16A-16F hotovo) |
 
 ---
 
@@ -891,12 +891,12 @@ Před začátkem práce je třeba do DS přidat:
 
 **Cíl:** Informativní footer s DS komponenty
 
-- [ ] 16F.1: Použít DS `ProgressBar` pro CheckProgress
-- [ ] 16F.2: Přepracovat footer layout
+- [x] 16F.1: Použít DS `ProgressBar` pro CheckProgress
+- [x] 16F.2: Přepracovat footer layout
   - Vlevo: verze, organizace
   - Střed: progress kontroly
   - Vpravo: gate group switcher
-- [ ] 16F.3: Commit: `refactor: use design system progress bar`
+- [x] 16F.3: Commit: `refactor: use design system ProgressBar and move gate groups to footer`
 
 ### Fáze 16G: Toast a notifikace
 
