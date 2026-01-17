@@ -1,23 +1,19 @@
 /**
- * Toast Context
+ * Toast Provider Component
  *
  * Provides a global toast notification system via React context.
  * Components can use the useToast hook to show notifications.
  */
 
-import { createContext, useContext, useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import type { ReactNode } from 'react'
 import { ToastContainer } from './ToastContainer'
 import type { ToastData, ToastVariant } from './Toast'
+import { ToastContext } from './toastContextDef'
+import type { ToastContextValue } from './toastContextDef'
 
-interface ToastContextValue {
-  showToast: (message: string, variant: ToastVariant, duration?: number) => void
-  showSuccess: (message: string, duration?: number) => void
-  showError: (message: string, duration?: number) => void
-  showWarning: (message: string, duration?: number) => void
-}
-
-const ToastContext = createContext<ToastContextValue | null>(null)
+// Re-export types for backward compatibility
+export type { ToastContextValue } from './toastContextDef'
 
 let toastIdCounter = 0
 
@@ -92,12 +88,4 @@ export function ToastProvider({ children, maxToasts = 5 }: ToastProviderProps) {
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
     </ToastContext.Provider>
   )
-}
-
-export function useToast(): ToastContextValue {
-  const context = useContext(ToastContext)
-  if (!context) {
-    throw new Error('useToast must be used within a ToastProvider')
-  }
-  return context
 }

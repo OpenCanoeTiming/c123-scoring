@@ -71,12 +71,8 @@ function App() {
     }
   })
 
-  // Auto-select running race if nothing selected
-  useEffect(() => {
-    if (!selectedRaceId && runningRace) {
-      setSelectedRaceId(runningRace.raceId)
-    }
-  }, [selectedRaceId, runningRace])
+  // Auto-select running race if nothing selected (computed, not effect)
+  const effectiveSelectedRaceId = selectedRaceId ?? runningRace?.raceId ?? null
 
   // Persist selected race to localStorage
   const handleSelectRace = useCallback((raceId: string) => {
@@ -88,10 +84,10 @@ function App() {
     }
   }, [])
 
-  const selectedRace = selectedRaceId ? getRaceById(selectedRaceId) : null
+  const selectedRace = effectiveSelectedRaceId ? getRaceById(effectiveSelectedRaceId) : null
 
   // Get results data for selected race
-  const selectedRaceResults = selectedRaceId ? results.get(selectedRaceId) : undefined
+  const selectedRaceResults = effectiveSelectedRaceId ? results.get(effectiveSelectedRaceId) : undefined
 
   // Gate groups hook
   const {
@@ -105,7 +101,7 @@ function App() {
     removeGroup,
   } = useGateGroups({
     raceConfig,
-    raceId: selectedRaceId,
+    raceId: effectiveSelectedRaceId,
   })
 
   // Gate group keyboard shortcuts (1-9, 0)
@@ -142,7 +138,7 @@ function App() {
     toggleChecked,
     getProgress,
   } = useCheckedState({
-    raceId: selectedRaceId,
+    raceId: effectiveSelectedRaceId,
     groupId: activeGroupId,
   })
 
@@ -153,7 +149,7 @@ function App() {
     return selectedRaceResults.rows
       .filter((r) => !r.status)
       .map((r) => r.bib)
-  }, [selectedRaceResults?.rows])
+  }, [selectedRaceResults])
 
   // Calculate check progress
   const checkProgress = useMemo(() => {
@@ -216,7 +212,7 @@ function App() {
             <>
               <RaceSelector
                 races={activeRaces}
-                selectedRaceId={selectedRaceId}
+                selectedRaceId={effectiveSelectedRaceId}
                 onSelectRace={handleSelectRace}
               />
               <button

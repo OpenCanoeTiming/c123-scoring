@@ -7,7 +7,7 @@
  * - Other preferences
  */
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import type { GateGroup } from '../../types/ui'
 import type { Settings as SettingsType } from '../../hooks/useSettings'
 import { useFocusTrap } from '../../hooks/useFocusTrap'
@@ -42,17 +42,17 @@ export function Settings({
   onClose,
 }: SettingsProps) {
   const [activeTab, setActiveTab] = useState<SettingsTab>('server')
-  const [serverUrl, setServerUrl] = useState(settings.serverUrl)
   const [urlError, setUrlError] = useState<string | null>(null)
   const [isTesting, setIsTesting] = useState(false)
 
+  // Local edit state for URL - tracks if user is editing
+  const [localServerUrl, setLocalServerUrl] = useState<string | null>(null)
+
+  // Use local edit state if user has edited, otherwise use settings value
+  const serverUrl = localServerUrl ?? settings.serverUrl
+
   // Focus trap for modal accessibility
   const modalRef = useFocusTrap<HTMLDivElement>({ enabled: true })
-
-  // Reset form when settings change externally
-  useEffect(() => {
-    setServerUrl(settings.serverUrl)
-  }, [settings.serverUrl])
 
   // Validate WebSocket URL
   const validateUrl = useCallback((url: string): string | null => {
@@ -73,7 +73,7 @@ export function Settings({
   const handleUrlChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newUrl = e.target.value
-      setServerUrl(newUrl)
+      setLocalServerUrl(newUrl)
       setUrlError(validateUrl(newUrl))
     },
     [validateUrl]
@@ -239,7 +239,7 @@ export function Settings({
                         key={url}
                         className={styles.historyItem}
                         onClick={() => {
-                          setServerUrl(url)
+                          setLocalServerUrl(url)
                           setUrlError(null)
                         }}
                       >

@@ -192,39 +192,39 @@ export function OnCourseGrid({
     setContextMenu(null)
   }, [])
 
-  // Combined keyboard handler
-  const handleKeyDown = useCallback(
-    (event: React.KeyboardEvent) => {
-      // Close context menu on any key
-      if (contextMenu) {
-        setContextMenu(null)
+  // Combined keyboard handler - inline function to avoid stale closure issues
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    // Close context menu on any key
+    if (contextMenu) {
+      setContextMenu(null)
+    }
+
+    // Get current competitor from position (avoid stale closure)
+    const competitor = sortedCompetitors[position.row]
+
+    // Competitor action shortcuts (D = DNS, F = DNF, C = CAP)
+    if (competitor && onRemoveFromCourse && !hasFinished(competitor)) {
+      const key = event.key.toUpperCase()
+      if (key === 'D' && !event.ctrlKey && !event.metaKey && !event.altKey) {
+        event.preventDefault()
+        // Open context menu for DNS confirmation
+        setContextMenu({
+          bib: competitor.bib,
+          name: competitor.name,
+          isOnCourse: true,
+          isFinished: false,
+          position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+        })
+        return
       }
+    }
 
-      // Competitor action shortcuts (D = DNS, F = DNF, C = CAP)
-      if (currentCompetitor && onRemoveFromCourse && !hasFinished(currentCompetitor)) {
-        const key = event.key.toUpperCase()
-        if (key === 'D' && !event.ctrlKey && !event.metaKey && !event.altKey) {
-          event.preventDefault()
-          // Open context menu for DNS confirmation
-          setContextMenu({
-            bib: currentCompetitor.bib,
-            name: currentCompetitor.name,
-            isOnCourse: true,
-            isFinished: false,
-            position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
-          })
-          return
-        }
-      }
+    // First try input handling (numbers, enter, escape)
+    if (handleInputKeyDown(event)) return
 
-      // First try input handling (numbers, enter, escape)
-      if (handleInputKeyDown(event)) return
-
-      // Then try navigation (arrows, home, end, etc)
-      handleNavKeyDown(event)
-    },
-    [handleInputKeyDown, handleNavKeyDown, contextMenu, currentCompetitor, onRemoveFromCourse]
-  )
+    // Then try navigation (arrows, home, end, etc)
+    handleNavKeyDown(event)
+  }
 
   // Focus the grid when it mounts or when position changes
   useEffect(() => {

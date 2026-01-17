@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import type { ConnectionState } from './useC123WebSocket'
 import type { C123ConnectedData } from '../types/c123server'
 
@@ -32,6 +32,9 @@ export interface ConnectionStatus {
 /** If no message received in this time, consider connection stale */
 const STALE_THRESHOLD_MS = 10000
 
+/** How often to update latency calculation */
+const LATENCY_UPDATE_INTERVAL_MS = 1000
+
 // =============================================================================
 // Hook Implementation
 // =============================================================================
@@ -42,9 +45,21 @@ export function useConnectionStatus(
   lastMessageTime: number | null,
   lastError: string | null
 ): ConnectionStatus {
+  // Track current time separately to avoid impure Date.now() in useMemo
+  const [currentTime, setCurrentTime] = useState(() => Date.now())
+
+  // Update current time periodically for latency calculation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(Date.now())
+    }, LATENCY_UPDATE_INTERVAL_MS)
+
+    return () => clearInterval(interval)
+  }, [])
+
+
   return useMemo(() => {
-    const now = Date.now()
-    const latency = lastMessageTime ? now - lastMessageTime : null
+    const latency = lastMessageTime ? currentTime - lastMessageTime : null
     const isStale = latency !== null && latency > STALE_THRESHOLD_MS
 
     // Determine status based on state
@@ -103,5 +118,5 @@ export function useConnectionStatus(
       latency,
       statusClass,
     }
-  }, [connectionState, serverInfo, lastMessageTime, lastError])
+  }, [connectionState, serverInfo, lastMessageTime, lastError, currentTime])
 }

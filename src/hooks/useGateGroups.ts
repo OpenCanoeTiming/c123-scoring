@@ -112,6 +112,7 @@ function saveToStorage(key: string, config: GateGroupsConfig): void {
 function parseSegmentsFromConfig(
   _raceConfig: C123RaceConfigData | null | undefined
 ): CourseSegment[] {
+  void _raceConfig // Explicitly mark as intentionally unused
   // TODO: When c123-server provides segment data, parse it here
   // For now, return empty array (no auto-segments)
   return []
