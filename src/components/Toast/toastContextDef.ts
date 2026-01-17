@@ -5,7 +5,7 @@
  */
 
 import { createContext } from 'react'
-import type { ToastVariant } from './Toast'
+import type { ToastVariant } from '@opencanoetiming/timing-design-system'
 
 export interface ToastContextValue {
   showToast: (message: string, variant: ToastVariant, duration?: number) => void
