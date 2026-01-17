@@ -90,14 +90,14 @@ npx playwright test screenshots-with-data.spec.ts
 
 ---
 
-### 17B: Grid UX vylepšení
+### 17B: Grid UX vylepšení ✅
 
 **Problém:** Chybí zvýraznění řádku/sloupce při navigaci.
 
-- [ ] 17B.1: Row/column highlight při HOVER (jemné)
-- [ ] 17B.2: Row/column highlight při FOCUS (výraznější)
-- [ ] 17B.3: Odstranit sloupec "Klub"
-- [ ] 17B.4: Commit
+- [x] 17B.1: Row/column highlight při HOVER (jemné)
+- [x] 17B.2: Row/column highlight při FOCUS (výraznější)
+- [x] 17B.3: Odstranit sloupec "Klub"
+- [x] 17B.4: Commit
 
 ---
 

@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback, useMemo, useState } from 'react'
+import { useRef, useEffect, useCallback, useMemo, useState, CSSProperties } from 'react'
 import {
   Table,
   TableHead,
@@ -65,6 +65,9 @@ export function ResultsGrid({
     status?: string
     position: { x: number; y: number }
   } | null>(null)
+
+  // Hover state for column highlighting
+  const [hoverColumn, setHoverColumn] = useState<number | null>(null)
 
   // Sort rows: valid results by rank, then DNS/DNF/DSQ at bottom by startOrder
   const sortedRows = useMemo(() => {
@@ -199,6 +202,16 @@ export function ResultsGrid({
     return 'neutral'
   }
 
+  // Calculate focused column for CSS highlighting
+  const focusedColumn = position.column
+
+  // CSS custom properties for column highlighting
+  const gridStyle: CSSProperties = {
+    '--hover-column': hoverColumn !== null ? hoverColumn : -1,
+    '--focus-column': focusedColumn,
+    '--focus-row': position.row,
+  } as CSSProperties
+
   if (sortedRows.length === 0) {
     return (
       <div className="results-grid results-grid--empty">
@@ -216,6 +229,8 @@ export function ResultsGrid({
       aria-activedescendant={activeCellId ?? undefined}
       tabIndex={0}
       onKeyDown={handleKeyDown}
+      style={gridStyle}
+      onMouseLeave={() => setHoverColumn(null)}
     >
       <Table striped hover>
         <TableHead>
@@ -237,14 +252,24 @@ export function ResultsGrid({
             <TableHeaderCell numeric className="col-pen">
               Pen
             </TableHeaderCell>
-            {visibleGateIndices.map((gateIndex) => {
+            {visibleGateIndices.map((gateIndex, visibleColIndex) => {
               const gateNum = gateIndex + 1
               const gateType = gateConfig[gateIndex] ?? 'N'
+              const isHovered = hoverColumn === visibleColIndex
+              const isFocusedCol = focusedColumn === visibleColIndex
+              const headerClasses = [
+                gateType === 'R' && 'gate-header--reverse',
+                isHovered && 'gate-header--hover',
+                isFocusedCol && 'gate-header--focus',
+              ]
+                .filter(Boolean)
+                .join(' ')
               return (
                 <TableHeaderCell
                   key={gateNum}
                   numeric
-                  className={gateType === 'R' ? 'gate-header--reverse' : undefined}
+                  className={headerClasses || undefined}
+                  onMouseEnter={() => setHoverColumn(visibleColIndex)}
                 >
                   {gateNum}
                 </TableHeaderCell>
@@ -258,9 +283,11 @@ export function ResultsGrid({
             const hasStatus = !!row.status
             const checked = isChecked?.(row.bib) ?? false
 
+            const isRowFocused = position.row === rowIndex
             const rowClassNames = [
               checked && 'results-row--checked',
               hasStatus && 'results-row--status',
+              isRowFocused && 'results-row--focus',
             ]
               .filter(Boolean)
               .join(' ')
@@ -297,10 +324,7 @@ export function ResultsGrid({
                 <TableCell numeric className="col-bib">
                   {row.bib}
                 </TableCell>
-                <TableCell className="col-name">
-                  <span className="name">{row.name}</span>
-                  <span className="club">{row.club}</span>
-                </TableCell>
+                <TableCell className="col-name">{row.name}</TableCell>
                 <TableCell numeric className="col-time">
                   {hasStatus ? '-' : `${row.time}s`}
                 </TableCell>
@@ -312,6 +336,8 @@ export function ResultsGrid({
                   const penalty = penalties.find((p) => p.gate === gateNum)
                   const cellIsFocused = isFocused(rowIndex, visibleColIndex)
                   const isBoundary = groupBoundaries.has(gateNum)
+                  const isColHovered = hoverColumn === visibleColIndex
+                  const isColFocused = focusedColumn === visibleColIndex
 
                   return (
                     <PenaltyCell
@@ -322,9 +348,12 @@ export function ResultsGrid({
                       pendingValue={cellIsFocused ? pendingValue : null}
                       gateType={(penalty?.type ?? gateConfig[gateIndex] ?? 'N') as 'N' | 'R'}
                       isFocused={cellIsFocused}
+                      isColumnHovered={isColHovered}
+                      isColumnFocused={isColFocused}
                       isGroupBoundary={isBoundary}
                       id={getCellId(rowIndex, visibleColIndex)}
                       onClick={() => handleCellClick(rowIndex, visibleColIndex)}
+                      onMouseEnter={() => setHoverColumn(visibleColIndex)}
                     />
                   )
                 })}

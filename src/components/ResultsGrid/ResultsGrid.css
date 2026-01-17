@@ -39,18 +39,8 @@
 
 .col-name {
   text-align: left;
-  min-width: 180px;
-}
-
-.col-name .name {
-  display: block;
+  min-width: 160px;
   font-weight: var(--font-semibold);
-}
-
-.col-name .club {
-  display: block;
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
 }
 
 .col-time,
@@ -109,6 +99,32 @@
 th.gate-header--reverse {
   background: var(--color-warning-subtle);
   color: var(--color-warning);
+}
+
+/* Column hover highlight (subtle) */
+.penalty-cell--col-hover {
+  background-color: color-mix(in srgb, var(--color-accent-subtle) 30%, transparent);
+}
+
+/* Column focus highlight (more prominent) */
+.penalty-cell--col-focus {
+  background-color: color-mix(in srgb, var(--color-accent-subtle) 50%, transparent);
+}
+
+/* Gate header hover */
+th.gate-header--hover {
+  background: color-mix(in srgb, var(--color-accent-subtle) 50%, var(--color-bg-surface));
+}
+
+/* Gate header focus */
+th.gate-header--focus {
+  background: var(--color-accent-subtle);
+  color: var(--color-accent);
+}
+
+/* Row focus highlight */
+.results-row--focus {
+  background: color-mix(in srgb, var(--color-accent-subtle) 30%, transparent) !important;
 }
 
 /* Focus state */

@@ -14,12 +14,18 @@ export interface PenaltyCellProps {
   gateType: 'N' | 'R'
   /** Whether this cell has focus */
   isFocused: boolean
+  /** Whether this column is hovered */
+  isColumnHovered?: boolean
+  /** Whether this column contains the focused cell */
+  isColumnFocused?: boolean
   /** Whether this cell is at a group boundary (shows right border) */
   isGroupBoundary?: boolean
   /** Cell ID for accessibility */
   id: string
   /** Click handler */
   onClick?: () => void
+  /** Mouse enter handler for column hover */
+  onMouseEnter?: () => void
 }
 
 function getPenaltyModifier(value: PenaltyValue | null): string {
@@ -40,7 +46,19 @@ function getPenaltyModifier(value: PenaltyValue | null): string {
  */
 export const PenaltyCell = forwardRef<HTMLTableCellElement, PenaltyCellProps>(
   function PenaltyCell(
-    { gate, value, pendingValue, gateType, isFocused, isGroupBoundary, id, onClick },
+    {
+      gate,
+      value,
+      pendingValue,
+      gateType,
+      isFocused,
+      isColumnHovered,
+      isColumnFocused,
+      isGroupBoundary,
+      id,
+      onClick,
+      onMouseEnter,
+    },
     ref
   ) {
     const displayValue = pendingValue ?? value
@@ -51,6 +69,8 @@ export const PenaltyCell = forwardRef<HTMLTableCellElement, PenaltyCellProps>(
       penaltyClass,
       gateType === 'R' && 'penalty-cell--reverse',
       isFocused && 'penalty-cell--focused',
+      isColumnHovered && !isFocused && 'penalty-cell--col-hover',
+      isColumnFocused && !isFocused && 'penalty-cell--col-focus',
       pendingValue !== null && 'penalty-cell--pending',
       isGroupBoundary && 'penalty-cell--boundary',
     ]
@@ -67,6 +87,7 @@ export const PenaltyCell = forwardRef<HTMLTableCellElement, PenaltyCellProps>(
         aria-label={`Gate ${gate}: ${displayValue !== null ? formatPenalty(displayValue) : 'empty'}`}
         tabIndex={isFocused ? 0 : -1}
         onClick={onClick}
+        onMouseEnter={onMouseEnter}
         data-gate={gate}
       >
         {formatPenalty(displayValue)}
