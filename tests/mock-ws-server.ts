@@ -20,8 +20,8 @@ export function createMockServer(options: MockServerOptions = {}) {
   wss.on('connection', (ws: WebSocket) => {
     console.log('[MockWS] Client connected');
 
-    // Send ServerInfo
-    ws.send(JSON.stringify(mockData.serverInfoMessage));
+    // Send Connected message first
+    ws.send(JSON.stringify(mockData.connectedMessage));
 
     // Scenario-based messages
     switch (scenario) {
@@ -32,13 +32,16 @@ export function createMockServer(options: MockServerOptions = {}) {
       case 'no-competitors':
         ws.send(JSON.stringify(mockData.scheduleMessage));
         ws.send(JSON.stringify(mockData.raceConfigMessage));
-        ws.send(JSON.stringify(mockData.emptyOnCourseMessage));
+        ws.send(JSON.stringify(mockData.emptyResultsMessage));
         break;
 
       case 'full':
       default:
         ws.send(JSON.stringify(mockData.scheduleMessage));
         ws.send(JSON.stringify(mockData.raceConfigMessage));
+        // Send Results (main data for penalty grid)
+        ws.send(JSON.stringify(mockData.resultsMessage));
+        // Also send OnCourse for real-time info
         ws.send(JSON.stringify(mockData.onCourseMessage));
         break;
     }
