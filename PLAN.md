@@ -816,7 +816,7 @@ Před začátkem práce je třeba do DS přidat:
 - [x] 16A.3: Přidat `ProgressBar` komponentu do DS
 - [x] 16A.4: Přidat `ContextMenu` komponentu do DS
 - [x] 16A.5: Publikovat novou verzi DS (0.3.0)
-- [ ] 16A.6: Aktualizovat DS závislost v c123-scoring
+- [x] 16A.6: Aktualizovat DS závislost v c123-scoring
 
 ### Fáze 16B: Header redesign
 
