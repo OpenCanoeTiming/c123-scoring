@@ -1,0 +1,154 @@
+/**
+ * Settings Component - Additional Styles
+ *
+ * Complements the design system components with layout-specific styles.
+ * Most styling is handled by the design system.
+ */
+
+/* Modal body spacing for tabs */
+.settings-body {
+  padding: 0;
+}
+
+.settings-body .tabs {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-body .tab-list {
+  padding: 0 var(--spacing-lg, 1.5rem);
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
+  flex-shrink: 0;
+}
+
+.settings-body .tab-panels {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-lg, 1.5rem);
+}
+
+.settings-body .tab-panel {
+  display: none;
+}
+
+.settings-body .tab-panel.active {
+  display: block;
+}
+
+/* Section styling */
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md, 1rem);
+}
+
+.settings-section-title {
+  margin: 0 0 var(--spacing-sm, 0.5rem) 0;
+  font-size: var(--font-size-md, 1rem);
+  font-weight: 600;
+  color: var(--color-text-primary, #1a1a1a);
+}
+
+/* Input group with badge */
+.settings-input-group {
+  display: flex;
+  gap: var(--spacing-sm, 0.5rem);
+  align-items: center;
+}
+
+.settings-input-group .input {
+  flex: 1;
+}
+
+/* Actions row */
+.settings-actions {
+  display: flex;
+  gap: var(--spacing-sm, 0.5rem);
+  justify-content: flex-end;
+  margin-top: var(--spacing-sm, 0.5rem);
+}
+
+/* Server history list */
+.settings-history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs, 0.25rem);
+  margin-top: var(--spacing-xs, 0.25rem);
+}
+
+.settings-history-item {
+  background: none;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: var(--radius-sm, 4px);
+  padding: var(--spacing-xs, 0.25rem) var(--spacing-sm, 0.5rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-family: var(--font-mono, monospace);
+  color: var(--color-text-secondary, #6b7280);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.settings-history-item:hover {
+  background: var(--color-bg-surface-hover, #f3f4f6);
+  color: var(--color-text-primary, #1a1a1a);
+}
+
+/* Keyboard shortcuts */
+.shortcuts-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg, 1.5rem);
+}
+
+.shortcuts-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs, 0.25rem);
+}
+
+.shortcuts-group-title {
+  margin: 0 0 var(--spacing-xs, 0.25rem) 0;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 600;
+  color: var(--color-text-secondary, #6b7280);
+}
+
+.shortcut {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-xs, 0.25rem) 0;
+}
+
+.shortcut-keys {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 0.25rem);
+}
+
+.shortcut-plus {
+  color: var(--color-text-secondary, #6b7280);
+  font-size: var(--font-size-xs, 0.75rem);
+}
+
+.shortcut-description {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-text-primary, #1a1a1a);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .settings-history-item {
+    transition: none;
+  }
+}
+
+/* Touch device optimizations */
+@media (pointer: coarse) {
+  .settings-history-item {
+    min-height: 44px;
+    padding: var(--spacing-sm, 0.5rem) var(--spacing-md, 0.75rem);
+  }
+}

@@ -1,17 +1,30 @@
 /**
  * Settings Component
  *
- * Modal panel for configuring application settings:
- * - Server connection URL
- * - Gate groups (links to GateGroupEditor)
- * - Other preferences
+ * Modal panel for configuring application settings using design system components.
  */
 
 import { useState, useCallback } from 'react'
+import {
+  Modal,
+  ModalHeader,
+  ModalTitle,
+  ModalClose,
+  ModalBody,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+  Input,
+  Button,
+  Checkbox,
+  Kbd,
+  Badge,
+} from '@opencanoetiming/timing-design-system'
 import type { GateGroup } from '../../types/ui'
 import type { Settings as SettingsType } from '../../hooks/useSettings'
-import { useFocusTrap } from '../../hooks/useFocusTrap'
-import styles from './Settings.module.css'
+import './Settings.css'
 
 export interface SettingsProps {
   /** Current settings values */
@@ -50,9 +63,6 @@ export function Settings({
 
   // Use local edit state if user has edited, otherwise use settings value
   const serverUrl = localServerUrl ?? settings.serverUrl
-
-  // Focus trap for modal accessibility
-  const modalRef = useFocusTrap<HTMLDivElement>({ enabled: true })
 
   // Validate WebSocket URL
   const validateUrl = useCallback((url: string): string | null => {
@@ -100,275 +110,231 @@ export function Settings({
     setTimeout(() => setIsTesting(false), 2000)
   }, [serverUrl, validateUrl, onTestConnection])
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose()
-      }
-    },
-    [onClose]
-  )
-
-  // Connection status indicator
-  const getConnectionStatusDisplay = () => {
+  // Connection status badge
+  const getConnectionBadge = () => {
     if (isTesting) {
-      return { text: 'Testing...', className: styles.statusConnecting }
+      return <Badge variant="warning">Testing...</Badge>
     }
     switch (connectionState) {
       case 'connected':
-        return { text: 'Connected', className: styles.statusConnected }
+        return <Badge variant="success">Connected</Badge>
       case 'connecting':
-        return { text: 'Connecting...', className: styles.statusConnecting }
+        return <Badge variant="warning">Connecting...</Badge>
       case 'error':
-        return { text: 'Error', className: styles.statusError }
+        return <Badge variant="error">Error</Badge>
       default:
-        return { text: 'Disconnected', className: styles.statusDisconnected }
+        return <Badge variant="neutral">Disconnected</Badge>
     }
   }
 
-  const connectionStatus = getConnectionStatusDisplay()
-
   return (
-    <div
-      className={styles.overlay}
-      onClick={onClose}
-      onKeyDown={handleKeyDown}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="settings-title"
+    <Modal
+      open={true}
+      onClose={onClose}
+      size="lg"
+      data-testid="settings-panel"
     >
-      <div ref={modalRef} className={styles.modal} data-testid="settings-panel" onClick={(e) => e.stopPropagation()}>
-        <div className={styles.header}>
-          <h2 id="settings-title" className={styles.title}>
-            Settings
-          </h2>
-          <button
-            className={styles.closeButton}
-            onClick={onClose}
-            aria-label="Close settings"
-            data-testid="settings-close"
-          >
-            ×
-          </button>
-        </div>
+      <ModalHeader>
+        <ModalTitle>Settings</ModalTitle>
+        <ModalClose onClick={onClose} data-testid="settings-close" />
+      </ModalHeader>
 
-        <div className={styles.tabs} role="tablist">
-          <button
-            className={`${styles.tab} ${activeTab === 'server' ? styles.tabActive : ''}`}
-            onClick={() => setActiveTab('server')}
-            role="tab"
-            aria-selected={activeTab === 'server'}
-            data-testid="settings-tab-server"
-          >
-            Server
-          </button>
-          <button
-            className={`${styles.tab} ${activeTab === 'display' ? styles.tabActive : ''}`}
-            onClick={() => setActiveTab('display')}
-            role="tab"
-            aria-selected={activeTab === 'display'}
-            data-testid="settings-tab-display"
-          >
-            Display
-          </button>
-          <button
-            className={`${styles.tab} ${activeTab === 'keyboard' ? styles.tabActive : ''}`}
-            onClick={() => setActiveTab('keyboard')}
-            role="tab"
-            aria-selected={activeTab === 'keyboard'}
-            data-testid="settings-tab-keyboard"
-          >
-            Keyboard
-          </button>
-        </div>
+      <ModalBody className="settings-body">
+        <Tabs
+          activeTab={activeTab}
+          onChange={(id) => setActiveTab(id as SettingsTab)}
+          variant="underline"
+        >
+          <TabList>
+            <Tab id="server" data-testid="settings-tab-server">Server</Tab>
+            <Tab id="display" data-testid="settings-tab-display">Display</Tab>
+            <Tab id="keyboard" data-testid="settings-tab-keyboard">Keyboard</Tab>
+          </TabList>
 
-        <div className={styles.content}>
-          {activeTab === 'server' && (
-            <div className={styles.section}>
-              <h3 className={styles.sectionTitle}>Server Connection</h3>
+          <TabPanels>
+            {/* Server Tab */}
+            <TabPanel tabId="server">
+              <div className="settings-section">
+                <h3 className="settings-section-title">Server Connection</h3>
 
-              <div className={styles.field}>
-                <label htmlFor="server-url" className={styles.label}>
-                  WebSocket URL
-                </label>
-                <div className={styles.inputGroup}>
-                  <input
-                    id="server-url"
-                    type="text"
-                    className={`${styles.input} ${urlError ? styles.inputError : ''}`}
-                    value={serverUrl}
-                    onChange={handleUrlChange}
-                    placeholder="ws://localhost:27123/ws"
-                    autoComplete="url"
-                    data-testid="settings-server-url"
-                  />
-                  <span className={`${styles.status} ${connectionStatus.className}`}>
-                    {connectionStatus.text}
-                  </span>
-                </div>
-                {urlError && <p className={styles.errorText}>{urlError}</p>}
-                <p className={styles.helpText}>
-                  Enter the WebSocket URL of the c123-server instance.
-                </p>
-              </div>
-
-              <div className={styles.actions}>
-                <button
-                  className={styles.secondaryButton}
-                  onClick={handleTestConnection}
-                  disabled={!!urlError || isTesting}
-                >
-                  Test Connection
-                </button>
-                <button
-                  className={styles.primaryButton}
-                  onClick={handleSaveUrl}
-                  disabled={!!urlError || serverUrl === settings.serverUrl}
-                >
-                  Save & Reconnect
-                </button>
-              </div>
-
-              {/* Connection History */}
-              {settings.serverHistory && settings.serverHistory.length > 0 && (
-                <div className={styles.field}>
-                  <label className={styles.label}>Recent Servers</label>
-                  <div className={styles.historyList}>
-                    {settings.serverHistory.slice(0, 5).map((url) => (
-                      <button
-                        key={url}
-                        className={styles.historyItem}
-                        onClick={() => {
-                          setLocalServerUrl(url)
-                          setUrlError(null)
-                        }}
-                      >
-                        {url}
-                      </button>
-                    ))}
+                <div className="form-group">
+                  <label htmlFor="server-url" className="form-label">
+                    WebSocket URL
+                  </label>
+                  <div className="settings-input-group">
+                    <Input
+                      id="server-url"
+                      type="text"
+                      value={serverUrl}
+                      onChange={handleUrlChange}
+                      placeholder="ws://localhost:27123/ws"
+                      autoComplete="url"
+                      error={!!urlError}
+                      data-testid="settings-server-url"
+                    />
+                    {getConnectionBadge()}
                   </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {activeTab === 'display' && (
-            <div className={styles.section}>
-              <h3 className={styles.sectionTitle}>Display Options</h3>
-
-              <div className={styles.field}>
-                <label className={styles.label}>Gate Groups</label>
-                {gateGroups && gateGroups.length > 0 ? (
-                  <p className={styles.helpText}>
-                    {gateGroups.length} custom group(s) configured.
+                  {urlError && <p className="form-error">{urlError}</p>}
+                  <p className="form-hint">
+                    Enter the WebSocket URL of the c123-server instance.
                   </p>
-                ) : (
-                  <p className={styles.helpText}>No custom gate groups configured.</p>
-                )}
-                {onOpenGateGroupEditor && (
-                  <button
-                    className={styles.secondaryButton}
-                    onClick={() => {
-                      onClose()
-                      onOpenGateGroupEditor()
-                    }}
+                </div>
+
+                <div className="settings-actions">
+                  <Button
+                    variant="secondary"
+                    onClick={handleTestConnection}
+                    disabled={!!urlError || isTesting}
                   >
-                    Edit Gate Groups
-                  </button>
+                    Test Connection
+                  </Button>
+                  <Button
+                    variant="primary"
+                    onClick={handleSaveUrl}
+                    disabled={!!urlError || serverUrl === settings.serverUrl}
+                  >
+                    Save & Reconnect
+                  </Button>
+                </div>
+
+                {/* Connection History */}
+                {settings.serverHistory && settings.serverHistory.length > 0 && (
+                  <div className="form-group">
+                    <label className="form-label">Recent Servers</label>
+                    <div className="settings-history">
+                      {settings.serverHistory.slice(0, 5).map((url) => (
+                        <button
+                          key={url}
+                          type="button"
+                          className="settings-history-item"
+                          onClick={() => {
+                            setLocalServerUrl(url)
+                            setUrlError(null)
+                          }}
+                        >
+                          {url}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 )}
               </div>
+            </TabPanel>
 
-              <div className={styles.field}>
-                <label className={styles.checkboxLabel}>
-                  <input
-                    type="checkbox"
+            {/* Display Tab */}
+            <TabPanel tabId="display">
+              <div className="settings-section">
+                <h3 className="settings-section-title">Display Options</h3>
+
+                <div className="form-group">
+                  <label className="form-label">Gate Groups</label>
+                  {gateGroups && gateGroups.length > 0 ? (
+                    <p className="form-hint">
+                      {gateGroups.length} custom group(s) configured.
+                    </p>
+                  ) : (
+                    <p className="form-hint">No custom gate groups configured.</p>
+                  )}
+                  {onOpenGateGroupEditor && (
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        onClose()
+                        onOpenGateGroupEditor()
+                      }}
+                    >
+                      Edit Gate Groups
+                    </Button>
+                  )}
+                </div>
+
+                <div className="form-group">
+                  <Checkbox
                     checked={settings.showFinished ?? true}
                     onChange={(e) =>
                       onSettingsChange({ showFinished: e.target.checked })
                     }
-                  />
-                  <span>Show finished competitors</span>
-                </label>
-                <p className={styles.helpText}>
-                  Display competitors who have completed their run in the grid.
-                </p>
-              </div>
+                  >
+                    Show finished competitors
+                  </Checkbox>
+                  <p className="form-hint">
+                    Display competitors who have completed their run in the grid.
+                  </p>
+                </div>
 
-              <div className={styles.field}>
-                <label className={styles.checkboxLabel}>
-                  <input
-                    type="checkbox"
+                <div className="form-group">
+                  <Checkbox
                     checked={settings.showOnCourse ?? true}
                     onChange={(e) =>
                       onSettingsChange({ showOnCourse: e.target.checked })
                     }
-                  />
-                  <span>Show on-course competitors</span>
-                </label>
-                <p className={styles.helpText}>
-                  Display competitors who are still racing on the course.
-                </p>
-              </div>
+                  >
+                    Show on-course competitors
+                  </Checkbox>
+                  <p className="form-hint">
+                    Display competitors who are still racing on the course.
+                  </p>
+                </div>
 
-              <div className={styles.field}>
-                <label className={styles.checkboxLabel}>
-                  <input
-                    type="checkbox"
+                <div className="form-group">
+                  <Checkbox
                     checked={settings.compactMode ?? false}
                     onChange={(e) =>
                       onSettingsChange({ compactMode: e.target.checked })
                     }
-                  />
-                  <span>Compact mode</span>
-                </label>
-                <p className={styles.helpText}>
-                  Use smaller cell sizes for more gates on screen.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'keyboard' && (
-            <div className={styles.section} data-testid="settings-keyboard-content">
-              <h3 className={styles.sectionTitle}>Keyboard Shortcuts</h3>
-
-              <div className={styles.shortcutList}>
-                <div className={styles.shortcutGroup}>
-                  <h4 className={styles.shortcutGroupTitle}>Navigation</h4>
-                  <Shortcut keys={['Arrow Keys']} description="Move between cells" />
-                  <Shortcut keys={['Tab']} description="Move to next cell" />
-                  <Shortcut keys={['Shift', 'Tab']} description="Move to previous cell" />
-                  <Shortcut keys={['Home']} description="Go to first gate" />
-                  <Shortcut keys={['End']} description="Go to last gate" />
-                </div>
-
-                <div className={styles.shortcutGroup}>
-                  <h4 className={styles.shortcutGroupTitle}>Penalty Entry</h4>
-                  <Shortcut keys={['0']} description="Clear / 0 penalty" />
-                  <Shortcut keys={['2']} description="2s touch penalty" />
-                  <Shortcut keys={['5']} description="50s missed gate" />
-                  <Shortcut keys={['Delete']} description="Clear penalty" />
-                  <Shortcut keys={['Space']} description="Toggle checked status" />
-                </div>
-
-                <div className={styles.shortcutGroup}>
-                  <h4 className={styles.shortcutGroupTitle}>Gate Groups</h4>
-                  <Shortcut keys={['1', '-', '9']} description="Switch to group 1-9" />
-                  <Shortcut keys={['0']} description="Show all gates" />
-                </div>
-
-                <div className={styles.shortcutGroup}>
-                  <h4 className={styles.shortcutGroupTitle}>General</h4>
-                  <Shortcut keys={['Ctrl', ',']} description="Open settings" />
-                  <Shortcut keys={['Escape']} description="Close dialog" />
-                  <Shortcut keys={['?']} description="Show keyboard help" />
+                  >
+                    Compact mode
+                  </Checkbox>
+                  <p className="form-hint">
+                    Use smaller cell sizes for more gates on screen.
+                  </p>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+            </TabPanel>
+
+            {/* Keyboard Tab */}
+            <TabPanel tabId="keyboard">
+              <div className="settings-section" data-testid="settings-keyboard-content">
+                <h3 className="settings-section-title">Keyboard Shortcuts</h3>
+
+                <div className="shortcuts-list">
+                  <div className="shortcuts-group">
+                    <h4 className="shortcuts-group-title">Navigation</h4>
+                    <Shortcut keys={['Arrow Keys']} description="Move between cells" />
+                    <Shortcut keys={['Tab']} description="Move to next cell" />
+                    <Shortcut keys={['Shift', 'Tab']} description="Move to previous cell" />
+                    <Shortcut keys={['Home']} description="Go to first gate" />
+                    <Shortcut keys={['End']} description="Go to last gate" />
+                  </div>
+
+                  <div className="shortcuts-group">
+                    <h4 className="shortcuts-group-title">Penalty Entry</h4>
+                    <Shortcut keys={['0']} description="Clear / 0 penalty" />
+                    <Shortcut keys={['2']} description="2s touch penalty" />
+                    <Shortcut keys={['5']} description="50s missed gate" />
+                    <Shortcut keys={['Delete']} description="Clear penalty" />
+                    <Shortcut keys={['Space']} description="Toggle checked status" />
+                  </div>
+
+                  <div className="shortcuts-group">
+                    <h4 className="shortcuts-group-title">Gate Groups</h4>
+                    <Shortcut keys={['1', '-', '9']} description="Switch to group 1-9" />
+                    <Shortcut keys={['0']} description="Show all gates" />
+                  </div>
+
+                  <div className="shortcuts-group">
+                    <h4 className="shortcuts-group-title">General</h4>
+                    <Shortcut keys={['Ctrl', ',']} description="Open settings" />
+                    <Shortcut keys={['Escape']} description="Close dialog" />
+                    <Shortcut keys={['?']} description="Show keyboard help" />
+                  </div>
+                </div>
+              </div>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </ModalBody>
+    </Modal>
   )
 }
 
@@ -379,16 +345,16 @@ interface ShortcutProps {
 
 function Shortcut({ keys, description }: ShortcutProps) {
   return (
-    <div className={styles.shortcut}>
-      <div className={styles.shortcutKeys}>
+    <div className="shortcut">
+      <div className="shortcut-keys">
         {keys.map((key, i) => (
           <span key={i}>
-            <kbd className={styles.key}>{key}</kbd>
-            {i < keys.length - 1 && <span className={styles.keyPlus}>+</span>}
+            <Kbd size="sm">{key}</Kbd>
+            {i < keys.length - 1 && <span className="shortcut-plus">+</span>}
           </span>
         ))}
       </div>
-      <span className={styles.shortcutDescription}>{description}</span>
+      <span className="shortcut-description">{description}</span>
     </div>
   )
 }
