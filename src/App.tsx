@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Button } from '@opencanoetiming/timing-design-system'
-import { Layout, Header, ConnectionStatus, RaceBar, ResultsGrid, GateGroupSwitcher, GateGroupEditor, CheckProgress, Settings, EmptyState, useToast } from './components'
+import { Layout, Header, ConnectionStatus, RaceBar, ResultsGrid, GateGroupSwitcher, GateGroupEditor, CheckProgress, Settings, EmptyState, SortSelector, useToast } from './components'
 import { useC123WebSocket } from './hooks/useC123WebSocket'
 import { useConnectionStatus } from './hooks/useConnectionStatus'
 import { useSchedule } from './hooks/useSchedule'
@@ -10,8 +10,10 @@ import { useCheckedState } from './hooks/useCheckedState'
 import { useSettings } from './hooks/useSettings'
 import { useSettingsShortcut } from './hooks/useSettingsShortcut'
 import { useScoring } from './hooks/useScoring'
+import type { ResultsSortOption } from './types/ui'
 
 const STORAGE_KEY_SELECTED_RACE = 'c123-scoring-selected-race'
+const STORAGE_KEY_SORT_BY = 'c123-scoring-sort-by'
 
 function App() {
   // Settings
@@ -70,6 +72,29 @@ function App() {
       return null
     }
   })
+
+  // Sort option with localStorage persistence
+  const [sortBy, setSortBy] = useState<ResultsSortOption>(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY_SORT_BY)
+      if (stored === 'startOrder' || stored === 'rank' || stored === 'bib') {
+        return stored
+      }
+      return 'rank'
+    } catch {
+      return 'rank'
+    }
+  })
+
+  // Persist sort option to localStorage
+  const handleSortChange = useCallback((value: ResultsSortOption) => {
+    setSortBy(value)
+    try {
+      localStorage.setItem(STORAGE_KEY_SORT_BY, value)
+    } catch {
+      // Ignore localStorage errors
+    }
+  }, [])
 
   // Auto-select running race if nothing selected (computed, not effect)
   const effectiveSelectedRaceId = selectedRaceId ?? runningRace?.raceId ?? null
@@ -230,13 +255,16 @@ function App() {
       }
       toolbar={
         raceConfig && (
-          <GateGroupSwitcher
-            groups={allGroups}
-            activeGroupId={activeGroupId}
-            onSelectGroup={setActiveGroup}
-            onOpenEditor={() => setShowGateGroupEditor(true)}
-            totalGates={raceConfig.nrGates}
-          />
+          <div className="toolbar-content">
+            <GateGroupSwitcher
+              groups={allGroups}
+              activeGroupId={activeGroupId}
+              onSelectGroup={setActiveGroup}
+              onOpenEditor={() => setShowGateGroupEditor(true)}
+              totalGates={raceConfig.nrGates}
+            />
+            <SortSelector value={sortBy} onChange={handleSortChange} />
+          </div>
         )
       }
       footer={
@@ -320,6 +348,7 @@ function App() {
           raceConfig={raceConfig}
           activeGateGroup={activeGroup}
           allGateGroups={allGroups}
+          sortBy={sortBy}
           isChecked={isChecked}
           onToggleChecked={toggleChecked}
           onPenaltySubmit={handlePenaltySubmit}

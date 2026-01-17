@@ -107,6 +107,20 @@ export type ViewMode =
 export type SortField = 'startOrder' | 'bib' | 'name' | 'state' | 'time'
 
 /**
+ * Sort options for the results grid
+ */
+export type ResultsSortOption = 'startOrder' | 'rank' | 'bib'
+
+/**
+ * Labels for sort options
+ */
+export const RESULTS_SORT_LABELS: Record<ResultsSortOption, string> = {
+  startOrder: 'Start Order',
+  rank: 'Results',
+  bib: 'Bib Number',
+}
+
+/**
  * Sort direction
  */
 export type SortDirection = 'asc' | 'desc'

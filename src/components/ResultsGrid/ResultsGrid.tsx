@@ -9,7 +9,7 @@ import {
   Badge,
 } from '@opencanoetiming/timing-design-system/react'
 import type { C123ResultRow, C123RaceConfigData } from '../../types/c123server'
-import type { GateGroup } from '../../types/ui'
+import type { GateGroup, ResultsSortOption } from '../../types/ui'
 import type { RemoveReason, ChannelPosition } from '../../types/scoring'
 import {
   useFocusNavigation,
@@ -29,6 +29,8 @@ export interface ResultsGridProps {
   activeGateGroup?: GateGroup | null
   /** All available gate groups for detecting group boundaries */
   allGateGroups?: GateGroup[]
+  /** Sort order for competitors */
+  sortBy?: ResultsSortOption
   /** Callback when a penalty is submitted */
   onPenaltySubmit?: (bib: string, gate: number, value: PenaltyValue) => void
   /** Check if a competitor is checked */
@@ -48,6 +50,7 @@ export function ResultsGrid({
   raceConfig,
   activeGateGroup = null,
   allGateGroups = [],
+  sortBy = 'rank',
   onPenaltySubmit,
   isChecked,
   onToggleChecked,
@@ -69,12 +72,30 @@ export function ResultsGrid({
   // Hover state for column highlighting
   const [hoverColumn, setHoverColumn] = useState<number | null>(null)
 
-  // Sort rows: valid results by rank, then DNS/DNF/DSQ at bottom by startOrder
+  // Sort rows based on sortBy option
+  // DNS/DNF/DSQ always go to bottom
   const sortedRows = useMemo(() => {
-    const validRows = rows.filter((r) => !r.status).sort((a, b) => a.rank - b.rank)
-    const invalidRows = rows.filter((r) => r.status).sort((a, b) => a.startOrder - b.startOrder)
-    return [...validRows, ...invalidRows]
-  }, [rows])
+    const validRows = rows.filter((r) => !r.status)
+    const invalidRows = rows.filter((r) => r.status)
+
+    // Sort valid rows based on sortBy
+    const sortedValid = [...validRows].sort((a, b) => {
+      switch (sortBy) {
+        case 'startOrder':
+          return a.startOrder - b.startOrder
+        case 'bib':
+          return parseInt(a.bib, 10) - parseInt(b.bib, 10)
+        case 'rank':
+        default:
+          return a.rank - b.rank
+      }
+    })
+
+    // Invalid rows always sorted by startOrder
+    const sortedInvalid = [...invalidRows].sort((a, b) => a.startOrder - b.startOrder)
+
+    return [...sortedValid, ...sortedInvalid]
+  }, [rows, sortBy])
 
   const nrGates = raceConfig?.nrGates ?? 0
   const gateConfig = raceConfig?.gateConfig ?? ''

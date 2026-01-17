@@ -9,7 +9,8 @@
 | 1-15 | Základní implementace | ✅ Hotovo (v1.0.0) |
 | 16 | Design System integrace | ✅ Hotovo |
 | 17A-C | UX Polish (Header, Grid, Gate Groups) | ✅ Hotovo |
-| 17D-H | UX Polish (Footer, Sorting, Tablet) | 🔄 Probíhá |
+| 17D-E | UX Polish (Footer, Sorting) | ✅ Hotovo |
+| 17F-H | UX Polish (Tablet, Screenshots, Settings) | 🔄 Probíhá |
 
 ---
 
@@ -118,24 +119,32 @@ npx playwright test screenshots-with-data.spec.ts
 
 ---
 
-### 17D: Footer sticky
+### 17D: Footer sticky ✅
 
 **Problém:** Footer se odscrolluje.
 
-- [ ] 17D.1: Footer vždy viditelný dole
-- [ ] 17D.2: Layout: header (auto) + main (1fr scroll) + footer (auto sticky)
-- [ ] 17D.3: Commit
+- [x] 17D.1: Footer vždy viditelný dole
+- [x] 17D.2: Layout: header (auto) + main (1fr scroll) + footer (auto sticky)
+- [x] 17D.3: Commit
+
+**Poznámka:** Implementováno v rámci fáze 17A (sticky footer).
 
 ---
 
-### 17E: Řazení závodníků
+### 17E: Řazení závodníků ✅
 
 **Problém:** Jen jedno řazení.
 
-- [ ] 17E.1: Možnosti: startovka (default), rank, bib
-- [ ] 17E.2: UI pro přepínání
-- [ ] 17E.3: Persistence do localStorage
-- [ ] 17E.4: Commit
+- [x] 17E.1: Možnosti: startOrder, rank (default), bib
+- [x] 17E.2: UI pro přepínání (SortSelector komponenta v toolbaru)
+- [x] 17E.3: Persistence do localStorage
+- [x] 17E.4: Commit
+
+**Řešení:**
+- Nový typ `ResultsSortOption` a `RESULTS_SORT_LABELS` v types/ui.ts
+- `SortSelector` komponenta s DS Select
+- Sorting logic v `ResultsGrid.tsx` (sortBy prop)
+- localStorage persistence v App.tsx
 
 ---
 
@@ -182,4 +191,4 @@ npx playwright test screenshots-with-data.spec.ts
 
 ---
 
-*Poslední aktualizace: 2026-01-17*
+*Poslední aktualizace: 2026-01-17 (Phase 17E)*

@@ -726,6 +726,39 @@ Zlepšit viditelnost gate groups - přesunout switcher na prominentnější mís
 
 ---
 
+## 2026-01-17 - Fáze 17D-E: Footer sticky + Řazení závodníků
+
+### Cíl iterace
+
+Dokončit sticky footer (17D) a přidat možnost řazení závodníků (17E).
+
+### Dokončeno
+
+- [x] 17D: Footer sticky - již bylo implementováno v rámci 17A (position: sticky, bottom: 0)
+- [x] 17E.1: Typ `ResultsSortOption` a `RESULTS_SORT_LABELS` v types/ui.ts
+- [x] 17E.2: `SortSelector` komponenta s DS Select
+- [x] 17E.3: Sorting logic v `ResultsGrid.tsx` (nový prop `sortBy`)
+- [x] 17E.4: localStorage persistence v App.tsx
+- [x] 17E.5: Toolbar layout s GateGroupSwitcher a SortSelector
+
+### Změny souborů
+
+- `src/types/ui.ts` - nové typy pro sort
+- `src/components/SortSelector/` - nová komponenta (SortSelector.tsx, SortSelector.css, index.ts)
+- `src/components/index.ts` - export SortSelector
+- `src/components/ResultsGrid/ResultsGrid.tsx` - sortBy prop a sorting logika
+- `src/App.tsx` - sort state, handler, toolbar layout
+- `src/styles/app.css` - .toolbar-content styly
+
+### Poznámky
+
+- Fáze 17D byla již hotová z 17A - pouze označena v PLAN.md
+- Sort options: startOrder, rank (default), bib
+- DNS/DNF/DSQ závodníci jsou vždy na konci, řazení podle startOrder
+- Toolbar nyní obsahuje GateGroupSwitcher vlevo a SortSelector vpravo
+
+---
+
 ## Template pro další záznamy
 
 ```markdown
