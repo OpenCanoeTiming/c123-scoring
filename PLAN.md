@@ -687,6 +687,7 @@ node recorder.js <C123_IP>
 | 14 | Vizuální testy | ✅ Hotovo (15 screenshotů) |
 | 15 | Dokumentace | ✅ Hotovo (README, CHANGELOG, CI, docs, code review, v1.0.0 tag) |
 | 16 | Vizuální redesign | ✅ Hotovo (16A-16J, 17 screenshotů, dark mode) |
+| 17 | UX Polish a Tablet | 🔜 Připraveno (17A-17H) |
 
 ---
 
@@ -958,5 +959,189 @@ Před začátkem práce je třeba do DS přidat:
 3. **16C** - Settings (největší CSS soubor)
 4. **16D** - Grid (hlavní funkce aplikace)
 5. **16E-16I** - Postupně dle času
+
+---
+
+## Fáze 17: UX Polish a Tablet Optimalizace
+
+**Cíl:** Opravit UX problémy, optimalizovat pro tablet a zlepšit použitelnost pro celodenní práci.
+
+### Kontext a motivace
+
+Aplikace bude primárně používána na **velkém tabletu** (iPad Pro, Surface) - jak na výšku tak na šířku.
+Mobilní telefon NENÍ cílové zařízení. Důraz na dotykové ovládání a ergonomii pro opakované použití.
+
+---
+
+### Fáze 17A: Header redesign (KRITICKÉ)
+
+**Problém:** Aktuální header je "hrůza poskládaná na sílu":
+- Selector závodu je titěrný
+- Dva indikátory (LIVE + connection badge) jsou redundantní
+- Zubatá kola (settings) jsou na 3 místech - header, u gridu, footer
+
+**Řešení:** Použít DS Header komponenty správně jako má c123-server administrace.
+
+- [ ] 17A.1: Prozkoumat c123-server admin header pro inspiraci
+- [ ] 17A.2: Přepsat Header na čistou DS strukturu:
+  - `HeaderBrand` - název aplikace "C123 Scoring"
+  - `HeaderTitle` s `subtitle` - vybraný závod (VELKÝ, čitelný)
+  - `HeaderActions` - pouze LIVE badge (když běží závod)
+  - `HeaderStatus` - pouze vodácký StatusIndicator (connected/connecting/disconnected)
+- [ ] 17A.3: Race selector - zvětšit, udělat výrazný (ne titěrný dropdown)
+  - Možná jako samostatný panel pod headerem nebo výraznější komponenta
+- [ ] 17A.4: Odstranit duplicitní settings ikony
+  - Jediné settings = Ctrl+, nebo ikona v headeru (NE ve footeru, NE u gridu)
+- [ ] 17A.5: Commit: `refactor: simplify header with proper DS components`
+
+**Prerekvizita:** DS Select size prop (řeší se mimo tento plán)
+
+---
+
+### Fáze 17B: Grid UX vylepšení
+
+**Problém:** Chybí vizuální feedback při navigaci v gridu.
+
+- [ ] 17B.1: Zvýraznění řádku a sloupce při HOVER
+  - Jemné zvýraznění celého řádku (row highlight)
+  - Jemné zvýraznění celého sloupce (column highlight)
+  - Použít DS tokeny pro subtle barvy
+- [ ] 17B.2: Zvýraznění řádku a sloupce při FOCUS/EDIT
+  - Výraznější než hover
+  - Jiná barva pro editační mód
+- [ ] 17B.3: Odstranit sloupec "Klub" - k ničemu pro scoring
+  - Zobrazovat pouze: ✓, #, Bib, Name, Time, Pen, gates...
+- [ ] 17B.4: Commit: `feat: add row/column highlighting on hover and focus`
+
+---
+
+### Fáze 17C: Gate Groups viditelnost
+
+**Problém:** Na screenshotech vůbec není vidět, že gate groups existují.
+
+- [ ] 17C.1: Gate group switcher - udělat výraznější
+  - Možná nad gridem místo ve footeru?
+  - Jasné vizuální označení aktivní skupiny
+- [ ] 17C.2: Při aktivní skupině vizuálně označit filtrované sloupce
+  - Nebo naopak ztlumit nefiltrované
+- [ ] 17C.3: Screenshot dokumentující gate groups funkcionalitu
+- [ ] 17C.4: Commit: `feat: improve gate groups visibility`
+
+---
+
+### Fáze 17D: Footer - sticky
+
+**Problém:** Footer se odscrolluje pod výsledky, není vždy vidět.
+
+- [ ] 17D.1: Udělat footer sticky (vždy viditelný dole)
+- [ ] 17D.2: Layout: header (auto) + main (1fr, scroll) + footer (auto, sticky)
+- [ ] 17D.3: Footer obsah:
+  - Progress kontroly (kolik zkontrolováno)
+  - Gate group switcher (pokud zůstane ve footeru)
+  - Verze aplikace
+- [ ] 17D.4: Commit: `fix: make footer sticky`
+
+---
+
+### Fáze 17E: Řazení závodníků
+
+**Problém:** Pouze jedno řazení, chybí možnosti.
+
+- [ ] 17E.1: Implementovat možnosti řazení:
+  - **Default:** Podle pořadí ve startovce (startOrder)
+  - **Podle skutečného pořadí:** rank (kdo dojel jako první)
+  - **Podle Bib:** startovní číslo
+- [ ] 17E.2: UI pro přepínání řazení (dropdown nebo toggle v headeru gridu)
+- [ ] 17E.3: Persistence řazení do localStorage
+- [ ] 17E.4: Commit: `feat: add competitor sorting options`
+
+---
+
+### Fáze 17F: Tablet optimalizace
+
+**Problém:** Aplikace má mobilní optimalizaci, ale cílové zařízení je TABLET.
+
+- [ ] 17F.1: Odstranit mobilní breakpointy (< 768px)
+  - Nebo je nechat, ale neprioritizovat
+- [ ] 17F.2: Přidat tablet breakpointy:
+  - iPad Pro 12.9" landscape: 1366×1024
+  - iPad Pro 12.9" portrait: 1024×1366
+  - iPad Pro 11" landscape: 1194×834
+  - iPad Pro 11" portrait: 834×1194
+  - Surface Pro: 1368×912 / 912×1368
+- [ ] 17F.3: Dotykové ovládání:
+  - Touch targets min 48px (WCAG)
+  - Větší rozestupy mezi interaktivními prvky
+  - Swipe gesta pro navigaci? (nice to have)
+- [ ] 17F.4: Playwright screenshoty pro tablet rozlišení
+  - `18-tablet-landscape.png` (1366×1024)
+  - `19-tablet-portrait.png` (1024×1366)
+- [ ] 17F.5: Commit: `feat: optimize for tablet devices`
+
+---
+
+### Fáze 17G: Cleanup a screenshoty
+
+- [ ] 17G.1: Smazat `scoring-live-replay.png` (starý screenshot)
+- [ ] 17G.2: Odstranit mobilní screenshoty (15, 16) - není cílové zařízení
+- [ ] 17G.3: Přidat tablet screenshoty (viz 17F.4)
+- [ ] 17G.4: Po každé větší iteraci automaticky generovat screenshoty s replay serverem
+- [ ] 17G.5: Commit: `chore: cleanup old screenshots, add tablet views`
+
+---
+
+### Fáze 17H: Settings konsolidace
+
+**Problém:** Tři místa se zubatými koly (settings ikony).
+
+- [ ] 17H.1: Audit všech settings/config ikon v UI
+- [ ] 17H.2: Jediný vstupní bod pro settings:
+  - Ikona v headeru NEBO
+  - Keyboard shortcut Ctrl+,
+- [ ] 17H.3: Odstranit settings ikonu z footeru
+- [ ] 17H.4: Odstranit settings ikonu u gridu (gate group editor?)
+  - Gate group editor přesunout jinam nebo integrovat do hlavního settings
+- [ ] 17H.5: Commit: `refactor: consolidate settings entry points`
+
+---
+
+### Výstup Fáze 17
+
+- [ ] Profesionální header podle DS vzoru
+- [ ] Grid s row/column highlighting
+- [ ] Viditelné gate groups
+- [ ] Sticky footer
+- [ ] Možnosti řazení závodníků
+- [ ] Tablet-first design
+- [ ] Čisté screenshoty bez starých artefaktů
+- [ ] Jednotný vstup do settings
+
+---
+
+### Poznámky k implementaci
+
+1. **Screenshoty s replay serverem:** Po každé fázi 17X spustit:
+   ```bash
+   # Terminal 1
+   cd ../c123-protocol-docs/tools && node replay-server.js ../recordings/rec-2025-12-28T09-34-10.jsonl --speed 10 --loop
+
+   # Terminal 2
+   cd ../c123-server && npm start -- --host localhost --port 27333
+
+   # Terminal 3
+   npm run dev
+
+   # Terminal 4
+   npx playwright test screenshots-with-data.spec.ts
+   ```
+
+2. **Design System změny:** Pokud potřeba úprav v DS, vytvořit TODO a předat uživateli.
+
+3. **Pořadí implementace:**
+   - 17A (Header) - nejvyšší priorita, nejvíc viditelný problém
+   - 17B (Grid highlighting) - klíčové pro UX
+   - 17D (Sticky footer) - rychlá oprava
+   - 17F (Tablet) - cílové zařízení
+   - 17C, 17E, 17G, 17H - podle času
 
 ---
