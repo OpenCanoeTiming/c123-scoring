@@ -19,10 +19,7 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-    {
-      name: 'mobile',
-      use: { ...devices['iPhone 12'] },
-    },
+    // Mobile/tablet screenshots taken via viewport resize in tests
   ],
 
   webServer: {

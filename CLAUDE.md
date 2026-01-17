@@ -201,6 +201,37 @@ cd ../c123-server && npm start
 
 ---
 
+## Screenshoty (DŮLEŽITÉ!)
+
+**Po každé vizuální změně UI aktualizovat screenshoty!**
+
+```bash
+# Automatický skript - spustí replay + c123-server + dev server + Playwright
+./scripts/take-screenshots.sh
+
+# Pouze statické screenshoty (bez serveru)
+./scripts/take-screenshots.sh --static-only
+```
+
+**Co skript dělá:**
+1. Spustí replay-server (simuluje C123 na portu 27333)
+2. Spustí c123-server (připojí se k replay)
+3. Spustí Vite dev server
+4. Spustí Playwright testy
+5. Automaticky uklidí všechny procesy
+
+**Kdy aktualizovat screenshoty:**
+- Po změně layoutu (Header, Footer, Grid)
+- Po změně komponent (Settings, Modals)
+- Po změně barev/stylů
+- Po přidání nových features
+
+**Test soubory:**
+- `tests/screenshots-static.spec.ts` - bez dat (loading, disconnected, settings)
+- `tests/screenshots-with-data.spec.ts` - s replay daty (grid, gates, actions)
+
+---
+
 ## Proces
 
 ### Před začátkem práce

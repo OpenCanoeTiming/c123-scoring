@@ -30,10 +30,11 @@ async function waitForDataAndSelectRace(page: Page) {
   await page.waitForTimeout(2000);
 
   // Try to select K1m 2. jízda (the race with Results data in replay)
-  const raceSelector = page.getByLabel('Select race');
+  // New RaceSelector uses a select inside .race-selector
+  const raceSelector = page.locator('.race-selector select');
   if (await raceSelector.isVisible()) {
     // Find K1m 2. jízda option specifically
-    const k1m2Option = page.locator('select[aria-label="Select race"] option:has-text("K1m"):has-text("2. jízda")').first();
+    const k1m2Option = page.locator('.race-selector select option:has-text("K1m"):has-text("2. jízda")').first();
     if (await k1m2Option.count() > 0) {
       const value = await k1m2Option.getAttribute('value');
       if (value) {
@@ -43,8 +44,8 @@ async function waitForDataAndSelectRace(page: Page) {
     }
   }
 
-  // Wait for grid to appear (with longer timeout)
-  await page.waitForSelector('.competitor-row', { timeout: 15000 }).catch(() => {});
+  // Wait for grid to appear (with longer timeout) - now uses .results-grid table tbody tr
+  await page.waitForSelector('.results-grid tbody tr', { timeout: 15000 }).catch(() => {});
   await page.waitForTimeout(500);
 }
 
@@ -65,7 +66,8 @@ test.describe('Screenshot Tests - With Data', () => {
   test('09 - grid with focus on cell', async ({ page }) => {
     await waitForDataAndSelectRace(page);
 
-    const cells = page.locator('.gate-cell');
+    // Use .penalty-cell for gate cells
+    const cells = page.locator('.penalty-cell');
     const cellCount = await cells.count();
     if (cellCount > 5) {
       await cells.nth(5).click();
@@ -74,39 +76,43 @@ test.describe('Screenshot Tests - With Data', () => {
     await takeDocScreenshot(page, '09-grid-cell-focus');
   });
 
-  test('10 - grid with on-course section', async ({ page }) => {
+  test('10 - grid with gate group indicator', async ({ page }) => {
     await waitForDataAndSelectRace(page);
 
-    await page.evaluate(() => {
-      const grid = document.querySelector('.on-course-grid');
-      if (grid) {
-        grid.scrollTop = grid.scrollHeight;
-      }
-    });
-    await page.waitForTimeout(300);
+    // Click on a gate group indicator button to show dimming effect
+    const groupButtons = page.locator('.gate-group-indicator-btn');
+    if (await groupButtons.count() > 0) {
+      await groupButtons.first().click();
+      await page.waitForTimeout(300);
+    }
     await takeDocScreenshot(page, '10-grid-oncourse-section');
   });
 
-  test('11 - gate group switcher', async ({ page }) => {
+  test('11 - gate group indicators', async ({ page }) => {
     await waitForDataAndSelectRace(page);
+    // Gate groups are now shown in the grid header as GateGroupIndicatorRow
     await takeDocScreenshot(page, '11-gate-group-switcher');
   });
 
-  test('12 - gate group editor', async ({ page }) => {
+  test('12 - settings display tab', async ({ page }) => {
     await waitForDataAndSelectRace(page);
 
-    const editButton = page.locator('.gate-group-switcher .edit-button');
-    if (await editButton.isVisible()) {
-      await editButton.click();
-      await page.waitForTimeout(500);
-    }
+    // Open settings
+    await page.click('button[aria-label="Settings"]');
+    await page.waitForTimeout(500);
+
+    // Click on Display tab
+    await page.click('[data-testid="settings-tab-display"]');
+    await page.waitForTimeout(300);
+
     await takeDocScreenshot(page, '12-gate-group-editor');
   });
 
   test('13 - competitor actions menu', async ({ page }) => {
     await waitForDataAndSelectRace(page);
 
-    const competitorRow = page.locator('.competitor-row').first();
+    // Use table row for right-click menu
+    const competitorRow = page.locator('.results-grid tbody tr').first();
     if (await competitorRow.isVisible()) {
       await competitorRow.click({ button: 'right' });
       await page.waitForTimeout(300);
@@ -118,7 +124,8 @@ test.describe('Screenshot Tests - With Data', () => {
     await waitForDataAndSelectRace(page);
 
     // Try to click check buttons if they are enabled (only for finished competitors)
-    const checkButtons = page.locator('.check-button:not([disabled])');
+    // New class is .check-btn
+    const checkButtons = page.locator('.check-btn:not([disabled])');
     const count = await checkButtons.count();
     for (let i = 0; i < Math.min(3, count); i++) {
       try {
