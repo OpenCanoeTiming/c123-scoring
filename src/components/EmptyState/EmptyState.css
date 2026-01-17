@@ -1,46 +1,59 @@
-.empty-state {
+/* EmptyState - using DS Card component */
+
+.empty-state-wrapper {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-2xl, 3rem) var(--spacing-lg, 1.5rem);
-  text-align: center;
+  padding: var(--space-2xl, 3rem) var(--space-lg, 1.5rem);
   min-height: 300px;
 }
 
-.empty-state__icon {
+.empty-state-card {
+  max-width: 400px;
+  text-align: center;
+}
+
+.empty-state-card__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md, 1rem);
+}
+
+.empty-state-card__icon {
   font-size: 3rem;
-  margin-bottom: var(--spacing-md, 1rem);
+  line-height: 1;
   opacity: 0.8;
 }
 
-.empty-state__title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--color-text, #111827);
-  margin: 0 0 var(--spacing-sm, 0.5rem);
+.empty-state-card__icon--pulse {
+  animation: empty-state-pulse 1.5s ease-in-out infinite;
 }
 
-.empty-state__message {
-  font-size: 0.9375rem;
-  color: var(--color-text-muted, #6b7280);
-  margin: 0 0 var(--spacing-lg, 1.5rem);
+.empty-state-card__title {
+  margin: 0;
+}
+
+.empty-state-card__message {
+  margin: 0;
   max-width: 320px;
-  line-height: 1.5;
 }
 
-/* Action button now uses DS Button component */
-
-/* Variant-specific styles */
-.empty-state--disconnected .empty-state__icon {
+/* Variant-specific icon colors */
+.empty-state-card--disconnected .empty-state-card__icon {
   color: var(--color-error, #ef4444);
 }
 
-.empty-state--loading .empty-state__icon {
-  animation: pulse 1.5s ease-in-out infinite;
+.empty-state-card--loading .empty-state-card__icon {
+  color: var(--color-primary, #0891b2);
 }
 
-@keyframes pulse {
+.empty-state-card--no-races .empty-state-card__icon,
+.empty-state-card--no-competitors .empty-state-card__icon {
+  color: var(--color-info, #3b82f6);
+}
+
+@keyframes empty-state-pulse {
   0%, 100% {
     opacity: 0.6;
     transform: scale(1);
@@ -53,7 +66,7 @@
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .empty-state--loading .empty-state__icon {
+  .empty-state-card__icon--pulse {
     animation: none;
     opacity: 0.8;
   }

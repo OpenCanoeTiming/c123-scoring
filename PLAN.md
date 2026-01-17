@@ -686,7 +686,7 @@ node recorder.js <C123_IP>
 | 13 | Polish a UX | ✅ Hotovo |
 | 14 | Vizuální testy | ✅ Hotovo (15 screenshotů) |
 | 15 | Dokumentace | ✅ Hotovo (README, CHANGELOG, CI, docs, code review, v1.0.0 tag) |
-| **16** | **Vizuální redesign** | ⏳ **V průběhu** (16A-16G hotovo) |
+| **16** | **Vizuální redesign** | ⏳ **V průběhu** (16A-16H hotovo) |
 
 ---
 
@@ -907,14 +907,18 @@ Před začátkem práce je třeba do DS přidat:
 - [x] 16G.3: Smazat Toast.css
 - [x] 16G.4: Commit: `refactor: use design system Toast`
 
-### Fáze 16H: Empty states a loading
+### Fáze 16H: Empty states a loading ✅
 
 **Cíl:** Profesionální prázdné stavy
 
-- [ ] 16H.1: Použít DS `EmptyState` (pokud přidáno) nebo DS `Card`
-- [ ] 16H.2: Přepracovat loading indikátory
-- [ ] 16H.3: Smazat EmptyState.css
-- [ ] 16H.4: Commit: `refactor: use design system empty states`
+- [x] 16H.1: Použít DS `EmptyState` (pokud přidáno) nebo DS `Card`
+  - EmptyState přepsán na DS Card komponentu s CardBody, CardTitle, CardSubtitle
+  - Přidán status prop (error/info) pro barevné odlišení variant
+- [x] 16H.2: Přepracovat loading indikátory
+  - Loading spinner již používá DS tokeny (--color-primary, --color-border)
+  - DS nemá Spinner komponentu, vlastní CSS řešení je vhodné
+- [x] 16H.3: CSS přepsán na nové třídy místo smazání (empty-state-wrapper, empty-state-card)
+- [x] 16H.4: Commit: `refactor: use design system Card for empty states`
 
 ### Fáze 16I: Cleanup a CSS konsolidace
 
