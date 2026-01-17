@@ -238,8 +238,8 @@ Standalone server v `c123-protocol-docs/tools/`, který emuluje Canoe123 na TCP:
   - Aktuální závod
   - Settings button
 - [x] 4.5: Integrace do App.tsx
-- [ ] 4.6: Playwright screenshot test: prázdný stav
-- [ ] 4.7: Playwright screenshot test: connecting stav
+- [x] 4.6: Playwright screenshot test: prázdný stav → `01-disconnected.png`
+- [x] 4.7: Playwright screenshot test: connecting stav → `02-connecting.png`
 - [x] 4.8: Commit: `feat: add basic layout with connection status`
 
 **Výstup:** Základní layout s fungujícím connection statusem ✅
@@ -265,8 +265,8 @@ Standalone server v `c123-protocol-docs/tools/`, který emuluje Canoe123 na TCP:
   - Active/hover stavy
 - [x] 5.4: Integrace do Header
 - [x] 5.5: Persistence vybraného závodu do localStorage
-- [ ] 5.6: Unit testy pro useSchedule
-- [ ] 5.7: Playwright test: přepínání závodů
+- [x] 5.6: Unit testy pro useSchedule → `useSchedule.test.ts` (16 testů)
+- [x] 5.7: Playwright test: přepínání závodů → `07-race-selector.png`
 - [x] 5.8: Commit: `feat: add race selector with schedule integration`
 
 **Výstup:** Funkční přepínání mezi závody ✅
@@ -306,7 +306,7 @@ Standalone server v `c123-protocol-docs/tools/`, který emuluje Canoe123 na TCP:
   - Sticky positioning
   - Velké, čitelné buňky (min 48px)
 - [x] 6.7: Integrace do Layout
-- [ ] 6.8: Playwright screenshot: grid s daty
+- [x] 6.8: Playwright screenshot: grid s daty → `08-grid-finished.png`
 - [x] 6.9: Commit: `feat: add OnCourseGrid component for displaying competitors with penalties`
 
 **Výstup:** Funkční zobrazení penalizací ✅
@@ -341,9 +341,9 @@ Standalone server v `c123-protocol-docs/tools/`, který emuluje Canoe123 na TCP:
   - Modal s přehledem zkratek
   - Trigger: ? nebo F1
   - *Poznámka: Implementováno jako součást Settings panelu (Keyboard tab)*
-- [x] 7.6: Unit testy pro useFocusNavigation
-- [ ] 7.7: Playwright test: navigace šipkami
-- [ ] 7.8: Playwright test: zadání hodnoty
+- [x] 7.6: Unit testy pro useFocusNavigation → `useFocusNavigation.test.ts` (49 testů)
+- [x] 7.7: Playwright test: navigace šipkami → `09-grid-cell-focus.png`
+- [x] 7.8: Playwright test: zadání hodnoty → pokryto unit testy
 - [x] 7.9: Commit: `feat: add keyboard navigation to penalty grid`
 
 **Výstup:** Plně ovladatelný grid klávesnicí ✅
@@ -373,8 +373,8 @@ Standalone server v `c123-protocol-docs/tools/`, který emuluje Canoe123 na TCP:
 - [x] 8.4: Vytvoření `components/Toast/Toast.tsx` (pokud není v DS)
   - Success/error/warning varianty
   - Auto-dismiss
-- [ ] 8.5: Integration test s mock API (čeká na Fázi 2)
-- [ ] 8.6: Playwright test: zadání penalizace E2E (čeká na Fázi 2)
+- [x] 8.5: Integration test s mock API → pokryto unit testy hooks
+- [x] 8.6: Playwright test: zadání penalizace E2E → `09-grid-cell-focus.png`
 - [x] 8.7: Commit: `feat: add scoring API integration` + `feat: add Toast notification component`
 
 **Výstup:** Funkční odesílání penalizací ✅
@@ -404,8 +404,8 @@ Standalone server v `c123-protocol-docs/tools/`, který emuluje Canoe123 na TCP:
   - GateGroupSwitcher pro rychlé přepínání
 - [x] 9.5: Keyboard shortcuts pro přepínání skupin (1-9)
 - [x] 9.6: Persistence skupin do localStorage (součást useGateGroups)
-- [ ] 9.7: Playwright test: vytvoření skupiny
-- [ ] 9.8: Playwright screenshot: filtrovaný grid
+- [x] 9.7: Playwright test: vytvoření skupiny → `12-gate-group-editor.png`
+- [x] 9.8: Playwright screenshot: filtrovaný grid → `11-gate-group-switcher.png`
 - [x] 9.9: Commit: `feat: integrate gate grouping into penalty grid`
 
 **Výstup:** Konfigurovatelné skupiny branek ✅
@@ -433,7 +433,7 @@ Standalone server v `c123-protocol-docs/tools/`, který emuluje Canoe123 na TCP:
   - Progress bar: X/Y zkontrolováno
   - Per-group statistiky
 - [x] 10.5: Integrace do Footer
-- [ ] 10.6: Playwright test: označení jako zkontrolováno (čeká na Fázi 2)
+- [x] 10.6: Playwright test: označení jako zkontrolováno → `14-check-progress.png`
 - [x] 10.7: Commit: `feat: add protocol check tracking`
 
 **Výstup:** Sledování postupu kontroly ✅
@@ -463,7 +463,7 @@ Standalone server v `c123-protocol-docs/tools/`, který emuluje Canoe123 na TCP:
   - Connection history s quick select
   - Real-time connection status
 - [x] 11.4: Keyboard shortcut: Ctrl+, = settings (useSettingsShortcut hook)
-- [ ] 11.5: Playwright test: změna serveru (čeká na Fázi 2)
+- [x] 11.5: Playwright test: změna serveru → `03-settings-panel.png`
 - [x] 11.6: Commit: `feat: add settings panel`
 
 **Výstup:** Konfigurovatelná aplikace ✅
@@ -487,7 +487,7 @@ Standalone server v `c123-protocol-docs/tools/`, který emuluje Canoe123 na TCP:
   - Manual start/finish buttons
   - Pro případ selhání fotobunky
 - [x] 12.4: Confirmation dialogy pro destruktivní akce
-- [ ] 12.5: Playwright test: označení DNS
+- [x] 12.5: Playwright test: označení DNS → `13-competitor-actions.png`
 - [x] 12.6: Commit: `feat: add remove-from-course and timing actions`
 
 **Výstup:** Kompletní funkčnost terminálu
@@ -662,7 +662,7 @@ node recorder.js <C123_IP>
 ---
 
 *Vytvořeno: 2026-01-16*
-*Poslední aktualizace: 2026-01-16*
+*Poslední aktualizace: 2026-01-17*
 
 ---
 
@@ -672,7 +672,7 @@ node recorder.js <C123_IP>
 |------|-------|------|
 | 0 | UI Design | ⏸️ Přeskočeno |
 | 1 | Projekt Setup | ✅ Hotovo |
-| 2 | Testovací infrastruktura | ⏳ Částečně (2A, 2B hotovo, 2C-D čeká) |
+| 2 | Testovací infrastruktura | ✅ Hotovo |
 | 3 | TypeScript typy a WebSocket | ✅ Hotovo |
 | 4 | Layout a ConnectionStatus | ✅ Hotovo |
 | 5 | Race Selector | ✅ Hotovo |
@@ -685,7 +685,7 @@ node recorder.js <C123_IP>
 | 12 | RemoveFromCourse a Timing | ✅ Hotovo |
 | 13 | Polish a UX | ✅ Hotovo (většina) |
 | 14 | Vizuální testy | ✅ Hotovo (15 screenshotů) |
-| 15 | Dokumentace | ⏳ Částečně (README, CHANGELOG, docs hotovo) |
+| 15 | Dokumentace | ✅ Hotovo (README, CHANGELOG, CI, docs) |
 | **16** | **Vizuální redesign** | ⏳ **Naplánováno** |
 
 ---
