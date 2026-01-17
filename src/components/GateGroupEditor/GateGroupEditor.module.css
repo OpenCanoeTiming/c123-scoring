@@ -1,11 +1,11 @@
 .editor {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md, 16px);
-  padding: var(--spacing-md, 16px);
-  background-color: var(--color-surface, #fff);
-  border: 1px solid var(--color-border, #ccc);
-  border-radius: var(--border-radius-md, 8px);
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   max-width: 400px;
 }
 
@@ -17,53 +17,51 @@
 
 .title {
   margin: 0;
-  font-size: var(--font-size-lg, 18px);
-  font-weight: 600;
-  color: var(--color-text, #333);
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
 }
-
-/* Close button now uses DS Button */
 
 /* Groups list */
 .groupsList {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs, 4px);
+  gap: var(--space-1);
 }
 
 .groupItem {
   display: flex;
   align-items: center;
-  border: 1px solid var(--color-border, #ccc);
-  border-radius: var(--border-radius-sm, 4px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
   overflow: hidden;
 }
 
 .groupItem:hover {
-  border-color: var(--color-border-hover, #999);
+  border-color: var(--color-border-focus);
 }
 
 .groupActive {
-  border-color: var(--color-primary, #0066cc);
-  background-color: var(--color-primary-bg, #e6f0ff);
+  border-color: var(--color-accent);
+  background-color: var(--color-accent-subtle);
 }
 
 .groupButton {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm, 8px);
-  padding: var(--spacing-sm, 8px);
+  gap: var(--space-2);
+  padding: var(--space-2);
   border: none;
   background: transparent;
   cursor: pointer;
   text-align: left;
-  font-family: inherit;
-  font-size: var(--font-size-base, 14px);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
 }
 
 .groupButton:focus {
-  outline: 2px solid var(--color-primary, #0066cc);
+  outline: 2px solid var(--color-accent);
   outline-offset: -2px;
 }
 
@@ -75,25 +73,23 @@
 }
 
 .groupName {
-  font-weight: 500;
-  color: var(--color-text, #333);
+  font-weight: var(--font-medium);
+  color: var(--color-text-primary);
 }
 
 .groupGates {
   margin-left: auto;
-  font-size: var(--font-size-sm, 12px);
-  color: var(--color-text-muted, #666);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
 }
 
 .groupActions {
   display: flex;
   align-items: center;
-  padding-right: var(--spacing-xs, 4px);
+  padding-right: var(--space-1);
 }
 
-/* Icon buttons now use DS Button with icon prop */
-
-/* Add button - extends DS Button secondary with dashed border */
+/* Add button */
 .addButton {
   width: 100%;
   border-style: dashed;
@@ -103,39 +99,37 @@
 .editForm {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md, 16px);
-  padding: var(--spacing-md, 16px);
-  background-color: var(--color-surface-alt, #f9f9f9);
-  border-radius: var(--border-radius-sm, 4px);
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background-color: var(--color-bg-elevated);
+  border-radius: var(--radius-sm);
 }
 
 .formTitle {
   margin: 0;
-  font-size: var(--font-size-base, 14px);
-  font-weight: 600;
-  color: var(--color-text, #333);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
 }
 
 .formField {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs, 4px);
+  gap: var(--space-1);
 }
 
 .label {
-  font-size: var(--font-size-sm, 12px);
-  font-weight: 500;
-  color: var(--color-text-muted, #666);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.025em;
+  letter-spacing: var(--tracking-wide);
 }
-
-/* Input now uses DS Input component */
 
 /* Color picker */
 .colorPicker {
   display: flex;
-  gap: var(--spacing-xs, 4px);
+  gap: var(--space-1);
   flex-wrap: wrap;
 }
 
@@ -143,7 +137,7 @@
   width: 24px;
   height: 24px;
   border: 2px solid transparent;
-  border-radius: var(--border-radius-sm, 4px);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   padding: 0;
 }
@@ -153,13 +147,13 @@
 }
 
 .colorSwatch:focus {
-  outline: 2px solid var(--color-primary, #0066cc);
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
 .colorSelected {
-  border-color: var(--color-text, #333);
-  box-shadow: 0 0 0 2px var(--color-surface, #fff);
+  border-color: var(--color-text-primary);
+  box-shadow: 0 0 0 2px var(--color-bg-surface);
 }
 
 /* Gates header */
@@ -171,40 +165,38 @@
 
 .gatesActions {
   display: flex;
-  gap: var(--spacing-sm, 8px);
+  gap: var(--space-2);
 }
-
-/* Text button now uses DS Button ghost variant */
 
 /* Quick ranges */
 .quickRanges {
   display: flex;
-  gap: var(--spacing-xs, 4px);
+  gap: var(--space-1);
   flex-wrap: wrap;
-  margin-bottom: var(--spacing-xs, 4px);
+  margin-bottom: var(--space-1);
 }
 
 .rangeButton {
-  padding: var(--spacing-xxs, 2px) var(--spacing-xs, 4px);
-  border: 1px solid var(--color-border, #ccc);
-  border-radius: var(--border-radius-sm, 4px);
-  background-color: var(--color-surface, #fff);
-  color: var(--color-text-muted, #666);
-  font-family: inherit;
-  font-size: var(--font-size-xs, 11px);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
   cursor: pointer;
 }
 
 .rangeButton:hover {
-  border-color: var(--color-primary, #0066cc);
-  color: var(--color-primary, #0066cc);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 /* Gates grid */
 .gatesGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
-  gap: var(--spacing-xxs, 2px);
+  gap: var(--space-1);
 }
 
 .gateCheckbox {
@@ -212,59 +204,57 @@
   align-items: center;
   justify-content: center;
   height: 36px;
-  border: 1px solid var(--color-border, #ccc);
-  border-radius: var(--border-radius-sm, 4px);
-  background-color: var(--color-surface, #fff);
-  color: var(--color-text, #333);
-  font-family: inherit;
-  font-size: var(--font-size-base, 14px);
-  font-weight: 500;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
   cursor: pointer;
-  transition: background-color 0.1s, border-color 0.1s;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .gateCheckbox:hover {
-  border-color: var(--color-primary, #0066cc);
+  border-color: var(--color-accent);
 }
 
 .gateCheckbox:focus {
-  outline: 2px solid var(--color-primary, #0066cc);
+  outline: 2px solid var(--color-accent);
   outline-offset: 1px;
 }
 
 .gateSelected {
-  background-color: var(--color-primary, #0066cc);
-  border-color: var(--color-primary, #0066cc);
-  color: var(--color-text-inverse, #fff);
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: white;
 }
 
 .gateSelected:hover {
-  background-color: var(--color-primary-dark, #0052a3);
-  border-color: var(--color-primary-dark, #0052a3);
+  background-color: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
 }
 
 /* Error */
 .error {
-  padding: var(--spacing-sm, 8px);
-  background-color: var(--color-error-bg, #f8d7da);
-  color: var(--color-error, #dc3545);
-  border-radius: var(--border-radius-sm, 4px);
-  font-size: var(--font-size-sm, 12px);
+  padding: var(--space-2);
+  background-color: var(--color-error-subtle);
+  color: var(--color-error);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
 }
 
 /* Form actions */
 .formActions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--spacing-sm, 8px);
+  gap: var(--space-2);
 }
-
-/* Cancel and Save buttons now use DS Button component */
 
 /* Touch device optimizations */
 @media (pointer: coarse) {
   .groupButton {
-    padding: var(--spacing-md, 12px);
+    padding: var(--space-3);
     min-height: 48px;
   }
 
@@ -275,7 +265,7 @@
 
   .gatesGrid {
     grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
-    gap: var(--spacing-xs, 4px);
+    gap: var(--space-1);
   }
 
   .gateCheckbox {
@@ -285,6 +275,6 @@
 
   .rangeButton {
     min-height: 36px;
-    padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
+    padding: var(--space-1) var(--space-2);
   }
 }

@@ -1,18 +1,18 @@
 .check-progress {
   display: flex;
   align-items: center;
-  gap: var(--space-sm, 0.5rem);
-  font-size: var(--font-size-sm, 0.875rem);
-  font-family: var(--font-mono, monospace);
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-family: var(--font-mono);
 }
 
 .check-progress--compact {
-  font-size: var(--font-size-xs, 0.75rem);
-  gap: var(--space-xs, 0.25rem);
+  font-size: var(--text-xs);
+  gap: var(--space-1);
 }
 
 .check-progress__label {
-  color: var(--color-text-secondary, #6b7280);
+  color: var(--color-text-secondary);
   white-space: nowrap;
 }
 
@@ -28,12 +28,12 @@
 }
 
 .check-progress__text {
-  color: var(--color-text, #111827);
-  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text-primary);
+  font-weight: var(--font-semibold);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
 
 .check-progress__text--complete {
-  color: var(--color-success, #22c55e);
+  color: var(--color-success);
 }

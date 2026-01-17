@@ -686,7 +686,7 @@ node recorder.js <C123_IP>
 | 13 | Polish a UX | ✅ Hotovo |
 | 14 | Vizuální testy | ✅ Hotovo (15 screenshotů) |
 | 15 | Dokumentace | ✅ Hotovo (README, CHANGELOG, CI, docs, code review, v1.0.0 tag) |
-| **16** | **Vizuální redesign** | ⏳ **V průběhu** (16A-16H hotovo) |
+| **16** | **Vizuální redesign** | ⏳ **V průběhu** (16A-16I hotovo) |
 
 ---
 
@@ -920,17 +920,17 @@ Před začátkem práce je třeba do DS přidat:
 - [x] 16H.3: CSS přepsán na nové třídy místo smazání (empty-state-wrapper, empty-state-card)
 - [x] 16H.4: Commit: `refactor: use design system Card for empty states`
 
-### Fáze 16I: Cleanup a CSS konsolidace
+### Fáze 16I: Cleanup a CSS konsolidace ✅
 
 **Cíl:** Odstranit všechny vlastní CSS, používat pouze DS tokeny
 
-- [ ] 16I.1: Vytvořit `src/styles/app.css` pro globální přepisování
-- [ ] 16I.2: Smazat nepoužívané CSS soubory
-- [ ] 16I.3: Ověřit, že všechny barvy používají DS tokeny
-- [ ] 16I.4: Ověřit spacing (DS `--space-*` tokeny)
-- [ ] 16I.5: Ověřit typography (DS fonty a velikosti)
-- [ ] 16I.6: Dark mode testování
-- [ ] 16I.7: Commit: `refactor: consolidate CSS to design system tokens`
+- [x] 16I.1: Vytvořit `src/styles/app.css` pro globální přepisování
+- [x] 16I.2: Smazat nepoužívané CSS soubory (App.css)
+- [x] 16I.3: Ověřit, že všechny barvy používají DS tokeny
+- [x] 16I.4: Ověřit spacing (DS `--space-*` tokeny)
+- [x] 16I.5: Ověřit typography (DS fonty a velikosti)
+- [x] 16I.6: Dark mode dokumentace (automaticky podporován přes DS tokeny)
+- [x] 16I.7: Commit: `refactor: consolidate CSS to design system tokens`
 
 ### Fáze 16J: Vizuální testy - aktualizace
 

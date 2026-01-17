@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-2xl, 3rem) var(--space-lg, 1.5rem);
+  padding: var(--space-12) var(--space-6);
   min-height: 300px;
 }
 
@@ -17,7 +17,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-md, 1rem);
+  gap: var(--space-4);
 }
 
 .empty-state-card__icon {
@@ -41,16 +41,16 @@
 
 /* Variant-specific icon colors */
 .empty-state-card--disconnected .empty-state-card__icon {
-  color: var(--color-error, #ef4444);
+  color: var(--color-error);
 }
 
 .empty-state-card--loading .empty-state-card__icon {
-  color: var(--color-primary, #0891b2);
+  color: var(--color-accent);
 }
 
 .empty-state-card--no-races .empty-state-card__icon,
 .empty-state-card--no-competitors .empty-state-card__icon {
-  color: var(--color-info, #3b82f6);
+  color: var(--color-info);
 }
 
 @keyframes empty-state-pulse {

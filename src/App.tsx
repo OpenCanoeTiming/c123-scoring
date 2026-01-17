@@ -10,7 +10,6 @@ import { useCheckedState } from './hooks/useCheckedState'
 import { useSettings } from './hooks/useSettings'
 import { useSettingsShortcut } from './hooks/useSettingsShortcut'
 import { useScoring } from './hooks/useScoring'
-import './App.css'
 
 const STORAGE_KEY_SELECTED_RACE = 'c123-scoring-selected-race'
 
