@@ -22,6 +22,8 @@ export interface PenaltyCellProps {
   isGroupBoundary?: boolean
   /** Whether this gate is in the active group (for visual indication) */
   isInActiveGroup?: boolean
+  /** Whether this gate should be dimmed (not in active group) */
+  isDimmed?: boolean
   /** Cell ID for accessibility */
   id: string
   /** Click handler */
@@ -58,6 +60,7 @@ export const PenaltyCell = forwardRef<HTMLTableCellElement, PenaltyCellProps>(
       isColumnFocused,
       isGroupBoundary,
       isInActiveGroup,
+      isDimmed,
       id,
       onClick,
       onMouseEnter,
@@ -77,6 +80,7 @@ export const PenaltyCell = forwardRef<HTMLTableCellElement, PenaltyCellProps>(
       pendingValue !== null && 'penalty-cell--pending',
       isGroupBoundary && 'penalty-cell--boundary',
       isInActiveGroup && 'penalty-cell--in-group',
+      isDimmed && 'penalty-cell--dimmed',
     ]
       .filter(Boolean)
       .join(' ')

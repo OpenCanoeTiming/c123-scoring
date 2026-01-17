@@ -289,6 +289,20 @@ export function Settings({
                     Use smaller cell sizes for more gates on screen.
                   </p>
                 </div>
+
+                <div className="form-group">
+                  <Checkbox
+                    checked={settings.showStartTime ?? false}
+                    onChange={(e) =>
+                      onSettingsChange({ showStartTime: e.target.checked })
+                    }
+                  >
+                    Show start time column
+                  </Checkbox>
+                  <p className="form-hint">
+                    Display the competitor's start time in the results grid.
+                  </p>
+                </div>
               </div>
             </TabPanel>
 

@@ -20,6 +20,7 @@ import { parseResultsGatesWithConfig } from '../../utils/gates'
 import { isGateInGroup } from '../../types/gateGroups'
 import { PenaltyCell } from './PenaltyCell'
 import { CompetitorActions } from '../CompetitorActions'
+import { GateGroupIndicatorRow } from './GateGroupIndicatorRow'
 import './ResultsGrid.css'
 
 export interface ResultsGridProps {
@@ -31,6 +32,10 @@ export interface ResultsGridProps {
   allGateGroups?: GateGroup[]
   /** Sort order for competitors */
   sortBy?: ResultsSortOption
+  /** Show start time column */
+  showStartTime?: boolean
+  /** Callback when a gate group is selected */
+  onGroupSelect?: (groupId: string | null) => void
   /** Callback when a penalty is submitted */
   onPenaltySubmit?: (bib: string, gate: number, value: PenaltyValue) => void
   /** Check if a competitor is checked */
@@ -51,6 +56,8 @@ export function ResultsGrid({
   activeGateGroup = null,
   allGateGroups = [],
   sortBy = 'rank',
+  showStartTime = false,
+  onGroupSelect,
   onPenaltySubmit,
   isChecked,
   onToggleChecked,
@@ -255,6 +262,17 @@ export function ResultsGrid({
     >
       <Table striped hover>
         <TableHead>
+          {/* Gate group indicator row */}
+          {onGroupSelect && (
+            <GateGroupIndicatorRow
+              groups={allGateGroups}
+              totalGates={nrGates}
+              activeGroupId={activeGateGroup?.id ?? null}
+              onGroupClick={onGroupSelect}
+              fixedColumnsCount={showStartTime ? 7 : 6}
+              visibleGateIndices={visibleGateIndices}
+            />
+          )}
           <TableRow>
             <TableHeaderCell className="col-check">
               <span className="visually-hidden">Checked</span>
@@ -267,6 +285,11 @@ export function ResultsGrid({
               Bib
             </TableHeaderCell>
             <TableHeaderCell className="col-name">Name</TableHeaderCell>
+            {showStartTime && (
+              <TableHeaderCell numeric className="col-start-time">
+                Start
+              </TableHeaderCell>
+            )}
             <TableHeaderCell numeric className="col-time">
               Time
             </TableHeaderCell>
@@ -278,13 +301,15 @@ export function ResultsGrid({
               const gateType = gateConfig[gateIndex] ?? 'N'
               const isHovered = hoverColumn === visibleColIndex
               const isFocusedCol = focusedColumn === visibleColIndex
-              const isInActiveGroup =
-                activeGateGroup && activeGateGroup.gates.length > 0 && activeGateGroup.gates.includes(gateNum)
+              const hasActiveGroup = !!(activeGateGroup && activeGateGroup.gates.length > 0)
+              const isInActiveGroup = hasActiveGroup && activeGateGroup!.gates.includes(gateNum)
+              const isDimmed = hasActiveGroup && !isInActiveGroup
               const headerClasses = [
                 gateType === 'R' && 'gate-header--reverse',
                 isHovered && 'gate-header--hover',
                 isFocusedCol && 'gate-header--focus',
                 isInActiveGroup && 'gate-header--in-group',
+                isDimmed && 'gate-header--dimmed',
               ]
                 .filter(Boolean)
                 .join(' ')
@@ -349,6 +374,11 @@ export function ResultsGrid({
                   {row.bib}
                 </TableCell>
                 <TableCell className="col-name">{row.name}</TableCell>
+                {showStartTime && (
+                  <TableCell numeric className="col-start-time">
+                    {row.startTime || '-'}
+                  </TableCell>
+                )}
                 <TableCell numeric className="col-time">
                   {hasStatus ? '-' : `${row.time}s`}
                 </TableCell>
@@ -362,8 +392,9 @@ export function ResultsGrid({
                   const isBoundary = groupBoundaries.has(gateNum)
                   const isColHovered = hoverColumn === visibleColIndex
                   const isColFocused = focusedColumn === visibleColIndex
-                  const isInActiveGroup =
-                    activeGateGroup && activeGateGroup.gates.length > 0 && activeGateGroup.gates.includes(gateNum)
+                  const hasActiveGroup = !!(activeGateGroup && activeGateGroup.gates.length > 0)
+                  const isInActiveGroup = hasActiveGroup && activeGateGroup!.gates.includes(gateNum)
+                  const isDimmed = hasActiveGroup && !isInActiveGroup
 
                   return (
                     <PenaltyCell
@@ -378,6 +409,7 @@ export function ResultsGrid({
                       isColumnFocused={isColFocused}
                       isGroupBoundary={isBoundary}
                       isInActiveGroup={!!isInActiveGroup}
+                      isDimmed={isDimmed}
                       id={getCellId(rowIndex, visibleColIndex)}
                       onClick={() => handleCellClick(rowIndex, visibleColIndex)}
                       onMouseEnter={() => setHoverColumn(visibleColIndex)}

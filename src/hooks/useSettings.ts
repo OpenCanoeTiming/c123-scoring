@@ -21,6 +21,8 @@ export interface Settings {
   showOnCourse: boolean
   /** Use compact cell sizes */
   compactMode: boolean
+  /** Show start time column in grid */
+  showStartTime: boolean
 }
 
 const DEFAULT_SETTINGS: Settings = {
@@ -29,6 +31,7 @@ const DEFAULT_SETTINGS: Settings = {
   showFinished: true,
   showOnCourse: true,
   compactMode: false,
+  showStartTime: false,
 }
 
 export interface UseSettingsReturn {

@@ -1,31 +1,59 @@
-import type { ReactNode } from 'react'
 import {
   Header as DSHeader,
   HeaderBrand,
   HeaderTitle,
-  HeaderActions,
   HeaderStatus,
+  LiveBadge,
+  Button,
 } from '@opencanoetiming/timing-design-system'
+import { RaceSelector } from '../RaceSelector'
+import type { ProcessedRace } from '../../hooks/useSchedule'
+import styles from './Header.module.css'
 
 interface HeaderProps {
-  title?: string
-  connectionStatus: ReactNode
-  actions?: ReactNode
+  // Race selection
+  races: ProcessedRace[]
+  selectedRaceId: string | null
+  onSelectRace: (raceId: string) => void
+  // Connection status
+  isConnected: boolean
+  // Actions
+  onOpenSettings: () => void
 }
 
 export function Header({
-  title = 'C123 Scoring',
-  connectionStatus,
-  actions,
+  races,
+  selectedRaceId,
+  onSelectRace,
+  isConnected,
+  onOpenSettings,
 }: HeaderProps) {
   return (
-    <DSHeader>
+    <DSHeader variant="compact">
       <HeaderBrand>
-        <HeaderTitle>{title}</HeaderTitle>
+        <HeaderTitle>C123-SCORING</HeaderTitle>
       </HeaderBrand>
-      {actions && <HeaderActions>{actions}</HeaderActions>}
+
+      <div className={styles.raceSelector}>
+        <RaceSelector
+          races={races}
+          selectedRaceId={selectedRaceId}
+          onSelectRace={onSelectRace}
+        />
+      </div>
+
       <HeaderStatus>
-        {connectionStatus}
+        {isConnected && <LiveBadge />}
+        <Button
+          variant="ghost"
+          size="sm"
+          icon
+          onClick={onOpenSettings}
+          aria-label="Settings"
+          title="Settings (Ctrl+,)"
+        >
+          ⚙
+        </Button>
       </HeaderStatus>
     </DSHeader>
   )

@@ -1,11 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { Button } from '@opencanoetiming/timing-design-system'
-import { Layout, Header, ConnectionStatus, RaceBar, ResultsGrid, GateGroupSwitcher, GateGroupEditor, CheckProgress, Settings, EmptyState, SortSelector, useToast } from './components'
+import { Layout, Header, ResultsGrid, GateGroupEditor, CheckProgress, Settings, EmptyState, useToast } from './components'
 import { useC123WebSocket } from './hooks/useC123WebSocket'
-import { useConnectionStatus } from './hooks/useConnectionStatus'
 import { useSchedule } from './hooks/useSchedule'
 import { useGateGroups } from './hooks/useGateGroups'
-import { useGateGroupShortcuts } from './hooks/useGateGroupShortcuts'
 import { useCheckedState } from './hooks/useCheckedState'
 import { useSettings } from './hooks/useSettings'
 import { useSettingsShortcut } from './hooks/useSettingsShortcut'
@@ -47,20 +44,11 @@ function App() {
   const {
     connectionState,
     serverInfo,
-    lastMessageTime,
-    lastError,
     schedule,
     results,
     raceConfig,
     connect,
   } = useC123WebSocket({ url: settings.serverUrl })
-
-  const status = useConnectionStatus(
-    connectionState,
-    serverInfo,
-    lastMessageTime,
-    lastError
-  )
 
   const { activeRaces, runningRace, getRaceById } = useSchedule(schedule)
 
@@ -87,14 +75,8 @@ function App() {
   })
 
   // Persist sort option to localStorage
-  const handleSortChange = useCallback((value: ResultsSortOption) => {
-    setSortBy(value)
-    try {
-      localStorage.setItem(STORAGE_KEY_SORT_BY, value)
-    } catch {
-      // Ignore localStorage errors
-    }
-  }, [])
+  // Note: setSortBy kept for future SortSelector integration
+  void setSortBy // Silence unused warning temporarily
 
   // Auto-select running race if nothing selected (computed, not effect)
   const effectiveSelectedRaceId = selectedRaceId ?? runningRace?.raceId ?? null
@@ -127,13 +109,6 @@ function App() {
   } = useGateGroups({
     raceConfig,
     raceId: effectiveSelectedRaceId,
-  })
-
-  // Gate group keyboard shortcuts (1-9, 0)
-  useGateGroupShortcuts({
-    groups: allGroups,
-    onSelectGroup: setActiveGroup,
-    enabled: !showGateGroupEditor && !showSettings, // Disable when modal is open
   })
 
   // Handler for testing connection from settings
@@ -229,43 +204,12 @@ function App() {
     <Layout
       header={
         <Header
-          connectionStatus={
-            <ConnectionStatus status={status} serverUrl={settings.serverUrl} showDetails />
-          }
-          actions={
-            <Button
-              variant="ghost"
-              icon
-              onClick={() => setShowSettings(true)}
-              aria-label="Settings"
-              title="Settings (Ctrl+,)"
-            >
-              ⚙
-            </Button>
-          }
-        />
-      }
-      raceBar={
-        <RaceBar
           races={activeRaces}
           selectedRaceId={effectiveSelectedRaceId}
           onSelectRace={handleSelectRace}
-          selectedRace={selectedRace ?? null}
+          isConnected={connectionState === 'connected'}
+          onOpenSettings={() => setShowSettings(true)}
         />
-      }
-      toolbar={
-        raceConfig && (
-          <div className="toolbar-content">
-            <GateGroupSwitcher
-              groups={allGroups}
-              activeGroupId={activeGroupId}
-              onSelectGroup={setActiveGroup}
-              onOpenEditor={() => setShowGateGroupEditor(true)}
-              totalGates={raceConfig.nrGates}
-            />
-            <SortSelector value={sortBy} onChange={handleSortChange} />
-          </div>
-        )
       }
       footer={
         <div className="footer-content">
@@ -349,6 +293,8 @@ function App() {
           activeGateGroup={activeGroup}
           allGateGroups={allGroups}
           sortBy={sortBy}
+          showStartTime={settings.showStartTime}
+          onGroupSelect={setActiveGroup}
           isChecked={isChecked}
           onToggleChecked={toggleChecked}
           onPenaltySubmit={handlePenaltySubmit}

@@ -852,6 +852,56 @@ Audit a konsolidace settings ikon - řešení problému "3× zubatá kola".
 
 ---
 
+## 2026-01-17 - Redesign Header + Gate Group Indicators
+
+### Cíl iterace
+
+Redesign hlavičky z 3 pruhů (~250px) na jeden kompaktní řádek (~44px) a přesun gate group indikátorů do gridu.
+
+### Iterace 1: Nový Header ✅
+
+- [x] Vytvořena `RaceSelector` komponenta se šipkami a dropdown selectorem
+- [x] Přepsána `Header` komponenta na kompaktní DS header
+- [x] Zjednodušen `Layout` - odstraněny `raceBar` a `toolbar` props
+- [x] Aktualizován `App.tsx` s novými props
+
+### Iterace 2: Gate Group Indicators ✅
+
+- [x] Vytvořena `GateGroupIndicatorRow` komponenta v ResultsGrid
+- [x] Integrováno do ResultsGrid jako řádek nad čísly branek
+- [x] Přidány dimming styly pro neaktivní gate skupiny
+- [x] PenaltyCell rozšířen o `isDimmed` prop
+
+### Iterace 3: Start Time sloupec ✅
+
+- [x] Přidán `showStartTime` do useSettings
+- [x] Přidán toggle v Settings modal (Display tab)
+- [x] Přidán Start Time sloupec do ResultsGrid (podmíněný)
+- [x] Poznámka: Finish time není implementován - C123ResultRow nemá finishTime pole
+
+### Iterace 4: Cleanup ✅
+
+- [x] Smazány složky `src/components/RaceBar/` a `src/components/GateGroupSwitcher/`
+- [x] Aktualizovány exporty v `src/components/index.ts`
+- [x] Odstraněny nepoužívané `.toolbar-content` styly z app.css
+- [x] Build verification
+
+### Smazané soubory
+
+```
+src/components/RaceBar/         (celá složka)
+src/components/GateGroupSwitcher/  (celá složka)
+```
+
+### Poznámky
+
+- Header je nyní jeden kompaktní pruh (~44px) místo 3 pruhů (~250px)
+- Gate groups jsou nyní vizualizovány jako barevné pruhy nad sloupci branek v gridu
+- Klik na skupinu aktivuje dimming ostatních sloupců
+- Start time sloupec je volitelný (Settings > Display)
+
+---
+
 ## Template pro další záznamy
 
 ```markdown
