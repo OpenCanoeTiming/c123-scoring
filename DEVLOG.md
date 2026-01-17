@@ -819,6 +819,39 @@ Vyčistit screenshot složku - smazat zastaralé a mobilní screenshoty.
 
 ---
 
+## 2026-01-17 - Fáze 17H: Settings konsolidace
+
+### Cíl iterace
+
+Audit a konsolidace settings ikon - řešení problému "3× zubatá kola".
+
+### Dokončeno
+
+- [x] 17H.1: Audit settings ikon v celé aplikaci
+- [x] 17H.2: Verifikace že je jediný vstup: header ⚙ + Ctrl+,
+- [x] 17H.3: Potvrzeno že footer a grid nemají settings ikony
+- [x] 17H.4: Aktualizace PLAN.md
+
+### Audit výsledky
+
+| Umístění | Ikona | Akce | Status |
+|----------|-------|------|--------|
+| Header | ⚙ | Otevře Settings modal | ✅ Správně |
+| Ctrl+, | - | Otevře Settings modal | ✅ Správně |
+| GateGroupSwitcher | ✎ | Otevře GateGroupEditor | ✅ Odlišená ikona |
+| EmptyState (disconnected) | - | "Open Settings" button | ✅ Kontextuální |
+| Settings > Display | - | "Edit Gate Groups" button | ✅ Textové |
+| Footer | - | Žádná settings ikona | ✅ Čisté |
+
+### Poznámky
+
+- Problém "3× zubatá kola" byl již vyřešen v předchozích fázích
+- Fáze 17A změnila ikonu u gate groups z ⚙ na ✎ (edit)
+- Footer obsahuje pouze verzi a check progress, žádné settings
+- Aktuální stav je čistý a konzistentní
+
+---
+
 ## Template pro další záznamy
 
 ```markdown

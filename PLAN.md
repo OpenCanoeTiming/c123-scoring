@@ -12,7 +12,7 @@
 | 17D-E | UX Polish (Footer, Sorting) | ✅ Hotovo |
 | 17F | UX Polish (Tablet) | ✅ Hotovo |
 | 17G | UX Polish (Screenshots) | ✅ Hotovo |
-| 17H | UX Polish (Settings) | 📋 Další |
+| 17H | UX Polish (Settings) | ✅ Hotovo |
 
 ---
 
@@ -175,14 +175,21 @@ npx playwright test screenshots-with-data.spec.ts
 
 ---
 
-### 17H: Settings konsolidace
+### 17H: Settings konsolidace ✅
 
 **Problém:** 3× zubatá kola (settings ikony).
 
-- [ ] 17H.1: Audit settings ikon
-- [ ] 17H.2: Jediný vstup: header + Ctrl+,
-- [ ] 17H.3: Odstranit z footeru a od gridu
-- [ ] 17H.4: Commit
+- [x] 17H.1: Audit settings ikon
+- [x] 17H.2: Jediný vstup: header + Ctrl+,
+- [x] 17H.3: Odstranit z footeru a od gridu
+- [x] 17H.4: Commit
+
+**Řešení:**
+- Jediná ⚙ ikona je v headeru (správné místo)
+- GateGroupSwitcher má ✎ ikonu (edit) - změněno ve fázi 17A
+- Footer nemá settings ikonu - pouze verzi a check progress
+- Settings modal má textové "Edit Gate Groups" tlačítko (ne ikonu)
+- Klávesová zkratka Ctrl+, funguje globálně
 
 ---
 
@@ -198,4 +205,4 @@ npx playwright test screenshots-with-data.spec.ts
 
 ---
 
-*Poslední aktualizace: 2026-01-17 (Phase 17G)*
+*Poslední aktualizace: 2026-01-17 (Phase 17H)*
