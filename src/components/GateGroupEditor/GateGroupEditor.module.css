@@ -22,25 +22,7 @@
   color: var(--color-text, #333);
 }
 
-.closeButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--color-text-muted, #666);
-  font-size: 20px;
-  cursor: pointer;
-  border-radius: var(--border-radius-sm, 4px);
-}
-
-.closeButton:hover {
-  background-color: var(--color-surface-hover, #f0f0f0);
-  color: var(--color-text, #333);
-}
+/* Close button now uses DS Button */
 
 /* Groups list */
 .groupsList {
@@ -109,47 +91,12 @@
   padding-right: var(--spacing-xs, 4px);
 }
 
-.iconButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--color-text-muted, #666);
-  font-size: 14px;
-  cursor: pointer;
-  border-radius: var(--border-radius-sm, 4px);
-}
+/* Icon buttons now use DS Button with icon prop */
 
-.iconButton:hover {
-  background-color: var(--color-surface-hover, #f0f0f0);
-  color: var(--color-text, #333);
-}
-
-/* Add button */
+/* Add button - extends DS Button secondary with dashed border */
 .addButton {
-  padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
-  border: 1px dashed var(--color-border, #ccc);
-  border-radius: var(--border-radius-sm, 4px);
-  background: transparent;
-  color: var(--color-text-muted, #666);
-  font-family: inherit;
-  font-size: var(--font-size-base, 14px);
-  cursor: pointer;
-}
-
-.addButton:hover {
-  border-color: var(--color-primary, #0066cc);
-  color: var(--color-primary, #0066cc);
-  background-color: var(--color-primary-bg, #e6f0ff);
-}
-
-.addButton:focus {
-  outline: 2px solid var(--color-primary, #0066cc);
-  outline-offset: 2px;
+  width: 100%;
+  border-style: dashed;
 }
 
 /* Edit form */
@@ -183,21 +130,7 @@
   letter-spacing: 0.025em;
 }
 
-.input {
-  padding: var(--spacing-sm, 8px);
-  border: 1px solid var(--color-border, #ccc);
-  border-radius: var(--border-radius-sm, 4px);
-  font-family: inherit;
-  font-size: var(--font-size-base, 14px);
-  background-color: var(--color-surface, #fff);
-  color: var(--color-text, #333);
-}
-
-.input:focus {
-  outline: 2px solid var(--color-primary, #0066cc);
-  outline-offset: -1px;
-  border-color: var(--color-primary, #0066cc);
-}
+/* Input now uses DS Input component */
 
 /* Color picker */
 .colorPicker {
@@ -241,20 +174,7 @@
   gap: var(--spacing-sm, 8px);
 }
 
-.textButton {
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--color-primary, #0066cc);
-  font-family: inherit;
-  font-size: var(--font-size-sm, 12px);
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.textButton:hover {
-  color: var(--color-primary-dark, #0052a3);
-}
+/* Text button now uses DS Button ghost variant */
 
 /* Quick ranges */
 .quickRanges {
@@ -339,74 +259,13 @@
   gap: var(--spacing-sm, 8px);
 }
 
-.cancelButton {
-  padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
-  border: 1px solid var(--color-border, #ccc);
-  border-radius: var(--border-radius-sm, 4px);
-  background-color: var(--color-surface, #fff);
-  color: var(--color-text, #333);
-  font-family: inherit;
-  font-size: var(--font-size-base, 14px);
-  cursor: pointer;
-}
-
-.cancelButton:hover {
-  background-color: var(--color-surface-hover, #f0f0f0);
-}
-
-.cancelButton:focus {
-  outline: 2px solid var(--color-primary, #0066cc);
-  outline-offset: 2px;
-}
-
-.saveButton {
-  padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
-  border: none;
-  border-radius: var(--border-radius-sm, 4px);
-  background-color: var(--color-primary, #0066cc);
-  color: var(--color-text-inverse, #fff);
-  font-family: inherit;
-  font-size: var(--font-size-base, 14px);
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.saveButton:hover {
-  background-color: var(--color-primary-dark, #0052a3);
-}
-
-.saveButton:focus {
-  outline: 2px solid var(--color-primary, #0066cc);
-  outline-offset: 2px;
-}
+/* Cancel and Save buttons now use DS Button component */
 
 /* Touch device optimizations */
 @media (pointer: coarse) {
-  .closeButton {
-    width: 44px;
-    height: 44px;
-    font-size: 24px;
-  }
-
   .groupButton {
     padding: var(--spacing-md, 12px);
     min-height: 48px;
-  }
-
-  .iconButton {
-    width: 44px;
-    height: 44px;
-    font-size: 18px;
-  }
-
-  .addButton {
-    min-height: 44px;
-    padding: var(--spacing-md, 12px) var(--spacing-lg, 20px);
-  }
-
-  .input {
-    min-height: 44px;
-    font-size: 16px; /* Prevents zoom on iOS */
   }
 
   .colorSwatch {
@@ -425,17 +284,6 @@
   }
 
   .rangeButton {
-    min-height: 36px;
-    padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
-  }
-
-  .cancelButton,
-  .saveButton {
-    min-height: 44px;
-    padding: var(--spacing-md, 12px) var(--spacing-lg, 20px);
-  }
-
-  .textButton {
     min-height: 36px;
     padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
   }

@@ -1,3 +1,4 @@
+import { Button } from '@opencanoetiming/timing-design-system'
 import './EmptyState.css'
 
 export type EmptyStateVariant = 'disconnected' | 'no-races' | 'no-competitors' | 'loading'
@@ -51,14 +52,13 @@ export function EmptyState({
       <h2 className="empty-state__title">{title ?? content.title}</h2>
       <p className="empty-state__message">{message ?? content.message}</p>
       {action && (
-        <button
-          type="button"
-          className="empty-state__action"
+        <Button
+          variant="primary"
           data-testid="empty-state-action"
           onClick={action.onClick}
         >
           {action.label}
-        </button>
+        </Button>
       )}
     </div>
   )

@@ -83,67 +83,7 @@
   flex-direction: column;
 }
 
-/* Action buttons */
-.actionButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
-  font-size: 0.875rem;
-  font-weight: 600;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm, 4px);
-  cursor: pointer;
-  transition: all 0.15s ease;
-  min-height: 32px;
-  min-width: 48px;
-}
-
-.menu .actionButton {
-  justify-content: flex-start;
-  width: 100%;
-  min-width: unset;
-}
-
-.actionButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.actionButton:focus-visible {
-  outline: 2px solid var(--color-primary, #0066cc);
-  outline-offset: 2px;
-}
-
-/* Remove buttons - warning/danger colors */
-.removeButton {
-  background: var(--color-warning-bg, #fff3e0);
-  color: var(--color-warning-text, #e65100);
-  border-color: var(--color-warning-border, #ffcc80);
-}
-
-.removeButton:hover:not(:disabled) {
-  background: var(--color-warning-hover, #ffe0b2);
-}
-
-.removeButton:active:not(:disabled) {
-  background: var(--color-warning-active, #ffcc80);
-}
-
-/* Timing buttons - neutral/info colors */
-.timingButton {
-  background: var(--color-info-bg, #e3f2fd);
-  color: var(--color-info-text, #1565c0);
-  border-color: var(--color-info-border, #90caf9);
-}
-
-.timingButton:hover:not(:disabled) {
-  background: var(--color-info-hover, #bbdefb);
-}
-
-.timingButton:active:not(:disabled) {
-  background: var(--color-info-active, #90caf9);
-}
+/* Action buttons now use DS Button component */
 
 /* Confirmation dialog */
 .confirmDialog {
@@ -163,90 +103,10 @@
   justify-content: flex-end;
 }
 
-.cancelButton {
-  padding: var(--spacing-xs, 4px) var(--spacing-md, 12px);
-  font-size: 0.875rem;
-  font-weight: 500;
-  background: var(--color-surface, #ffffff);
-  color: var(--color-text-secondary, #666666);
-  border: 1px solid var(--color-border, #e0e0e0);
-  border-radius: var(--radius-sm, 4px);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.cancelButton:hover {
-  background: var(--color-surface-hover, #f5f5f5);
-}
-
-.cancelButton:focus-visible {
-  outline: 2px solid var(--color-primary, #0066cc);
-  outline-offset: 2px;
-}
-
-.confirmButton {
-  padding: var(--spacing-xs, 4px) var(--spacing-md, 12px);
-  font-size: 0.875rem;
-  font-weight: 600;
-  background: var(--color-danger, #d32f2f);
-  color: white;
-  border: 1px solid var(--color-danger, #d32f2f);
-  border-radius: var(--radius-sm, 4px);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.confirmButton:hover {
-  background: var(--color-danger-hover, #c62828);
-}
-
-.confirmButton:focus-visible {
-  outline: 2px solid var(--color-danger, #d32f2f);
-  outline-offset: 2px;
-}
-
-/* Specific styling for DNS/DNF/CAP confirm buttons */
-.confirmButton[data-reason="DNS"] {
-  background: var(--color-warning, #ed6c02);
-  border-color: var(--color-warning, #ed6c02);
-}
-
-.confirmButton[data-reason="DNS"]:hover {
-  background: var(--color-warning-dark, #e65100);
-}
-
-.confirmButton[data-reason="DNF"] {
-  background: var(--color-danger, #d32f2f);
-  border-color: var(--color-danger, #d32f2f);
-}
-
-.confirmButton[data-reason="DNF"]:hover {
-  background: var(--color-danger-hover, #c62828);
-}
-
-.confirmButton[data-reason="CAP"] {
-  background: var(--color-danger, #d32f2f);
-  border-color: var(--color-danger, #d32f2f);
-}
-
-.confirmButton[data-reason="CAP"]:hover {
-  background: var(--color-danger-hover, #c62828);
-}
+/* Cancel and Confirm buttons now use DS Button component */
 
 /* Touch device optimizations */
 @media (pointer: coarse) {
-  .actionButton {
-    min-height: 44px;
-    min-width: 64px;
-    padding: var(--spacing-sm, 8px) var(--spacing-md, 12px);
-  }
-
-  .cancelButton,
-  .confirmButton {
-    min-height: 44px;
-    padding: var(--spacing-sm, 8px) var(--spacing-lg, 16px);
-  }
-
   .menu {
     min-width: 200px;
     padding: var(--spacing-md, 12px);

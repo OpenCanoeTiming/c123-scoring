@@ -6,6 +6,7 @@
  */
 
 import { useState, useCallback } from 'react'
+import { Button, Input } from '@opencanoetiming/timing-design-system'
 import type { GateGroup } from '../../types/ui'
 import { GROUP_COLORS, validateGateGroup } from '../../types/gateGroups'
 import { useFocusTrap } from '../../hooks/useFocusTrap'
@@ -163,9 +164,9 @@ export function GateGroupEditor({
       <div className={styles.header}>
         <h3 className={styles.title}>Gate Groups</h3>
         {onClose && (
-          <button className={styles.closeButton} onClick={onClose} aria-label="Close">
+          <Button variant="ghost" size="sm" icon onClick={onClose} aria-label="Close">
             ×
-          </button>
+          </Button>
         )}
       </div>
 
@@ -193,9 +194,9 @@ export function GateGroupEditor({
 
       {/* Add new group button */}
       {!editingGroup && (
-        <button className={styles.addButton} onClick={startNewGroup}>
+        <Button variant="secondary" onClick={startNewGroup} className={styles.addButton}>
           + Add Group
-        </button>
+        </Button>
       )}
 
       {/* Edit form */}
@@ -209,10 +210,9 @@ export function GateGroupEditor({
             <label htmlFor="group-name" className={styles.label}>
               Name
             </label>
-            <input
+            <Input
               id="group-name"
               type="text"
-              className={styles.input}
               value={editingGroup.name}
               onChange={handleNameChange}
               placeholder="e.g., Judge 1, Gates 1-6"
@@ -242,13 +242,9 @@ export function GateGroupEditor({
                 Gates ({editingGroup.gates.size} selected)
               </label>
               <div className={styles.gatesActions}>
-                <button
-                  type="button"
-                  className={styles.textButton}
-                  onClick={clearGates}
-                >
+                <Button variant="ghost" size="sm" onClick={clearGates}>
                   Clear
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -323,12 +319,12 @@ export function GateGroupEditor({
           {error && <div className={styles.error}>{error}</div>}
 
           <div className={styles.formActions}>
-            <button type="button" className={styles.cancelButton} onClick={cancelEdit}>
+            <Button variant="secondary" onClick={cancelEdit}>
               Cancel
-            </button>
-            <button type="button" className={styles.saveButton} onClick={saveGroup}>
+            </Button>
+            <Button variant="primary" onClick={saveGroup}>
               {editingGroup.id ? 'Save' : 'Create'}
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -368,22 +364,26 @@ function GroupItem({ group, isActive, onActivate, onEdit, onRemove }: GroupItemP
       {(onEdit || onRemove) && (
         <div className={styles.groupActions}>
           {onEdit && (
-            <button
-              className={styles.iconButton}
+            <Button
+              variant="ghost"
+              size="sm"
+              icon
               onClick={onEdit}
               aria-label={`Edit ${group.name}`}
             >
               ✎
-            </button>
+            </Button>
           )}
           {onRemove && (
-            <button
-              className={styles.iconButton}
+            <Button
+              variant="ghost"
+              size="sm"
+              icon
               onClick={onRemove}
               aria-label={`Remove ${group.name}`}
             >
               ×
-            </button>
+            </Button>
           )}
         </div>
       )}

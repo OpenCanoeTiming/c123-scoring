@@ -6,6 +6,7 @@
  */
 
 import { useState, useCallback } from 'react'
+import { Button } from '@opencanoetiming/timing-design-system'
 import type { ChannelPosition } from '../../types/scoring'
 import styles from './TimingPanel.module.css'
 
@@ -101,12 +102,12 @@ export function TimingPanel({
             <strong>#{selectedBib} {selectedName}</strong>?
           </p>
           <div className={styles.confirmActions}>
-            <button className={styles.cancelButton} onClick={handleCancel}>
+            <Button variant="secondary" onClick={handleCancel}>
               Cancel
-            </button>
-            <button className={styles.confirmButton} onClick={handleConfirm}>
+            </Button>
+            <Button variant="primary" onClick={handleConfirm}>
               Confirm
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -128,15 +129,15 @@ export function TimingPanel({
 
       <div className={styles.actions}>
         {visibleActions.map((action) => (
-          <button
+          <Button
             key={action.position}
-            className={`${styles.timingButton} ${styles[action.variant]}`}
+            variant={action.variant}
             onClick={() => handleTimingClick(action.position)}
             disabled={disabled || !selectedBib}
             title={action.description}
           >
             {action.label}
-          </button>
+          </Button>
         ))}
       </div>
 

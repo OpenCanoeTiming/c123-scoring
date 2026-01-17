@@ -5,6 +5,7 @@
  * Allows judges to rapidly toggle their view of relevant gates.
  */
 
+import { Button } from '@opencanoetiming/timing-design-system'
 import type { GateGroup } from '../../types/ui'
 import styles from './GateGroupSwitcher.module.css'
 
@@ -78,15 +79,17 @@ export function GateGroupSwitcher({
 
       {/* Edit groups button */}
       {onOpenEditor && (
-        <button
-          type="button"
-          className={styles.editButton}
+        <Button
+          variant="ghost"
+          size="sm"
+          icon
           onClick={onOpenEditor}
           title="Edit gate groups"
           aria-label="Edit gate groups"
+          className={styles.editButton}
         >
           ⚙
-        </button>
+        </Button>
       )}
     </div>
   )

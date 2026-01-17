@@ -1,4 +1,5 @@
 import { Component, type ReactNode, type ErrorInfo } from 'react'
+import { Button } from '@opencanoetiming/timing-design-system'
 import './ErrorBoundary.css'
 
 interface ErrorBoundaryProps {
@@ -67,18 +68,12 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               </details>
             )}
             <div className="error-boundary-actions">
-              <button
-                onClick={this.handleReset}
-                className="error-boundary-button error-boundary-button-secondary"
-              >
+              <Button variant="secondary" onClick={this.handleReset}>
                 Try Again
-              </button>
-              <button
-                onClick={this.handleReload}
-                className="error-boundary-button error-boundary-button-primary"
-              >
+              </Button>
+              <Button variant="primary" onClick={this.handleReload}>
                 Reload Page
-              </button>
+              </Button>
             </div>
           </div>
         </div>

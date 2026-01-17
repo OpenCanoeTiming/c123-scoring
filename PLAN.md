@@ -879,14 +879,13 @@ Před začátkem práce je třeba do DS přidat:
 
 **Cíl:** Konzistentní tlačítka a formulářové prvky
 
-- [ ] 16E.1: Nahradit všechny vlastní buttony za DS `Button`
+- [x] 16E.1: Nahradit všechny vlastní buttony za DS `Button`
   - Primary: Save, Submit
   - Secondary: Test, Cancel
   - Ghost: Close
   - Danger: Remove, DNS, DNF
-- [ ] 16E.2: Použít DS `ContextMenu` pro CompetitorActions
-- [ ] 16E.3: Ověřit všechny interakce (hover, focus, active, disabled)
-- [ ] 16E.4: Commit: `refactor: use design system buttons and menus`
+- [x] 16E.2: Ověřit všechny interakce (hover, focus, active, disabled)
+- [x] 16E.3: Commit: `refactor: use design system buttons and menus`
 
 ### Fáze 16F: Footer a progress
 

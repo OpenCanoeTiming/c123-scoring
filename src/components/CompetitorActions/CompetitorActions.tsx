@@ -7,6 +7,7 @@
  */
 
 import { useState, useCallback, useRef, useEffect } from 'react'
+import { Button } from '@opencanoetiming/timing-design-system'
 import type { RemoveReason, ChannelPosition } from '../../types/scoring'
 import styles from './CompetitorActions.module.css'
 
@@ -129,20 +130,12 @@ export function CompetitorActions({
             Mark <strong>#{bib} {name}</strong> as <strong>{action?.description}</strong>?
           </p>
           <div className={styles.confirmActions}>
-            <button
-              className={styles.cancelButton}
-              onClick={handleCancel}
-              autoFocus
-            >
+            <Button variant="secondary" onClick={handleCancel} autoFocus>
               Cancel
-            </button>
-            <button
-              className={styles.confirmButton}
-              onClick={handleConfirm}
-              data-reason={showConfirm}
-            >
+            </Button>
+            <Button variant="danger" onClick={handleConfirm}>
               Confirm {action?.label}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -173,16 +166,17 @@ export function CompetitorActions({
         {variant === 'menu' && <div className={styles.sectionLabel}>Remove from course</div>}
         <div className={styles.buttonGroup}>
           {removeActions.map(({ reason, label, description }) => (
-            <button
+            <Button
               key={reason}
-              className={`${styles.actionButton} ${styles.removeButton}`}
+              variant="danger"
+              size="sm"
               onClick={() => handleRemoveClick(reason)}
               disabled={disabled || isFinished}
               title={description}
               role={variant === 'menu' ? 'menuitem' : undefined}
             >
               {label}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -193,16 +187,17 @@ export function CompetitorActions({
           {variant === 'menu' && <div className={styles.sectionLabel}>Manual timing</div>}
           <div className={styles.buttonGroup}>
             {timingActions.map(({ position, label }) => (
-              <button
+              <Button
                 key={position}
-                className={`${styles.actionButton} ${styles.timingButton}`}
+                variant="secondary"
+                size="sm"
                 onClick={() => handleTiming(position)}
                 disabled={disabled}
                 title={`Trigger manual ${label.toLowerCase()} impulse`}
                 role={variant === 'menu' ? 'menuitem' : undefined}
               >
                 {label}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
