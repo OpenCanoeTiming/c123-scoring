@@ -91,7 +91,7 @@ export function GateGroupSwitcher({
           aria-label="Edit gate groups"
           className={styles.editButton}
         >
-          ⚙
+          ✎
         </Button>
       )}
     </div>

@@ -1,6 +1,7 @@
 export { Layout } from './Layout'
 export { ConnectionStatus } from './ConnectionStatus'
 export { Header } from './Header'
+export { RaceBar } from './RaceBar'
 export { RaceSelector } from './RaceSelector'
 export { OnCourseGrid } from './OnCourseGrid'
 export { ResultsGrid } from './ResultsGrid'

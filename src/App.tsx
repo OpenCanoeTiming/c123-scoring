@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Button } from '@opencanoetiming/timing-design-system'
-import { Layout, Header, ConnectionStatus, RaceSelector, ResultsGrid, GateGroupSwitcher, GateGroupEditor, CheckProgress, Settings, EmptyState, useToast } from './components'
+import { Layout, Header, ConnectionStatus, RaceBar, ResultsGrid, GateGroupSwitcher, GateGroupEditor, CheckProgress, Settings, EmptyState, useToast } from './components'
 import { useC123WebSocket } from './hooks/useC123WebSocket'
 import { useConnectionStatus } from './hooks/useConnectionStatus'
 import { useSchedule } from './hooks/useSchedule'
@@ -204,28 +204,28 @@ function App() {
     <Layout
       header={
         <Header
-          raceInfo={selectedRace?.mainTitle}
           connectionStatus={
             <ConnectionStatus status={status} serverUrl={settings.serverUrl} showDetails />
           }
           actions={
-            <>
-              <RaceSelector
-                races={activeRaces}
-                selectedRaceId={effectiveSelectedRaceId}
-                onSelectRace={handleSelectRace}
-              />
-              <Button
-                variant="ghost"
-                icon
-                onClick={() => setShowSettings(true)}
-                aria-label="Settings"
-                title="Settings (Ctrl+,)"
-              >
-                ⚙
-              </Button>
-            </>
+            <Button
+              variant="ghost"
+              icon
+              onClick={() => setShowSettings(true)}
+              aria-label="Settings"
+              title="Settings (Ctrl+,)"
+            >
+              ⚙
+            </Button>
           }
+        />
+      }
+      raceBar={
+        <RaceBar
+          races={activeRaces}
+          selectedRaceId={effectiveSelectedRaceId}
+          onSelectRace={handleSelectRace}
+          selectedRace={selectedRace ?? null}
         />
       }
       footer={

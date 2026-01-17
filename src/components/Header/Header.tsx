@@ -9,25 +9,21 @@ import {
 
 interface HeaderProps {
   title?: string
-  raceInfo?: string
   connectionStatus: ReactNode
   actions?: ReactNode
 }
 
 export function Header({
   title = 'C123 Scoring',
-  raceInfo,
   connectionStatus,
   actions,
 }: HeaderProps) {
   return (
     <DSHeader>
       <HeaderBrand>
-        <HeaderTitle subtitle={raceInfo}>{title}</HeaderTitle>
+        <HeaderTitle>{title}</HeaderTitle>
       </HeaderBrand>
-      <HeaderActions>
-        {actions}
-      </HeaderActions>
+      {actions && <HeaderActions>{actions}</HeaderActions>}
       <HeaderStatus>
         {connectionStatus}
       </HeaderStatus>
