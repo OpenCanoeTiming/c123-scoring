@@ -1,9 +1,10 @@
 /* ResultsGrid - DS Table extension for penalty grid */
 
-/* Grid container */
+/* Grid container - scrollable both directions */
 .results-grid {
-  overflow-x: auto;
-  padding: var(--space-4);
+  flex: 1;
+  overflow: auto;
+  /* No padding - maximize space for grid */
 }
 
 /* Ensure table doesn't stretch to fill available width */
@@ -46,12 +47,29 @@
   color: var(--color-text-secondary);
 }
 
-/* Table header sticky */
-.results-grid .table thead th {
+/* Table header sticky - both rows (groups + gates) */
+.results-grid .table thead th,
+.results-grid .table thead td {
   position: sticky;
-  top: 0;
-  z-index: 1;
+  z-index: 10;
   background: var(--color-bg-surface);
+}
+
+/* First row (gate groups) sticks at top: 0 */
+.results-grid .table thead tr:first-child th,
+.results-grid .table thead tr:first-child td {
+  top: 0;
+}
+
+/* Second row (gate numbers) sticks below first row */
+.results-grid .table thead tr:nth-child(2) th,
+.results-grid .table thead tr:nth-child(2) td {
+  top: 32px; /* Height of group indicator row */
+}
+
+/* When no group indicator row, first row is the only row */
+.results-grid .table thead tr:only-child th {
+  top: 0;
 }
 
 /* Fixed column widths - prevent stretching */
@@ -112,7 +130,7 @@
 .results-grid .table td.col-name {
   position: sticky;
   background: var(--color-bg-surface);
-  z-index: 2;
+  z-index: 5; /* Above regular cells, below header */
 }
 
 .results-grid .table th.col-pos,
@@ -131,14 +149,20 @@
   border-right: 1px solid var(--color-border-muted);
 }
 
-/* Sticky header cells need higher z-index */
+/* Sticky header + sticky column = highest z-index */
 .results-grid .table thead th.col-pos,
 .results-grid .table thead th.col-bib,
 .results-grid .table thead th.col-name {
-  z-index: 3;
+  z-index: 20;
 }
 
-/* Striped row background for sticky columns */
+/* Sticky columns need solid background on ALL rows (odd + even) */
+.results-grid .table tbody tr td.col-pos,
+.results-grid .table tbody tr td.col-bib,
+.results-grid .table tbody tr td.col-name {
+  background: var(--color-bg-surface);
+}
+
 .results-grid .table tbody tr:nth-child(even) td.col-pos,
 .results-grid .table tbody tr:nth-child(even) td.col-bib,
 .results-grid .table tbody tr:nth-child(even) td.col-name {
@@ -314,20 +338,10 @@ th.gate-header--dimmed {
 
 /* Tablet breakpoints */
 @media (max-width: 1024px) {
-  .results-grid {
-    padding: var(--space-2);
-  }
-
   .col-name {
     width: 120px;
     min-width: 120px;
     max-width: 160px;
-  }
-
-  /* Adjust sticky positions for tablet */
-  .results-grid .table th.col-name,
-  .results-grid .table td.col-name {
-    left: 90px;
   }
 }
 
