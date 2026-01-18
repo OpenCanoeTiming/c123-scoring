@@ -10,10 +10,10 @@ import {
 } from '@opencanoetiming/timing-design-system/react'
 import type { C123ResultRow, C123RaceConfigData } from '../../types/c123server'
 import type { GateGroup, ResultsSortOption } from '../../types/ui'
+import type { PenaltyValue } from '../../types/scoring'
 import {
   useFocusNavigation,
   useKeyboardInput,
-  type PenaltyValue,
 } from '../../hooks'
 import { parseResultsGatesWithConfig } from '../../utils/gates'
 import { isGateInGroup } from '../../types/gateGroups'
@@ -24,6 +24,8 @@ import './ResultsGrid.css'
 export interface ResultsGridProps {
   rows: C123ResultRow[]
   raceConfig: C123RaceConfigData | null
+  /** Race ID for penalty corrections (required for finished competitors) */
+  raceId?: string | null
   /** Active gate group for filtering (null = all gates) */
   activeGateGroup?: GateGroup | null
   /** All available gate groups for detecting group boundaries */
@@ -35,12 +37,13 @@ export interface ResultsGridProps {
   /** Callback when a gate group is selected */
   onGroupSelect?: (groupId: string | null) => void
   /** Callback when a penalty is submitted */
-  onPenaltySubmit?: (bib: string, gate: number, value: PenaltyValue) => void
+  onPenaltySubmit?: (bib: string, gate: number, value: PenaltyValue, raceId?: string) => void
 }
 
 export function ResultsGrid({
   rows,
   raceConfig,
+  raceId,
   activeGateGroup = null,
   allGateGroups = [],
   sortBy = 'rank',
@@ -142,11 +145,12 @@ export function ResultsGrid({
     enabled: sortedRows.length > 0 && nrGates > 0,
     onPenaltyInput: (value) => {
       if (!currentRow || !onPenaltySubmit) return
-      onPenaltySubmit(currentRow.bib, currentGate, value)
+      onPenaltySubmit(currentRow.bib, currentGate, value, raceId ?? undefined)
     },
     onClear: () => {
       if (!currentRow || !onPenaltySubmit) return
-      onPenaltySubmit(currentRow.bib, currentGate, 0)
+      // Delete key sends null to delete the penalty
+      onPenaltySubmit(currentRow.bib, currentGate, null, raceId ?? undefined)
     },
   })
 

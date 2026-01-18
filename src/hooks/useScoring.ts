@@ -36,7 +36,7 @@ export interface ScoringState {
 
 export interface UseScoringReturn extends ScoringState {
   /** Send a penalty scoring command */
-  setGatePenalty: (bib: string, gate: number, value: PenaltyValue) => Promise<boolean>
+  setGatePenalty: (bib: string, gate: number, value: PenaltyValue, raceId?: string) => Promise<boolean>
   /** Remove a competitor from course */
   removeFromCourse: (bib: string, reason: RemoveReason) => Promise<boolean>
   /** Send a manual timing impulse */
@@ -111,7 +111,7 @@ export function useScoring(): UseScoringReturn {
   }, [])
 
   const setGatePenalty = useCallback(
-    async (bib: string, gate: number, value: PenaltyValue): Promise<boolean> => {
+    async (bib: string, gate: number, value: PenaltyValue, raceId?: string): Promise<boolean> => {
       const key = `scoring-${bib}-${gate}`
       const operationId = createOperationId('scoring', bib, String(gate))
 
@@ -130,7 +130,7 @@ export function useScoring(): UseScoringReturn {
       addPending(operation, key)
 
       try {
-        await sendScoring(bib, gate, value)
+        await sendScoring(bib, gate, value, raceId)
         removePending(operationId, key)
         return true
       } catch (error) {

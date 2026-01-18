@@ -13,8 +13,9 @@
  * - 0: Clean pass
  * - 2: Touch (2 seconds)
  * - 50: Missed gate (50 seconds)
+ * - null: Delete penalty (empty cell)
  */
-export type PenaltyValue = 0 | 2 | 50
+export type PenaltyValue = 0 | 2 | 50 | null
 
 /**
  * Gate penalty state including empty (not yet passed)
@@ -43,8 +44,13 @@ export type CompetitorState =
  * POST /api/c123/scoring
  */
 export interface ScoringRequest {
+  /** Race ID - required for finished competitors (e.g. "K1M_ST_BR2_6") */
+  raceId?: string
+  /** Competitor start number */
   bib: string
+  /** Gate number (1-24) */
   gate: number
+  /** Penalty value: 0 (clean), 2 (touch), 50 (missed), null (delete) */
   value: PenaltyValue
 }
 
@@ -162,10 +168,10 @@ export function calculateTotalPenalty(gates: GateInfo[]): number {
 }
 
 /**
- * Check if a value is a valid penalty
+ * Check if a value is a valid penalty (including null for delete)
  */
-export function isValidPenalty(value: number): value is PenaltyValue {
-  return value === 0 || value === 2 || value === 50
+export function isValidPenalty(value: number | null): value is PenaltyValue {
+  return value === null || value === 0 || value === 2 || value === 50
 }
 
 // =============================================================================

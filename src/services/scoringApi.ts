@@ -27,7 +27,7 @@ export interface ScoringResponse {
   success: boolean
   bib: string
   gate: number
-  value: PenaltyValue
+  value: PenaltyValue  // includes null for deleted penalty
 }
 
 export interface RemoveFromCourseResponse {
@@ -172,15 +172,20 @@ export class ScoringApiError extends Error {
  *
  * @param bib - Competitor start number
  * @param gate - Gate number (1-24)
- * @param value - Penalty value (0, 2, or 50)
+ * @param value - Penalty value (0, 2, 50, or null to delete)
+ * @param raceId - Race ID (required for finished competitors)
  */
 export async function sendScoring(
   bib: string,
   gate: number,
-  value: PenaltyValue
+  value: PenaltyValue,
+  raceId?: string
 ): Promise<ScoringResponse> {
   const baseUrl = getBaseUrl()
   const request: ScoringRequest = { bib, gate, value }
+  if (raceId) {
+    request.raceId = raceId
+  }
 
   return fetchWithRetry<ScoringResponse>(`${baseUrl}/api/c123/scoring`, {
     method: 'POST',

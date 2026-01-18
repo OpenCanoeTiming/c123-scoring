@@ -175,8 +175,8 @@ function App() {
 
   // Handler for penalty submission
   const handlePenaltySubmit = useCallback(
-    async (bib: string, gate: number, value: import('./types/scoring').PenaltyValue) => {
-      await setGatePenalty(bib, gate, value)
+    async (bib: string, gate: number, value: import('./types/scoring').PenaltyValue, raceId?: string) => {
+      await setGatePenalty(bib, gate, value, raceId)
     },
     [setGatePenalty]
   )
@@ -272,6 +272,7 @@ function App() {
         <ResultsGrid
           rows={selectedRaceResults.rows}
           raceConfig={raceConfig}
+          raceId={effectiveSelectedRaceId}
           activeGateGroup={activeGroup}
           allGateGroups={allGroups}
           sortBy={sortBy}
