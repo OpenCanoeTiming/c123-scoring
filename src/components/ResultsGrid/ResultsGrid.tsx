@@ -163,7 +163,7 @@ export function ResultsGrid({
   const currentGate = visibleColumnToGate[position.column] ?? 1
 
   // Keyboard input for penalty values
-  const { pendingValue, handleKeyDown: handleInputKeyDown } = useKeyboardInput({
+  const { pendingValue, clearPendingValue, handleKeyDown: handleInputKeyDown } = useKeyboardInput({
     enabled: sortedRows.length > 0 && nrGates > 0,
     onPenaltyInput: (value) => {
       if (!currentRow || !onPenaltySubmit) return
@@ -174,6 +174,11 @@ export function ResultsGrid({
       onPenaltySubmit(currentRow.bib, currentGate, 0)
     },
   })
+
+  // Clear pending value when position changes
+  useEffect(() => {
+    clearPendingValue()
+  }, [position.row, position.column, clearPendingValue])
 
   // Handle context menu open
   const handleContextMenu = useCallback(
@@ -201,10 +206,19 @@ export function ResultsGrid({
         setContextMenu(null)
       }
 
+      // Space toggles checked state for current row
+      if (event.key === ' ') {
+        event.preventDefault()
+        if (currentRow && !currentRow.status && onToggleChecked) {
+          onToggleChecked(currentRow.bib)
+        }
+        return
+      }
+
       if (handleInputKeyDown(event)) return
       handleNavKeyDown(event)
     },
-    [handleInputKeyDown, handleNavKeyDown, contextMenu]
+    [handleInputKeyDown, handleNavKeyDown, contextMenu, currentRow, onToggleChecked]
   )
 
   // Focus the grid when position changes

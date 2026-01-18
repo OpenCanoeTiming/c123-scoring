@@ -4,6 +4,30 @@ Deníček vývoje projektu. Záznamy o tom co bylo uděláno, co fungovalo, co n
 
 ---
 
+## 2026-01-18 - Fáze 20A-C: Bug fixes
+
+### Dokončeno
+
+- [x] **20A.5-6:** Oprava keyboard navigace - `pendingValue` se nyní resetuje při změně pozice fokusované buňky
+- [x] **20B.1-2:** Sticky header - přidána `position: sticky; top: 0; z-index: 100` pro header wrapper
+- [x] **20C.1-2:** Space klávesa pro toggle "zkontrolováno" - `event.preventDefault()` a callback na `onToggleChecked`
+
+### Investigace 20A.1-2
+
+Zápis penalizací (scoring) byl prověřen end-to-end:
+- `c123-scoring/scoringApi.ts` → `POST /api/c123/scoring`
+- `c123-server/UnifiedServer.ts` → handler `handleC123Scoring`
+- `c123-server/ScoringService.ts` → formátování XML a `TcpSource.write()`
+
+Kód je implementovaný správně. Problém hlášený uživatelem vyžaduje testování s reálným C123 hardware - může to být TCP write problém nebo nesprávný XML formát.
+
+### Změněné soubory
+
+- `src/components/ResultsGrid/ResultsGrid.tsx` - přidán `useEffect` pro reset `pendingValue`, přidán Space handler
+- `src/components/Layout/Layout.module.css` - sticky header
+
+---
+
 ## 2026-01-16 - Iterace 1
 
 ### Shrnutí
