@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { Layout, Header, ResultsGrid, GateGroupEditor, CheckProgress, Settings, EmptyState, useToast } from './components'
+import { Layout, Header, ResultsGrid, GateGroupEditor, CheckProgress, Settings, EmptyState } from './components'
 import { useC123WebSocket } from './hooks/useC123WebSocket'
 import { useSchedule } from './hooks/useSchedule'
 import { useGateGroups } from './hooks/useGateGroups'
@@ -16,18 +16,18 @@ function App() {
   // Settings
   const { settings, updateSettings } = useSettings()
 
-  // Toast notifications
-  const { showSuccess, showError } = useToast()
-
   // Scoring API integration
   const {
     setGatePenalty,
     removeFromCourse: removeFromCourseApi,
     sendTimingImpulse,
-    isLoading: isScoringLoading,
+    pendingOperations,
     lastError: scoringError,
     clearError: clearScoringError,
   } = useScoring()
+
+  // Pending writes count for footer indicator
+  const pendingCount = pendingOperations.size
 
   // Settings modal state
   const [showSettings, setShowSettings] = useState(false)
@@ -156,45 +156,36 @@ function App() {
     return getProgress(finishedCompetitorBibs)
   }, [getProgress, finishedCompetitorBibs])
 
-  // Show scoring errors via toast
+  // Log scoring errors to console (errors are rare and worth investigating)
   useEffect(() => {
     if (scoringError) {
-      showError(`Scoring error: ${scoringError.message}`)
+      console.error('Scoring error:', scoringError.message)
       clearScoringError()
     }
-  }, [scoringError, showError, clearScoringError])
+  }, [scoringError, clearScoringError])
 
   // Handler for penalty submission
   const handlePenaltySubmit = useCallback(
     async (bib: string, gate: number, value: import('./types/scoring').PenaltyValue) => {
-      const success = await setGatePenalty(bib, gate, value)
-      if (success) {
-        showSuccess(`Gate ${gate}: ${value === 0 ? 'Clear' : value === 50 ? 'Miss (50)' : `+${value}`}`)
-      }
+      await setGatePenalty(bib, gate, value)
     },
-    [setGatePenalty, showSuccess]
+    [setGatePenalty]
   )
 
   // Handler for remove from course
   const handleRemoveFromCourse = useCallback(
     async (bib: string, reason: import('./types/scoring').RemoveReason) => {
-      const success = await removeFromCourseApi(bib, reason)
-      if (success) {
-        showSuccess(`Bib ${bib}: ${reason}`)
-      }
+      await removeFromCourseApi(bib, reason)
     },
-    [removeFromCourseApi, showSuccess]
+    [removeFromCourseApi]
   )
 
   // Handler for manual timing
   const handleTiming = useCallback(
     async (bib: string, position: import('./types/scoring').ChannelPosition) => {
-      const success = await sendTimingImpulse(bib, position)
-      if (success) {
-        showSuccess(`Bib ${bib}: ${position} impulse sent`)
-      }
+      await sendTimingImpulse(bib, position)
     },
-    [sendTimingImpulse, showSuccess]
+    [sendTimingImpulse]
   )
 
   // C123 connection status (for enabling/disabling actions)
@@ -213,12 +204,13 @@ function App() {
       }
       footer={
         <div className="footer-content">
-          {/* Left: Version and organization */}
+          {/* Left: Version and pending writes */}
           <span className="footer-version">
             C123 Scoring v0.1.0 &bull; Open Canoe Timing
-            {isScoringLoading && (
-              <span className="loading-indicator" title="Sending...">
+            {pendingCount > 0 && (
+              <span className="pending-writes" title={`${pendingCount} pending write${pendingCount > 1 ? 's' : ''}`}>
                 <span className="loading-spinner" aria-hidden="true" />
+                <span className="pending-count">{pendingCount}</span>
               </span>
             )}
           </span>

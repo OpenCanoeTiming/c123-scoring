@@ -15,7 +15,7 @@
 | 17H | UX Polish (Settings) | ✅ Hotovo |
 | 18 | Auto-load Gate Groups | 🟢 Hotovo (18B) |
 | 19 | E2E Test Refaktoring | ✅ Hotovo |
-| 20 | Bug fixes a UX připomínky | 🔴 TODO |
+| 20 | Bug fixes a UX připomínky | 🟡 In Progress (20D done) |
 
 ---
 
@@ -288,7 +288,7 @@ npx playwright test screenshots-with-data.spec.ts
 
 **Cíl:** Opravit kritické bugy a UX problémy z uživatelského testování.
 
-**Status:** 🟡 Částečně hotovo (20A-C)
+**Status:** 🟡 Částečně hotovo (20A-D)
 
 ---
 
@@ -335,13 +335,13 @@ npx playwright test screenshots-with-data.spec.ts
 
 ---
 
-### 20D: Toast → Footer pending writes
+### 20D: Toast → Footer pending writes ✅
 
 **Problém:** Toasty pro zápisy jsou rušivé.
 
-- [ ] 20D.1: Odstranit toast notifikace pro scoring writes
-- [ ] 20D.2: Přidat "pending writes" indikátor do footeru (spinner + počet)
-- [ ] 20D.3: Commit
+- [x] 20D.1: Odstranit toast notifikace pro scoring writes
+- [x] 20D.2: Přidat "pending writes" indikátor do footeru (spinner + počet)
+- [x] 20D.3: Commit
 
 ---
 
@@ -389,4 +389,4 @@ npx playwright test screenshots-with-data.spec.ts
 
 ---
 
-*Poslední aktualizace: 2026-01-18 (Phase 20A-C completed: keyboard fixes, sticky header, space key)*
+*Poslední aktualizace: 2026-01-18 (Phase 20D: removed toasts, added pending writes footer indicator)*
