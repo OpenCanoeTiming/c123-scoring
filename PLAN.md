@@ -16,7 +16,7 @@
 | 18 | Auto-load Gate Groups | ✅ Hotovo |
 | 19 | E2E Test Refaktoring | ✅ Hotovo |
 | 20 | Bug fixes a UX připomínky | ✅ Hotovo |
-| 21 | Schedule WebSocket issue | 🔴 Blokuje (c123-server) |
+| 21 | Schedule WebSocket issue | ✅ Hotovo |
 | 22 | Settings cleanup | ✅ Hotovo |
 | 23 | Grid layout a sticky sloupce | ✅ Hotovo |
 | 24 | Grid highlighting redesign | ✅ Hotovo |
@@ -254,11 +254,7 @@ npx playwright test screenshots-with-data.spec.ts
   - ✅ Course matching funguje (Course 1 pro aktuální závod)
   - ✅ Generuje 6 segmentů pro 24 branek (správně ořezáno z 8)
 - [x] 18C.2: Custom groups mají přednost (design - custom groups jsou v localStorage)
-- [ ] 18C.3: Screenshoty - BLOKOVÁNO: server neposílá Schedule přes WebSocket
-
-**Známý problém:** c123-server neposílá Schedule zprávu přes WebSocket automaticky,
-proto aplikace zobrazuje "No active races". Segmenty fungují, ale nejde je vidět v UI
-dokud se nevyřeší Schedule issue (viz fáze 21).
+- [x] 18C.3: Screenshoty - nyní funkční (Schedule issue vyřešen ve fázi 21)
 
 ---
 
@@ -420,35 +416,29 @@ dokud se nevyřeší Schedule issue (viz fáze 21).
 
 ---
 
-## Fáze 21: Schedule WebSocket issue
+## Fáze 21: Schedule WebSocket issue ✅
 
 **Cíl:** Zajistit že aplikace zobrazí aktivní závody.
 
-**Status:** 🔴 Blokuje UI testování
+**Status:** ✅ Hotovo (opraveno v c123-server)
 
-**Problém:**
-c123-server neposílá Schedule zprávu přes WebSocket automaticky po připojení.
-Scoring aplikace proto zobrazuje "No active races" i když server má aktivní závod.
+**Problém (vyřešen):**
+c123-server neposílal Schedule zprávu přes WebSocket automaticky po připojení.
+Scoring aplikace proto zobrazovala "No active races" i když server měl aktivní závod.
 
-**Zjištění (2026-01-18):**
-- Server posílá: Connected, TimeOfDay, RaceConfig, OnCourse
-- Server NEPOSÍLÁ: Schedule
-- Schedule data JSOU dostupná přes REST API (`/api/xml/schedule`)
+**Řešení:**
+Opraveno v c123-server - server nyní posílá Schedule zprávu při připojení klienta.
 
-### Možná řešení
+### Implementace v c123-server ✅
 
-**A) Oprava v c123-server (preferované)**
-- [ ] 21A.1: Přidat posílání Schedule zprávy při připojení klienta
-- [ ] 21A.2: Posílat Schedule při změně (nový závod začne/skončí)
+- [x] 21A.1: Přidat posílání Schedule zprávy při připojení klienta
+- [x] 21A.2: Posílat Schedule při změně (nový závod začne/skončí)
 
-**B) Fallback v c123-scoring**
-- [ ] 21B.1: Fetchovat Schedule z REST API pokud nepřijde přes WebSocket
-- [ ] 21B.2: Pollovat periodicky nebo při chybějící Schedule
-
-### Poznámky
-- Toto je bug v c123-server, ne v segmentech
-- Segmenty fungují správně (ověřeno unit testem)
-- UI nelze plně otestovat dokud se nevyřeší Schedule
+### c123-scoring (nepotřebovalo změny)
+- Infrastruktura pro zpracování Schedule zpráv již existovala
+- Typy: `C123ScheduleData`, `C123ScheduleMessage`
+- WebSocket hook: `isScheduleMessage()` type guard + state update
+- useSchedule hook: zpracování races a activeRaces
 
 ---
 
@@ -543,4 +533,4 @@ Neexistuje koncept "prázdná hodnota" - každá branka má vždy stav (0, 2, ne
 
 ---
 
-*Poslední aktualizace: 2026-01-18 (Phases 22-26 completed)*
+*Poslední aktualizace: 2026-01-18 (Phase 21 completed - Schedule WS fixed)*
