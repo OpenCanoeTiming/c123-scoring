@@ -1,1067 +1,1067 @@
-# C123-SCORING - Development Log
+# C123-PENALTY-CHECK - Development Log
 
-Deníček vývoje projektu. Záznamy o tom co bylo uděláno, co fungovalo, co nefungovalo.
+Development diary for the project. Records of what was done, what worked, what didn't.
 
 ---
 
-## 2026-01-18 - Fáze 20A-C: Bug fixes
+## 2026-01-18 - Phase 20A-C: Bug fixes
 
-### Dokončeno
+### Completed
 
-- [x] **20A.5-6:** Oprava keyboard navigace - `pendingValue` se nyní resetuje při změně pozice fokusované buňky
-- [x] **20B.1-2:** Sticky header - přidána `position: sticky; top: 0; z-index: 100` pro header wrapper
-- [x] **20C.1-2:** Space klávesa pro toggle "zkontrolováno" - `event.preventDefault()` a callback na `onToggleChecked`
+- [x] **20A.5-6:** Fix keyboard navigation - `pendingValue` is now reset on focus position change
+- [x] **20B.1-2:** Sticky header - added `position: sticky; top: 0; z-index: 100` for header wrapper
+- [x] **20C.1-2:** Space key for toggle "checked" - `event.preventDefault()` and callback to `onToggleChecked`
 
-### Investigace 20A.1-2
+### Investigation 20A.1-2
 
-Zápis penalizací (scoring) byl prověřen end-to-end:
+Penalty writing (scoring) was investigated end-to-end:
 - `c123-scoring/scoringApi.ts` → `POST /api/c123/scoring`
 - `c123-server/UnifiedServer.ts` → handler `handleC123Scoring`
-- `c123-server/ScoringService.ts` → formátování XML a `TcpSource.write()`
+- `c123-server/ScoringService.ts` → XML formatting and `TcpSource.write()`
 
-Kód je implementovaný správně. Problém hlášený uživatelem vyžaduje testování s reálným C123 hardware - může to být TCP write problém nebo nesprávný XML formát.
+Code is implemented correctly. User-reported issue requires testing with real C123 hardware - could be TCP write problem or incorrect XML format.
 
-### Změněné soubory
+### Changed Files
 
-- `src/components/ResultsGrid/ResultsGrid.tsx` - přidán `useEffect` pro reset `pendingValue`, přidán Space handler
+- `src/components/ResultsGrid/ResultsGrid.tsx` - added `useEffect` to reset `pendingValue`, added Space handler
 - `src/components/Layout/Layout.module.css` - sticky header
 
 ---
 
-## 2026-01-16 - Iterace 1
+## 2026-01-16 - Iteration 1
 
-### Shrnutí
+### Summary
 
-První velká implementační iterace. Za jeden den bylo implementováno 11 fází z 15 plánovaných. Projekt je funkční a použitelný pro základní workflow zadávání penalizací.
+First major implementation iteration. In one day, 11 out of 15 planned phases were implemented. Project is functional and usable for basic penalty entry workflow.
 
-### Dokončené fáze
+### Completed Phases
 
-#### Fáze 1: Projekt Setup
-- Vite + React + TypeScript inicializace
-- Design system integrace
-- Adresářová struktura
+#### Phase 1: Project Setup
+- Vite + React + TypeScript initialization
+- Design system integration
+- Directory structure
 - **Commit:** `3048b1f feat: initial project setup with design system`
 
-#### Fáze 3: TypeScript typy a WebSocket
-- Typy pro WebSocket zprávy (adaptováno z c123-scoreboard)
-- Typy pro scoring API requesty
-- Typy pro UI stav
-- WebSocket hook s auto-reconnect
+#### Phase 3: TypeScript Types and WebSocket
+- Types for WebSocket messages (adapted from c123-scoreboard)
+- Types for scoring API requests
+- Types for UI state
+- WebSocket hook with auto-reconnect
 - Connection status hook
 - **Commit:** `feat: add TypeScript types and WebSocket hook`
 
-#### Fáze 4: Layout a ConnectionStatus
+#### Phase 4: Layout and ConnectionStatus
 - CSS Grid layout (header, main, footer)
-- ConnectionStatus komponenta s vizuálním indikátorem
-- Header komponenta
+- ConnectionStatus component with visual indicator
+- Header component
 - **Commit:** `e509b6c feat: add basic layout with connection status`
 
-#### Fáze 5: Race Selector
-- useSchedule hook pro parsování Schedule zpráv
-- RaceSelector dropdown s status indikátorem
-- Auto-select běžícího závodu
+#### Phase 5: Race Selector
+- useSchedule hook for parsing Schedule messages
+- RaceSelector dropdown with status indicator
+- Auto-select running race
 - localStorage persistence
 - **Commit:** `6c412d5 feat: add race selector with schedule integration`
 
-#### Fáze 6: Penalty Grid - zobrazení
-- OnCourseGrid komponenta
-- Utility pro parsování penalizací a gate config
-- Barevné kódování stavů (0=zelená, 2=oranžová, 50=červená)
-- Zvýraznění reverse branek
+#### Phase 6: Penalty Grid - Display
+- OnCourseGrid component
+- Utilities for parsing penalties and gate config
+- Color coding for states (0=green, 2=orange, 50=red)
+- Reverse gate highlighting
 - **Commit:** `3c9f0f9 feat: add OnCourseGrid component for displaying competitors with penalties`
 
-#### Fáze 7: Keyboard navigace
-- useFocusNavigation hook (šipky, Home/End, PageUp/Down, Tab)
-- useKeyboardInput hook (0/2/5 klávesy, Delete)
-- GridCell komponenta s focus styly a ARIA atributy
+#### Phase 7: Keyboard Navigation
+- useFocusNavigation hook (arrows, Home/End, PageUp/Down, Tab)
+- useKeyboardInput hook (0/2/5 keys, Delete)
+- GridCell component with focus styles and ARIA attributes
 - **Commit:** `feat: add keyboard navigation to penalty grid`
 
-#### Fáze 8: REST API integrace
-- scoringApi.ts service s retry logikou
-- useScoring hook s optimistic updates
-- Toast notifikace pro feedback
-- **Commity:**
+#### Phase 8: REST API Integration
+- scoringApi.ts service with retry logic
+- useScoring hook with optimistic updates
+- Toast notifications for feedback
+- **Commits:**
   - `feat: add scoring API integration`
   - `feat: add Toast notification component`
 
-#### Fáze 9: Gate Grouping
-- types/gateGroups.ts s podporou překrývajících se skupin
-- useGateGroups hook s localStorage persistencí
-- GateGroupEditor komponenta (vizuální editor)
-- GateGroupSwitcher pro rychlé přepínání
-- Keyboard shortcuts 0-9 pro skupiny
-- **Commity:**
+#### Phase 9: Gate Grouping
+- types/gateGroups.ts with overlap support
+- useGateGroups hook with localStorage persistence
+- GateGroupEditor component (visual editor)
+- GateGroupSwitcher for quick switching
+- Keyboard shortcuts 0-9 for groups
+- **Commits:**
   - `65d4b2f feat: add gate groups types with overlap support`
   - `21ef96e feat: add useGateGroups hook for gate grouping`
   - `efcf188 feat: integrate gate grouping into penalty grid`
   - `682792e feat: add keyboard shortcuts for gate group switching`
 
-#### Fáze 10: Kontrola protokolů
-- CheckedState typy a utility
-- useCheckedState hook s localStorage persistencí (per závod, per group)
-- Check sloupec v gridu
-- CheckProgress komponenta ve footeru
-- **Commity:**
+#### Phase 10: Protocol Verification
+- CheckedState types and utilities
+- useCheckedState hook with localStorage persistence (per race, per group)
+- Check column in grid
+- CheckProgress component in footer
+- **Commits:**
   - `0865549 feat: add protocol check tracking`
   - `c9e8f4d docs: update PLAN.md with completed phase 10 tasks`
 
-#### Fáze 11: Settings Panel
-- Settings modal s třemi taby (Server, Display, Keyboard)
-- useSettings hook pro centrální správu nastavení
-- Server URL validace a test connection
-- Historie serverů
+#### Phase 11: Settings Panel
+- Settings modal with three tabs (Server, Display, Keyboard)
+- useSettings hook for centralized settings management
+- Server URL validation and test connection
+- Server history
 - Keyboard shortcut Ctrl+,
 - **Commit:** `eb4a036 feat: add settings panel with server configuration`
 
-### Přeskočené/odložené
+### Skipped/Postponed
 
-- **Fáze 0 (UI Design):** Přeskočeno - implementováno ad-hoc během vývoje
-- **Fáze 2 (Testovací infrastruktura):** Odloženo - priorita byla funkční aplikace
+- **Phase 0 (UI Design):** Skipped - implemented ad-hoc during development
+- **Phase 2 (Test Infrastructure):** Postponed - priority was functional app
 
-### Co fungovalo dobře
+### What Worked Well
 
-1. **Iterativní přístup** - postupné budování od základů k komplexnějším funkcím
-2. **Kopírování typů z c123-scoreboard** - ušetřilo čas a zajistilo kompatibilitu
-3. **Design system** - konzistentní styling bez nutnosti psát vše od nuly
-4. **localStorage persistence** - jednoduchá implementace, funguje spolehlivě
+1. **Iterative approach** - gradual building from basics to complex features
+2. **Copying types from c123-scoreboard** - saved time and ensured compatibility
+3. **Design system** - consistent styling without writing everything from scratch
+4. **localStorage persistence** - simple implementation, works reliably
 
-### Co nefungovalo / problémy
+### What Didn't Work / Problems
 
-1. **Dokumentace nebyla průběžně aktualizována** - PLAN.md checkboxy nebyly označovány, DEVLOG.md neexistoval
-2. **Některé komponenty implementovány jinak než v plánu** - např. OnCourseGrid místo PenaltyGrid, KeyboardHelp jako součást Settings
+1. **Documentation wasn't updated continuously** - PLAN.md checkboxes weren't marked, DEVLOG.md didn't exist
+2. **Some components implemented differently than planned** - e.g., OnCourseGrid instead of PenaltyGrid, KeyboardHelp as part of Settings
 
-### Poznámky k architektuře
+### Architecture Notes
 
-- Rozhodnutí: OnCourseGrid obsahuje většinu logiky místo rozdělení do více komponent
-- Rozhodnutí: Gate groups jsou scopované per raceId v localStorage
-- Rozhodnutí: Checked state je scopovaný per závod AND per gate group
+- Decision: OnCourseGrid contains most logic instead of splitting into multiple components
+- Decision: Gate groups are scoped per raceId in localStorage
+- Decision: Checked state is scoped per race AND per gate group
 
-### Další kroky
+### Next Steps
 
-Viz PLAN.md - zbývají fáze 12-15:
-- Fáze 12: RemoveFromCourse a Timing (DNS/DNF/CAP akce)
-- Fáze 13: Polish a UX vylepšení
-- Fáze 14: Vizuální testy (Playwright)
-- Fáze 15: Dokumentace a finalizace
+See PLAN.md - remaining phases 12-15:
+- Phase 12: RemoveFromCourse and Timing (DNS/DNF/CAP actions)
+- Phase 13: Polish and UX improvements
+- Phase 14: Visual tests (Playwright)
+- Phase 15: Documentation and finalization
 
 ---
 
-## 2026-01-16 - Oprava dokumentace
+## 2026-01-16 - Documentation Fix
 
-### Cíl
+### Goal
 
-Opravit chybějící dokumentaci a aktualizovat testovací plán.
+Fix missing documentation and update test plan.
 
-### Dokončeno
+### Completed
 
-- [x] Opraveny checkboxy v PLAN.md (fáze 1-11 označeny jako hotové)
-- [x] Vytvořen DEVLOG.md se shrnutím iterace 1
-- [x] Rozšířen CLAUDE.md o explicitní dokumentační proces
-- [x] Přepsána Fáze 2 (Testovací infrastruktura) s rozlišením:
-  - **Captures** = statické XML (funguje teď)
-  - **Recordings** = JSONL nahrávky (vyžaduje ReplaySource v c123-server)
-- [x] Aktualizována sekce "Testovací data" s instrukcemi pro oba módy
+- [x] Fixed checkboxes in PLAN.md (phases 1-11 marked as done)
+- [x] Created DEVLOG.md with iteration 1 summary
+- [x] Extended CLAUDE.md with explicit documentation process
+- [x] Rewrote Phase 2 (Test Infrastructure) with distinction:
+  - **Captures** = static XML (works now)
+  - **Recordings** = JSONL recordings (requires ReplaySource in c123-server)
+- [x] Updated "Test Data" section with instructions for both modes
 
-### Poznámky
+### Notes
 
-**Zjištění:** c123-server nepodporuje přehrávání recordings - má pouze:
-- `TcpSource` - připojení k živému C123
-- `XmlFileSource` - statické XML soubory
+**Finding:** c123-server doesn't support recording playback - only has:
+- `TcpSource` - connection to live C123
+- `XmlFileSource` - static XML files
 
-**Řešení:** Vytvořit standalone `replay-server.js` v c123-protocol-docs/tools:
-- TCP server na portu 27333 (emuluje C123)
-- c123-server se připojí jako k autentickému C123
-- Žádné změny v c123-server potřeba
+**Solution:** Create standalone `replay-server.js` in c123-protocol-docs/tools:
+- TCP server on port 27333 (emulates C123)
+- c123-server connects to it like authentic C123
+- No changes to c123-server needed
 
 ```
 replay-server (TCP:27333) → c123-server → c123-scoring
 ```
 
-**Důležité pravidlo:** Z tohoto projektu NEMĚNIT jiné projekty (c123-server, c123-protocol-docs, atd.) - pouze číst jako reference. Replay-server implementovat samostatně v c123-protocol-docs.
+**Important rule:** From this project DO NOT MODIFY other projects (c123-server, c123-protocol-docs, etc.) - only read as reference. Implement replay-server separately in c123-protocol-docs.
 
 ---
 
-## 2026-01-16 - Fáze 2A: Replay Server
+## 2026-01-16 - Phase 2A: Replay Server
 
-### Cíl iterace
+### Iteration Goal
 
-Implementovat replay-server pro přehrávání JSONL nahrávek jako simulace živého C123.
+Implement replay-server for playing back JSONL recordings as live C123 simulation.
 
-### Dokončeno
+### Completed
 
-- [x] Vytvořen `c123-protocol-docs/tools/replay-server.js`
-  - TCP server na portu 27333
-  - Parsování JSONL, filtrování `src: "tcp"` zpráv
-  - Přehrávání s respektováním timestampů
-  - CLI parametry: --speed, --loop, --port
-- [x] Otestováno s c123-server a c123-scoring
-- [x] Aktualizován `recordings/README.md` s dokumentací
-- [x] Screenshot fungující aplikace: `docs/screenshots/scoring-live-replay.png`
+- [x] Created `c123-protocol-docs/tools/replay-server.js`
+  - TCP server on port 27333
+  - JSONL parsing, filtering `src: "tcp"` messages
+  - Playback respecting timestamps
+  - CLI parameters: --speed, --loop, --port
+- [x] Tested with c123-server and c123-scoring
+- [x] Updated `recordings/README.md` with documentation
+- [x] Screenshot of working app: `docs/screenshots/scoring-live-replay.png`
 
-### Architektura
+### Architecture
 
 ```
 replay-server (TCP:27333) → c123-server (:27123) → c123-scoring (:5173)
 ```
 
-### Poznámky
+### Notes
 
-- Replay-server filtruje pouze `src: "tcp"` zprávy (C123 protokol)
-- Používá oddělovač `|` jako autentické C123
-- Nahrávka `rec-2025-12-28T09-34-10.jsonl` obsahuje 1051 TCP zpráv (4m 7s)
-- S `--speed 5` se 4 minuty přehrají za ~50s
+- Replay-server filters only `src: "tcp"` messages (C123 protocol)
+- Uses `|` delimiter like authentic C123
+- Recording `rec-2025-12-28T09-34-10.jsonl` contains 1051 TCP messages (4m 7s)
+- With `--speed 5` the 4 minutes play back in ~50s
 
 ---
 
-## 2026-01-16 - Fáze 13.0: Oprava zobrazení gridu
+## 2026-01-16 - Phase 13.0: Grid Display Fix
 
-### Cíl iterace
+### Iteration Goal
 
-Opravit grid tak, aby primárně zobrazoval dojeté závodníky (pro kontrolu penalizací), ne závodníky na trati.
+Fix grid to primarily show finished competitors (for penalty verification), not competitors on course.
 
-### Dokončeno
+### Completed
 
-- [x] Rozdělení závodníků na "finished" a "on-course"
-- [x] Dojetí se řadí podle `rank` (pořadí), ne podle `position`
-- [x] Závodníci na trati se řadí podle `position` (1 = nejblíž cíli)
-- [x] Dojetí závodníci jsou primárně nahoře, na trati jsou jako sekundární sekce
-- [x] Vizuální separátor "ON COURSE (X)" mezi sekcemi
-- [x] Sloupec "#" zobrazuje rank pro dojeté, position pro na trati
-- [x] CSS úpravy - dojetí mají plnou opacity, na trati mají sníženou (0.85)
+- [x] Split competitors into "finished" and "on-course"
+- [x] Finished sorted by `rank` (position), not by `position`
+- [x] Competitors on course sorted by `position` (1 = closest to finish)
+- [x] Finished competitors are primary at top, on course are secondary section
+- [x] Visual separator "ON COURSE (X)" between sections
+- [x] Column "#" shows rank for finished, position for on course
+- [x] CSS adjustments - finished have full opacity, on course have reduced (0.85)
 
-### Změny
+### Changes
 
 **OnCourseGrid.tsx:**
-- Nová logika pro separaci a řazení závodníků
-- Fragment wrapper pro vložení section separátoru
-- Dynamické zobrazení rank vs position
+- New logic for separating and sorting competitors
+- Fragment wrapper for section separator insertion
+- Dynamic rank vs position display
 
 **OnCourseGrid.css:**
-- Nové styly pro `.section-separator` a `.section-label`
-- Invertovaná opacity - teď dojetí jsou plně viditelní, na trati tlumení
+- New styles for `.section-separator` and `.section-label`
+- Inverted opacity - now finished are fully visible, on course dimmed
 
-### Poznámky
+### Notes
 
-- Toggle pro skrývání závodníků na trati (13.0.4) odložen na později - není kritické
-- Keyboard navigace funguje přes obě sekce (row index je konzistentní)
-
----
-
-## 2026-01-16 - Fáze 13.2: Error Boundaries
-
-### Cíl iterace
-
-Přidat ErrorBoundary komponentu pro zachytávání React chyb a zobrazení fallback UI.
-
-### Dokončeno
-
-- [x] Vytvořena `ErrorBoundary` komponenta (class component s getDerivedStateFromError)
-- [x] Fallback UI s detaily chyby, tlačítky "Try Again" a "Reload Page"
-- [x] CSS styly konzistentní s design systémem
-- [x] Integrace do main.tsx (wraps ToastProvider a App)
-
-### Poznámky
-
-- ErrorBoundary musí být class component (React hooks nepodporují error boundaries)
-- Wraps celou aplikaci včetně ToastProvider pro maximální ochranu
+- Toggle for hiding on-course competitors (13.0.4) postponed - not critical
+- Keyboard navigation works across both sections (row index is consistent)
 
 ---
 
-## 2026-01-16 - Fáze 13.3: Empty States
+## 2026-01-16 - Phase 13.2: Error Boundaries
 
-### Cíl iterace
+### Iteration Goal
 
-Přidat EmptyState komponenty pro různé prázdné stavy aplikace.
+Add ErrorBoundary component for catching React errors and showing fallback UI.
 
-### Dokončeno
+### Completed
 
-- [x] Vytvořena EmptyState komponenta s variantami:
-  - `disconnected` - není připojení k serveru
-  - `no-races` - žádné aktivní závody
-  - `no-competitors` - žádní závodníci ve vybraném závodě
-  - `loading` - probíhá připojování
-- [x] Každá varianta má ikonu, title a message
-- [x] Disconnected stav má akční tlačítko pro otevření nastavení
-- [x] Integrace do App.tsx s kaskádovitou logikou zobrazení
+- [x] Created `ErrorBoundary` component (class component with getDerivedStateFromError)
+- [x] Fallback UI with error details, "Try Again" and "Reload Page" buttons
+- [x] CSS styles consistent with design system
+- [x] Integration in main.tsx (wraps ToastProvider and App)
 
-### Poznámky
+### Notes
 
-- Stavy jsou hierarchicky řazeny: loading → disconnected → no-races → no-competitors → grid
-- Ikony jsou emoji pro jednoduchost (bez závislostí na icon library)
-- CSS animace pro loading stav (pulse efekt)
+- ErrorBoundary must be class component (React hooks don't support error boundaries)
+- Wraps entire app including ToastProvider for maximum protection
 
 ---
 
-## 2026-01-16 - Fáze 13.4: Animace a transitions
+## 2026-01-16 - Phase 13.3: Empty States
 
-### Cíl iterace
+### Iteration Goal
 
-Přidat animace a transitions pro lepší UX, s respektováním `prefers-reduced-motion`.
+Add EmptyState components for various empty application states.
 
-### Dokončeno
+### Completed
 
-- [x] Modal animace (fade-in overlay, scale-in content) v App.css
-- [x] Connection status indicator - pulsing animace pro connecting stav
-- [x] Penalty cell transitions - plynulé přechody mezi stavy (empty/clear/touch/miss)
-- [x] Competitor row transitions - plynulé hover a state změny
-- [x] `@media (prefers-reduced-motion: reduce)` ve všech relevantních CSS souborech:
+- [x] Created EmptyState component with variants:
+  - `disconnected` - no server connection
+  - `no-races` - no active races
+  - `no-competitors` - no competitors in selected race
+  - `loading` - connecting in progress
+- [x] Each variant has icon, title and message
+- [x] Disconnected state has action button to open settings
+- [x] Integration in App.tsx with cascading display logic
+
+### Notes
+
+- States are hierarchically ordered: loading → disconnected → no-races → no-competitors → grid
+- Icons are emoji for simplicity (no icon library dependencies)
+- CSS animation for loading state (pulse effect)
+
+---
+
+## 2026-01-16 - Phase 13.4: Animations and Transitions
+
+### Iteration Goal
+
+Add animations and transitions for better UX, respecting `prefers-reduced-motion`.
+
+### Completed
+
+- [x] Modal animations (fade-in overlay, scale-in content) in App.css
+- [x] Connection status indicator - pulsing animation for connecting state
+- [x] Penalty cell transitions - smooth transitions between states (empty/clear/touch/miss)
+- [x] Competitor row transitions - smooth hover and state changes
+- [x] `@media (prefers-reduced-motion: reduce)` in all relevant CSS files:
   - App.css
   - ConnectionStatus.module.css
   - OnCourseGrid.css
   - EmptyState.css
   - Settings.module.css
-  - Toast.css (již existovalo)
+  - Toast.css (already existed)
 
-### Změny
+### Changes
 
 **App.css:**
-- Přidána `fade-in` animace pro modal overlay
-- Přidána `modal-scale-in` animace pro modal content
-- Reduced-motion sekce pro vypnutí animací
+- Added `fade-in` animation for modal overlay
+- Added `modal-scale-in` animation for modal content
+- Reduced-motion section for disabling animations
 
 **ConnectionStatus.module.css:**
-- Přidána `indicator--connecting` třída s pulse animací
-- Transition pro indikátor při změně stavu
+- Added `indicator--connecting` class with pulse animation
+- Transition for indicator on state change
 
 **useConnectionStatus.ts:**
-- Přidán nový statusClass `'connecting'` pro animovaný stav
+- Added new statusClass `'connecting'` for animated state
 
 **OnCourseGrid.css:**
-- Transitions pro penalty stavy a competitor rows
-- Reduced-motion sekce
+- Transitions for penalty states and competitor rows
+- Reduced-motion section
 
-### Poznámky
+### Notes
 
-- Všechny animace jsou krátké (150-200ms) pro responsivní pocit
-- Reduced-motion uživatelé vidí statické stavy bez animací
-- Toast.css již měl reduced-motion podporu z předchozí iterace
-
----
-
-## 2026-01-16 - Fáze 13.5: Focus trap v modalech
-
-### Cíl iterace
-
-Přidat focus trap do všech modalů pro lepší klávesnicovou navigaci a přístupnost.
-
-### Dokončeno
-
-- [x] Vytvořen `useFocusTrap` hook
-  - Automatické zaměření prvního focusable elementu při otevření
-  - Cyklování focusu mezi prvním a posledním elementem při Tab/Shift+Tab
-  - Obnovení focusu na předchozí element při zavření modalu
-  - Podpora pro enabled/autoFocus/restoreFocus options
-- [x] Integrováno do Settings modalu
-- [x] Integrováno do GateGroupEditor modalu
-- [x] Export z hooks/index.ts
-
-### Poznámky
-
-- Hook používá `requestAnimationFrame` pro správné načasování focusu
-- Focusable elementy jsou detekovány pomocí standardního selektoru (a, button, input, select, textarea, [tabindex])
-- Elementy s `display: none` nebo `visibility: hidden` jsou filtrovány
+- All animations are short (150-200ms) for responsive feel
+- Reduced-motion users see static states without animations
+- Toast.css already had reduced-motion support from previous iteration
 
 ---
 
-## 2026-01-16 - Fáze 13.8: Touch device optimalizace
+## 2026-01-16 - Phase 13.5: Focus Trap in Modals
 
-### Cíl iterace
+### Iteration Goal
 
-Zajistit, aby všechny interaktivní prvky měly minimální touch target 44×44px na dotykových zařízeních.
+Add focus trap to all modals for better keyboard navigation and accessibility.
 
-### Dokončeno
+### Completed
+
+- [x] Created `useFocusTrap` hook
+  - Automatic focus on first focusable element when opened
+  - Focus cycling between first and last element on Tab/Shift+Tab
+  - Focus restoration to previous element when modal closes
+  - Support for enabled/autoFocus/restoreFocus options
+- [x] Integrated into Settings modal
+- [x] Integrated into GateGroupEditor modal
+- [x] Export from hooks/index.ts
+
+### Notes
+
+- Hook uses `requestAnimationFrame` for proper focus timing
+- Focusable elements detected via standard selector (a, button, input, select, textarea, [tabindex])
+- Elements with `display: none` or `visibility: hidden` are filtered
+
+---
+
+## 2026-01-16 - Phase 13.8: Touch Device Optimization
+
+### Iteration Goal
+
+Ensure all interactive elements have minimum 44×44px touch target on touch devices.
+
+### Completed
 
 - [x] OnCourseGrid.css - gate cells (44px), check buttons (44px), row heights (48px)
 - [x] RaceSelector.module.css - select height (44px), larger padding
 - [x] GateGroupSwitcher.module.css - group buttons (44px), edit button (44px)
 - [x] Settings.module.css - tabs, buttons, inputs, checkboxes
 - [x] CompetitorActions.module.css - action buttons (44px), menu sizing
-- [x] GateGroupEditor.module.css - všechny interaktivní prvky včetně gates gridu
+- [x] GateGroupEditor.module.css - all interactive elements including gates grid
 - [x] TimingPanel.module.css - timing buttons (48px), confirm buttons
 
-### Implementace
+### Implementation
 
-Použit `@media (pointer: coarse)` media query pro detekci dotykových zařízení:
-- Zvětšení touch targetů na min 44×44px (WCAG doporučení)
-- Input font-size 16px pro prevenci zoomu na iOS
-- Větší padding pro pohodlnější ovládání
+Used `@media (pointer: coarse)` media query for touch device detection:
+- Increased touch targets to min 44×44px (WCAG recommendation)
+- Input font-size 16px to prevent zoom on iOS
+- Larger padding for comfortable control
 
-### Poznámky
+### Notes
 
-- `pointer: coarse` je spolehlivější než `hover: none` pro detekci touch zařízení
-- Timing buttons mají 48px pro lepší ergonomii (kritické akce)
-- iOS automaticky zoomuje při focusu na input s font-size < 16px
+- `pointer: coarse` is more reliable than `hover: none` for touch device detection
+- Timing buttons have 48px for better ergonomics (critical actions)
+- iOS automatically zooms when focusing input with font-size < 16px
 
 ---
 
-## 2026-01-16 - Fáze 13.10: Bundle size optimalizace
+## 2026-01-16 - Phase 13.10: Bundle Size Optimization
 
-### Cíl iterace
+### Iteration Goal
 
-Analyzovat a optimalizovat velikost produkčního bundlu.
+Analyze and optimize production bundle size.
 
-### Dokončeno
+### Completed
 
-- [x] Analýza bundle pomocí rollup-plugin-visualizer
-- [x] Správné oddělení vendor chunku (React/ReactDOM)
-- [x] Konfigurace Vite pro optimální build:
-  - Target ES2020 (moderní JS bez polyfillů)
-  - Drop console/debugger v produkci
-  - Odstranění legal comments
+- [x] Bundle analysis with rollup-plugin-visualizer
+- [x] Proper vendor chunk splitting (React/ReactDOM)
+- [x] Vite configuration for optimal build:
+  - Target ES2020 (modern JS without polyfills)
+  - Drop console/debugger in production
+  - Remove legal comments
 
-### Výsledky
+### Results
 
-**Před optimalizací:**
-- Celkem: 479 kB (136 kB gzip)
-- Vše v jednom bundlu
+**Before optimization:**
+- Total: 479 kB (136 kB gzip)
+- Everything in one bundle
 
-**Po optimalizaci:**
+**After optimization:**
 - Vendor (React): 330 kB (100.5 kB gzip) - cacheable
 - App code: 88.5 kB (19.7 kB gzip)
-- Celkem: 418 kB (120.2 kB gzip) - **12% menší**
+- Total: 418 kB (120.2 kB gzip) - **12% smaller**
 
-### Poznámky
+### Notes
 
-- React 19 má větší runtime než React 18 (~330kB vs ~140kB)
-- Vendor chunk je oddělen pro lepší cacheování - React se nemění často
-- App code 88.5 kB je přiměřené pro aplikaci s 3300 řádky TypeScriptu
-- source-map-explorer a rollup-plugin-visualizer přidány jako dev dependencies
+- React 19 has larger runtime than React 18 (~330kB vs ~140kB)
+- Vendor chunk is separated for better caching - React doesn't change often
+- App code 88.5 kB is reasonable for app with 3300 lines of TypeScript
+- source-map-explorer and rollup-plugin-visualizer added as dev dependencies
 
 ---
 
-## 2026-01-16 - Fáze 14: Vizuální testy (Playwright)
+## 2026-01-16 - Phase 14: Visual Tests (Playwright)
 
-### Cíl iterace
+### Iteration Goal
 
-Implementovat Playwright testy a vytvořit screenshoty všech stavů aplikace pro dokumentaci.
+Implement Playwright tests and create screenshots of all app states for documentation.
 
-### Dokončeno
+### Completed
 
-- [x] Instalace Playwright a závislostí (@playwright/test, ws, tsx)
-- [x] Konfigurace playwright.config.ts
-- [x] Vytvoření mock WebSocket serveru pro testy (tests/mock-ws-server.ts)
-- [x] Vytvoření testovacích fixtures (tests/fixtures/mock-data.ts)
-- [x] Playwright testy pro statické stavy (screenshots-static.spec.ts)
-- [x] Playwright testy pro stavy s daty (screenshots-with-data.spec.ts)
-- [x] 15 dokumentačních screenshotů v docs/screenshots/
+- [x] Playwright installation and dependencies (@playwright/test, ws, tsx)
+- [x] playwright.config.ts configuration
+- [x] Mock WebSocket server for tests (tests/mock-ws-server.ts)
+- [x] Test fixtures (tests/fixtures/mock-data.ts)
+- [x] Playwright tests for static states (screenshots-static.spec.ts)
+- [x] Playwright tests for states with data (screenshots-with-data.spec.ts)
+- [x] 15 documentation screenshots in docs/screenshots/
 
-### Vytvořené screenshoty
+### Created Screenshots
 
-| Soubor | Popis |
-|--------|-------|
-| 01-disconnected.png | Stav bez připojení |
-| 02-connecting.png | Připojování |
+| File | Description |
+|------|-------------|
+| 01-disconnected.png | Disconnected state |
+| 02-connecting.png | Connecting |
 | 03-settings-panel.png | Settings modal - Server tab |
 | 04-settings-keyboard.png | Settings modal - Keyboard tab |
-| 05-no-races.png | Připojeno, žádné závody |
-| 07-race-selector.png | Race selector s více závody |
-| 08-grid-finished.png | Grid se závodníky |
-| 09-grid-cell-focus.png | Grid s focusem na buňce |
-| 10-grid-oncourse-section.png | Grid - sekce On Course |
+| 05-no-races.png | Connected, no races |
+| 07-race-selector.png | Race selector with multiple races |
+| 08-grid-finished.png | Grid with competitors |
+| 09-grid-cell-focus.png | Grid with cell focus |
+| 10-grid-oncourse-section.png | Grid - On Course section |
 | 11-gate-group-switcher.png | Gate group switcher |
 | 12-gate-group-editor.png | Gate group editor modal |
 | 13-competitor-actions.png | Competitor actions menu |
-| 14-check-progress.png | Check progress ve footeru |
+| 14-check-progress.png | Check progress in footer |
 | 15-mobile-view.png | Mobile view |
 | 16-mobile-settings.png | Mobile settings |
 
-### Problémy a řešení
+### Problems and Solutions
 
-1. **Problém:** Mock WebSocket server kolidoval s portem při paralelních testech
-   **Řešení:** Rozdělení testů na dva soubory - statické (bez serveru) a s daty (vyžadují běžící c123-server + replay-server)
+1. **Problem:** Mock WebSocket server conflicted with port during parallel tests
+   **Solution:** Split tests into two files - static (no server) and with data (require running c123-server + replay-server)
 
-2. **Problém:** Check buttons jsou disabled pro závodníky na trati
-   **Řešení:** Test 14 upraven aby přeskočil disabled buttons
+2. **Problem:** Check buttons are disabled for on-course competitors
+   **Solution:** Test 14 updated to skip disabled buttons
 
-### Poznámky
+### Notes
 
-- Testy s daty vyžadují běžící replay-server + c123-server
-- Statické testy lze spustit samostatně: `npm run test -- screenshots-static.spec.ts`
-- Screenshot 06-no-competitors.png chybí (obtížné vytvořit specifický stav)
+- Tests with data require running replay-server + c123-server
+- Static tests can run standalone: `npm run test -- screenshots-static.spec.ts`
+- Screenshot 06-no-competitors.png missing (difficult to create specific state)
 
 ---
 
-## 2026-01-16 - Results-based grid refactoring
+## 2026-01-16 - Results-based Grid Refactoring
 
-### Cíl iterace
+### Iteration Goal
 
-Refaktoring hlavního gridu z OnCourse dat na Results data pro správnou kontrolu penalizací. OnCourse data jsou vhodná pro live sledování závodníků na trati, ale Results obsahují kompletní výsledky závodu.
+Refactor main grid from OnCourse data to Results data for proper penalty verification. OnCourse data is suitable for live competitor tracking, but Results contains complete race results.
 
-### Dokončeno
+### Completed
 
-- [x] Přidány utility funkce pro parsování Results gates formátu (mezery místo čárek)
-  - `parseResultsGatesString()` v utils/gates.ts
-  - `parseResultsGatesWithConfig()` v utils/gates.ts
-- [x] Vytvořena nová komponenta `ResultsGrid`
-  - Používá Results data místo OnCourse
-  - Řadí závodníky: platné výsledky podle rank, DNS/DNF/DSQ na konec
-  - Zobrazuje status (DNS/DNF/DSQ) ve sloupci #
-  - Sdílí CSS styly s OnCourseGrid
-- [x] App.tsx upraven pro použití Results dat
-  - ResultsGrid nahrazuje OnCourseGrid jako hlavní grid
-  - finishedCompetitorBibs nyní počítá z Results
+- [x] Added utility functions for parsing Results gates format (spaces instead of commas)
+  - `parseResultsGatesString()` in utils/gates.ts
+  - `parseResultsGatesWithConfig()` in utils/gates.ts
+- [x] Created new component `ResultsGrid`
+  - Uses Results data instead of OnCourse
+  - Sorts competitors: valid results by rank, DNS/DNF/DSQ at end
+  - Shows status (DNS/DNF/DSQ) in # column
+  - Shares CSS styles with OnCourseGrid
+- [x] App.tsx updated to use Results data
+  - ResultsGrid replaces OnCourseGrid as main grid
+  - finishedCompetitorBibs now calculated from Results
 
-### Změny souborů
+### File Changes
 
-- `src/utils/gates.ts` - nové funkce pro Results format
-- `src/components/ResultsGrid/` - nová komponenta
+- `src/utils/gates.ts` - new functions for Results format
+- `src/components/ResultsGrid/` - new component
 - `src/components/index.ts` - export ResultsGrid
-- `src/App.tsx` - použití ResultsGrid místo OnCourseGrid
+- `src/App.tsx` - use ResultsGrid instead of OnCourseGrid
 
-### Poznámky
+### Notes
 
-- OnCourseGrid zůstává v codebase pro potenciální použití jako doplňkový panel
-- Results data mají gates oddělené mezerami ("0 0 2 0 50"), OnCourse čárkami ("0,0,2,0,50")
-- Zbývá upravit Race selector na shortTitle
+- OnCourseGrid remains in codebase for potential use as supplementary panel
+- Results data has gates separated by spaces ("0 0 2 0 50"), OnCourse by commas ("0,0,2,0,50")
+- Still need to update Race selector to shortTitle
 
 ---
 
-## 2026-01-17 - Oprava parsování gates + screenshoty
+## 2026-01-17 - Gates Parsing Fix + Screenshots
 
-### Cíl iterace
+### Iteration Goal
 
-Opravit zobrazení penalizací v gridu (byly "ob-sloupec") a aktualizovat screenshoty pro dokumentaci.
+Fix penalty display in grid (were "every other column") and update screenshots for documentation.
 
-### Dokončeno
+### Completed
 
-- [x] **Bug fix: parseResultsGatesString** - C123 Results data mají dvojité mezery mezi hodnotami (`"0  0  0  2  0  ..."` místo `"0 0 0 2 0 ..."`). Parser teď používá regex `/\s+/` pro split.
-- [x] Přidán unit test pro dvojité mezery v gates stringu
-- [x] Aktualizovány všechny screenshoty (07-15) s reálnými Results daty
-- [x] Vylepšeny E2E testy:
-  - `waitForDataAndSelectRace()` helper funkce
-  - Automatický výběr K1m 2. jízda (má data v replay)
-  - Čištění localStorage pro konzistentní výsledky
-- [x] Opraven mock-ws-server pro posílání Results zpráv
-- [x] Opravena mock-data.ts s korektními typy zpráv (Connected, Results)
+- [x] **Bug fix: parseResultsGatesString** - C123 Results data has double spaces between values (`"0  0  0  2  0  ..."` instead of `"0 0 0 2 0 ..."`). Parser now uses regex `/\s+/` for split.
+- [x] Added unit test for double spaces in gates string
+- [x] Updated all screenshots (07-15) with real Results data
+- [x] Improved E2E tests:
+  - `waitForDataAndSelectRace()` helper function
+  - Automatic selection of K1m 2nd run (has data in replay)
+  - Clearing localStorage for consistent results
+- [x] Fixed mock-ws-server to send Results messages
+- [x] Fixed mock-data.ts with correct message types (Connected, Results)
 
-### Commity
+### Commits
 
 - `7772537` fix: parse Results gates string with multiple spaces
 - `877e1cc` test: update screenshots and improve E2E test reliability
 
-### Problémy a řešení
+### Problems and Solutions
 
-1. **Problém:** Penalizace se zobrazovaly "ob-sloupec" (gate 5 ve sloupci 9, atd.)
-   **Řešení:** Gates string z C123 má dvojité mezery. Split podle ` ` vytvářel prázdné položky. Opraveno na `/\s+/` regex.
+1. **Problem:** Penalties displayed "every other column" (gate 5 in column 9, etc.)
+   **Solution:** Gates string from C123 has double spaces. Split by ` ` created empty items. Fixed with `/\s+/` regex.
 
-2. **Problém:** Screenshoty ukazovaly "No competitors" - data nedorazila
-   **Řešení:**
-   - Výběr správného závodu (K1m 2. jízda má Results data)
-   - Delší čekání na načtení dat
-   - Čištění localStorage před testem
+2. **Problem:** Screenshots showed "No competitors" - data didn't arrive
+   **Solution:**
+   - Select correct race (K1m 2nd run has Results data)
+   - Longer wait for data loading
+   - Clear localStorage before test
 
-3. **Problém:** Mock server posílal ServerInfo místo Connected, chyběly Results
-   **Řešení:** Opraveny typy zpráv v mock-data.ts, přidáno posílání Results v mock-ws-server.ts
+3. **Problem:** Mock server sent ServerInfo instead of Connected, missing Results
+   **Solution:** Fixed message types in mock-data.ts, added Results sending in mock-ws-server.ts
 
-### Poznámky
+### Notes
 
-- C123 posílá gates ve formátu `"0  0  0  2  ..."` s dvojitými mezerami
-- Results zprávy nejsou posílány pravidelně (jen při změně), proto screenshoty závisí na správném načasování replay-serveru
-- Screenshoty ukazují stabilní stav z K1m - střední trať - 2. jízda
-
----
-
-## 2026-01-17 - Fáze 15.5: GitHub Actions workflow
-
-### Cíl iterace
-
-Přidat CI/CD pipeline pro automatické buildování a testování při push/PR.
-
-### Dokončeno
-
-- [x] Vytvořen `.github/workflows/ci.yml`
-  - Build job: checkout obou repozitářů, lint, typecheck, unit testy, build
-  - E2E job: Playwright testy (statické screenshoty)
-  - Upload artifacts pro build a test reporty
-- [x] Řešení lokální závislosti na timing-design-system:
-  - CI checkoutuje oba repozitáře
-  - Dynamicky mění path v package.json
-
-### Poznámky
-
-- E2E testy spouští pouze `screenshots-static.spec.ts` (nevyžadují mock server)
-- Plná E2E sada vyžaduje replay-server, což je mimo scope CI
+- C123 sends gates in format `"0  0  0  2  ..."` with double spaces
+- Results messages aren't sent regularly (only on change), so screenshots depend on correct replay-server timing
+- Screenshots show stable state from K1m - medium course - 2nd run
 
 ---
 
-## 2026-01-17 - Fáze 16C: Settings modal redesign
+## 2026-01-17 - Phase 15.5: GitHub Actions Workflow
 
-### Cíl iterace
+### Iteration Goal
 
-Refaktoring Settings komponenty na použití design system komponent místo vlastních CSS stylů.
+Add CI/CD pipeline for automatic building and testing on push/PR.
 
-### Dokončeno
+### Completed
 
-- [x] Nahrazení vlastního modalu za DS `Modal`, `ModalHeader`, `ModalTitle`, `ModalClose`, `ModalBody`
-- [x] Použití DS `Tabs`, `TabList`, `Tab`, `TabPanels`, `TabPanel` pro přepínání záložek
-- [x] Použití DS `Input` pro server URL vstup
-- [x] Použití DS `Checkbox` pro display options
-- [x] Použití DS `Button` pro akce (Test Connection, Save & Reconnect)
-- [x] Použití DS `Kbd` pro zobrazení klávesových zkratek
-- [x] Použití DS `Badge` pro status připojení
-- [x] Smazání Settings.module.css (387 řádků)
-- [x] Vytvoření minimálního Settings.css (130 řádků) pro layout-specifické styly
+- [x] Created `.github/workflows/ci.yml`
+  - Build job: checkout both repos, lint, typecheck, unit tests, build
+  - E2E job: Playwright tests (static screenshots)
+  - Upload artifacts for build and test reports
+- [x] Solution for local timing-design-system dependency:
+  - CI checks out both repositories
+  - Dynamically changes path in package.json
 
-### Změny souborů
+### Notes
 
-- `src/components/Settings/Settings.tsx` - kompletní refaktoring na DS komponenty
-- `src/components/Settings/Settings.css` - nový minimální CSS soubor
-- `src/components/Settings/Settings.module.css` - smazáno
-
-### Poznámky
-
-- DS Modal má vlastní focus trap, takže useFocusTrap hook už není potřeba
-- Badge komponenta dobře nahrazuje vlastní status indikátory
-- Celkově ušetřeno ~260 řádků CSS kódu
+- E2E tests run only `screenshots-static.spec.ts` (don't require mock server)
+- Full E2E suite requires replay-server, which is outside CI scope
 
 ---
 
-## 2026-01-17 - Fáze 16D: Grid redesign
+## 2026-01-17 - Phase 16C: Settings Modal Redesign
 
-### Cíl iterace
+### Iteration Goal
 
-Refaktoring ResultsGrid na použití design system Table komponent a vytvoření PenaltyCell komponenty s DS tokeny.
+Refactor Settings component to use design system components instead of custom CSS styles.
 
-### Dokončeno
+### Completed
 
-- [x] Použití DS `Table`, `TableHead`, `TableBody`, `TableRow`, `TableCell`, `TableHeaderCell`
-- [x] Vytvoření `PenaltyCell` komponenty jako custom cell s DS tokeny
-- [x] Použití DS `Badge` pro zobrazení DNS/DNF/DSQ statusů
-- [x] Nový `ResultsGrid.css` s DS color tokeny pro penalty stavy
-- [x] Barevné kódování: clear (success), touch (warning), miss (error)
-- [x] Zachována keyboard navigace a focus management
+- [x] Replaced custom modal with DS `Modal`, `ModalHeader`, `ModalTitle`, `ModalClose`, `ModalBody`
+- [x] Used DS `Tabs`, `TabList`, `Tab`, `TabPanels`, `TabPanel` for tab switching
+- [x] Used DS `Input` for server URL input
+- [x] Used DS `Checkbox` for display options
+- [x] Used DS `Button` for actions (Test Connection, Save & Reconnect)
+- [x] Used DS `Kbd` for keyboard shortcut display
+- [x] Used DS `Badge` for connection status
+- [x] Deleted Settings.module.css (387 lines)
+- [x] Created minimal Settings.css (130 lines) for layout-specific styles
 
-### Změny souborů
+### File Changes
 
-- `src/components/ResultsGrid/ResultsGrid.tsx` - přepsáno na DS Table komponenty
-- `src/components/ResultsGrid/PenaltyCell.tsx` - nová komponenta pro penalty buňky
-- `src/components/ResultsGrid/ResultsGrid.css` - nové styly s DS tokeny
+- `src/components/Settings/Settings.tsx` - complete refactor to DS components
+- `src/components/Settings/Settings.css` - new minimal CSS file
+- `src/components/Settings/Settings.module.css` - deleted
+
+### Notes
+
+- DS Modal has its own focus trap, so useFocusTrap hook no longer needed
+- Badge component nicely replaces custom status indicators
+- Overall saved ~260 lines of CSS code
+
+---
+
+## 2026-01-17 - Phase 16D: Grid Redesign
+
+### Iteration Goal
+
+Refactor ResultsGrid to use design system Table components and create PenaltyCell component with DS tokens.
+
+### Completed
+
+- [x] Used DS `Table`, `TableHead`, `TableBody`, `TableRow`, `TableCell`, `TableHeaderCell`
+- [x] Created `PenaltyCell` component as custom cell with DS tokens
+- [x] Used DS `Badge` for DNS/DNF/DSQ status display
+- [x] New `ResultsGrid.css` with DS color tokens for penalty states
+- [x] Color coding: clear (success), touch (warning), miss (error)
+- [x] Preserved keyboard navigation and focus management
+
+### File Changes
+
+- `src/components/ResultsGrid/ResultsGrid.tsx` - rewritten to DS Table components
+- `src/components/ResultsGrid/PenaltyCell.tsx` - new component for penalty cells
+- `src/components/ResultsGrid/ResultsGrid.css` - new styles with DS tokens
 - `src/components/ResultsGrid/index.ts` - export PenaltyCell
 
-### Poznámky
+### Notes
 
-- DS Checkbox nebyl použit pro check button - vlastní implementace lépe sedí do kompaktního gridu
-- OnCourseGrid.css ponechán pro referenci, ResultsGrid má vlastní CSS
-- Přechod na DS Table zjednodušuje styling a zajišťuje konzistenci s ostatními timing projekty
+- DS Checkbox not used for check button - custom implementation fits better in compact grid
+- OnCourseGrid.css kept for reference, ResultsGrid has its own CSS
+- Transition to DS Table simplifies styling and ensures consistency with other timing projects
 
 ---
 
-## 2026-01-17 - Fáze 17A: Header redesign
+## 2026-01-17 - Phase 17A: Header Redesign
 
-### Cíl iterace
+### Iteration Goal
 
-Redesign headeru podle vzoru c123-server admin - přehlednější layout s prominentním race selectorem.
+Header redesign following c123-server admin pattern - cleaner layout with prominent race selector.
 
-### Dokončeno
+### Completed
 
-- [x] Prozkoumat c123-server admin pro inspiraci (event-bar pattern)
-- [x] Zjednodušit Header komponentu:
-  - Pouze HeaderBrand ("C123 Scoring") + HeaderStatus + settings button
-  - Odstraněn subtitle/raceInfo z headeru
-- [x] Vytvořit novou RaceBar komponentu:
-  - Prominentní h1 s názvem vybraného závodu
-  - Select size="lg" pro velký race selector
-  - LIVE/Finished badge u race selectoru
-- [x] Upravit Layout pro podporu race bar slotu
+- [x] Explore c123-server admin for inspiration (event-bar pattern)
+- [x] Simplify Header component:
+  - Only HeaderBrand ("C123 Scoring") + HeaderStatus + settings button
+  - Removed subtitle/raceInfo from header
+- [x] Create new RaceBar component:
+  - Prominent h1 with selected race name
+  - Select size="lg" for large race selector
+  - LIVE/Finished badge at race selector
+- [x] Update Layout for race bar slot support
 - [x] Sticky footer (position: sticky, bottom: 0)
-- [x] Změnit ⚙ ikonu u gate groups na ✎ (edit) - odlišení od settings
+- [x] Change ⚙ icon at gate groups to ✎ (edit) - differentiation from settings
 
-### Změny souborů
+### File Changes
 
-- `src/components/Header/Header.tsx` - zjednodušeno, odstraněn raceInfo prop
-- `src/components/RaceBar/` - nová komponenta (RaceBar.tsx, RaceBar.css, index.ts)
-- `src/components/Layout/Layout.tsx` - přidán raceBar slot
+- `src/components/Header/Header.tsx` - simplified, removed raceInfo prop
+- `src/components/RaceBar/` - new component (RaceBar.tsx, RaceBar.css, index.ts)
+- `src/components/Layout/Layout.tsx` - added raceBar slot
 - `src/components/Layout/Layout.module.css` - grid-template-rows: auto auto 1fr auto, sticky footer
-- `src/components/GateGroupSwitcher/GateGroupSwitcher.tsx` - změna ikony ⚙ → ✎
-- `src/App.tsx` - použití nového RaceBar místo RaceSelector v headeru
+- `src/components/GateGroupSwitcher/GateGroupSwitcher.tsx` - icon change ⚙ → ✎
+- `src/App.tsx` - use new RaceBar instead of RaceSelector in header
 - `src/components/index.ts` - export RaceBar
 
-### Poznámky
+### Notes
 
-- Vzor z c123-server admin: header má pouze brand + status indikátory, event info je v samostatném "event-bar"
-- RaceBar se zobrazuje vždy, i když není vybrán závod ("No race selected")
-- Footer je nyní sticky - vždy viditelný na spodku obrazovky
+- Pattern from c123-server admin: header has only brand + status indicators, event info is in separate "event-bar"
+- RaceBar shows always, even when no race selected ("No race selected")
+- Footer is now sticky - always visible at bottom of screen
 
 ---
 
-## 2026-01-17 - Fáze 17B: Grid UX vylepšení
+## 2026-01-17 - Phase 17B: Grid UX Improvements
 
-### Cíl iterace
+### Iteration Goal
 
-Přidat vizuální highlighting řádků a sloupců při navigaci v gridu pro lepší orientaci.
+Add visual row and column highlighting during grid navigation for better orientation.
 
-### Dokončeno
+### Completed
 
-- [x] Column highlight při HOVER (jemný 30% accent)
-- [x] Column highlight při FOCUS (výraznější 50% accent)
-- [x] Row highlight při FOCUS
-- [x] Gate header buňky zvýrazněny pro hovered/focused sloupce
-- [x] Odstraněn klub z name sloupce (méně clutteru)
-- [x] PenaltyCell rozšířen o isColumnHovered/isColumnFocused props
+- [x] Column highlight on HOVER (subtle 30% accent)
+- [x] Column highlight on FOCUS (more prominent 50% accent)
+- [x] Row highlight on FOCUS
+- [x] Gate header cells highlighted for hovered/focused columns
+- [x] Removed club from name column (less clutter)
+- [x] PenaltyCell extended with isColumnHovered/isColumnFocused props
 
-### Změny souborů
+### File Changes
 
 - `src/components/ResultsGrid/ResultsGrid.tsx` - hover state, focus highlighting
-- `src/components/ResultsGrid/ResultsGrid.css` - CSS třídy pro highlight
-- `src/components/ResultsGrid/PenaltyCell.tsx` - nové props pro column highlighting
+- `src/components/ResultsGrid/ResultsGrid.css` - CSS classes for highlight
+- `src/components/ResultsGrid/PenaltyCell.tsx` - new props for column highlighting
 
-### Poznámky
+### Notes
 
-- Použit `color-mix()` CSS funkce pro průhledné overlay efekty
-- Hover sloupce je jemnější (30%) než focus sloupce (50%)
-- Focus řádek má stejnou intenzitu jako focus sloupce
+- Used `color-mix()` CSS function for transparent overlay effects
+- Hover column is subtler (30%) than focus column (50%)
+- Focus row has same intensity as focus column
 
 ---
 
-## 2026-01-17 - Fáze 17C: Gate Groups viditelnost
+## 2026-01-17 - Phase 17C: Gate Groups Visibility
 
-### Cíl iterace
+### Iteration Goal
 
-Zlepšit viditelnost gate groups - přesunout switcher na prominentnější místo a vizuálně označit aktivní skupinu.
+Improve gate groups visibility - move switcher to more prominent place and visually mark active group.
 
-### Dokončeno
+### Completed
 
-- [x] Přidán `toolbar` slot do Layout komponenty
-- [x] GateGroupSwitcher přesunut z footeru do toolbaru nad gridem
-- [x] Přidán label s názvem aktivní skupiny a počtem branek
-- [x] Odstraněn `compact` mód (již není potřeba)
-- [x] Přidána vizuální indikace aktivní skupiny v gridu:
-  - `gate-header--in-group` třída pro header buňky
-  - `penalty-cell--in-group` třída pro penalty buňky
-  - Accent barva jako `box-shadow: inset 0 3px 0` na vrchu sloupců
-- [x] PenaltyCell rozšířen o `isInActiveGroup` prop
+- [x] Added `toolbar` slot to Layout component
+- [x] GateGroupSwitcher moved from footer to toolbar above grid
+- [x] Added label with active group name and gate count
+- [x] Removed `compact` mode (no longer needed)
+- [x] Added visual indication of active group in grid:
+  - `gate-header--in-group` class for header cells
+  - `penalty-cell--in-group` class for penalty cells
+  - Accent color as `box-shadow: inset 0 3px 0` on top of columns
+- [x] PenaltyCell extended with `isInActiveGroup` prop
 
-### Změny souborů
+### File Changes
 
-- `src/components/Layout/Layout.tsx` - přidán toolbar slot
+- `src/components/Layout/Layout.tsx` - added toolbar slot
 - `src/components/Layout/Layout.module.css` - grid-template-rows: auto auto auto 1fr auto
-- `src/components/GateGroupSwitcher/GateGroupSwitcher.tsx` - nový design s labelem
-- `src/components/GateGroupSwitcher/GateGroupSwitcher.module.css` - přepracované styly
+- `src/components/GateGroupSwitcher/GateGroupSwitcher.tsx` - new design with label
+- `src/components/GateGroupSwitcher/GateGroupSwitcher.module.css` - reworked styles
 - `src/components/ResultsGrid/ResultsGrid.tsx` - isInActiveGroup prop
-- `src/components/ResultsGrid/ResultsGrid.css` - styly pro in-group indikaci
-- `src/components/ResultsGrid/PenaltyCell.tsx` - nový prop
-- `src/App.tsx` - přesun GateGroupSwitcher do toolbar slotu
+- `src/components/ResultsGrid/ResultsGrid.css` - styles for in-group indication
+- `src/components/ResultsGrid/PenaltyCell.tsx` - new prop
+- `src/App.tsx` - moved GateGroupSwitcher to toolbar slot
 
-### Poznámky
+### Notes
 
-- E2E screenshotové testy jsou zastaralé (používají staré selektory jako `.gate-cell`, `.competitor-row`)
-- Vizuální ověření provedeno manuálně přes build
-- Footer je nyní jednodušší - obsahuje pouze verzi a check progress
+- E2E screenshot tests are outdated (use old selectors like `.gate-cell`, `.competitor-row`)
+- Visual verification done manually via build
+- Footer is now simpler - contains only version and check progress
 
 ---
 
-## 2026-01-17 - Fáze 17D-E: Footer sticky + Řazení závodníků
+## 2026-01-17 - Phase 17D-E: Sticky Footer + Competitor Sorting
 
-### Cíl iterace
+### Iteration Goal
 
-Dokončit sticky footer (17D) a přidat možnost řazení závodníků (17E).
+Complete sticky footer (17D) and add competitor sorting option (17E).
 
-### Dokončeno
+### Completed
 
-- [x] 17D: Footer sticky - již bylo implementováno v rámci 17A (position: sticky, bottom: 0)
-- [x] 17E.1: Typ `ResultsSortOption` a `RESULTS_SORT_LABELS` v types/ui.ts
-- [x] 17E.2: `SortSelector` komponenta s DS Select
-- [x] 17E.3: Sorting logic v `ResultsGrid.tsx` (nový prop `sortBy`)
-- [x] 17E.4: localStorage persistence v App.tsx
-- [x] 17E.5: Toolbar layout s GateGroupSwitcher a SortSelector
+- [x] 17D: Footer sticky - already implemented as part of 17A (position: sticky, bottom: 0)
+- [x] 17E.1: Type `ResultsSortOption` and `RESULTS_SORT_LABELS` in types/ui.ts
+- [x] 17E.2: `SortSelector` component with DS Select
+- [x] 17E.3: Sorting logic in `ResultsGrid.tsx` (new prop `sortBy`)
+- [x] 17E.4: localStorage persistence in App.tsx
+- [x] 17E.5: Toolbar layout with GateGroupSwitcher and SortSelector
 
-### Změny souborů
+### File Changes
 
-- `src/types/ui.ts` - nové typy pro sort
-- `src/components/SortSelector/` - nová komponenta (SortSelector.tsx, SortSelector.css, index.ts)
+- `src/types/ui.ts` - new types for sort
+- `src/components/SortSelector/` - new component (SortSelector.tsx, SortSelector.css, index.ts)
 - `src/components/index.ts` - export SortSelector
-- `src/components/ResultsGrid/ResultsGrid.tsx` - sortBy prop a sorting logika
+- `src/components/ResultsGrid/ResultsGrid.tsx` - sortBy prop and sorting logic
 - `src/App.tsx` - sort state, handler, toolbar layout
-- `src/styles/app.css` - .toolbar-content styly
+- `src/styles/app.css` - .toolbar-content styles
 
-### Poznámky
+### Notes
 
-- Fáze 17D byla již hotová z 17A - pouze označena v PLAN.md
+- Phase 17D was already done from 17A - only marked in PLAN.md
 - Sort options: startOrder, rank (default), bib
-- DNS/DNF/DSQ závodníci jsou vždy na konci, řazení podle startOrder
-- Toolbar nyní obsahuje GateGroupSwitcher vlevo a SortSelector vpravo
+- DNS/DNF/DSQ competitors are always at end, sorted by startOrder
+- Toolbar now contains GateGroupSwitcher on left and SortSelector on right
 
 ---
 
-## 2026-01-17 - Fáze 17F: Tablet optimalizace
+## 2026-01-17 - Phase 17F: Tablet Optimization
 
-### Cíl iterace
+### Iteration Goal
 
-Přidat tablet breakpointy a zvýšit touch targets na 48px pro lepší ergonomii na dotykových zařízeních.
+Add tablet breakpoints and increase touch targets to 48px for better ergonomics on touch devices.
 
-### Dokončeno
+### Completed
 
-- [x] Přidány tablet breakpointy:
+- [x] Added tablet breakpoints:
   - 1366px: iPad Pro landscape, Surface Pro landscape
   - 1024px: iPad landscape, Surface Pro portrait
-  - 768px: iPad portrait (již existovalo)
-- [x] Touch targets zvětšeny z 44px na 48px:
-  - Globální min-height v app.css
-  - Penalty cells v ResultsGrid
-  - Check buttons v ResultsGrid
-  - Group buttons v GateGroupSwitcher
-  - History items v Settings
-- [x] Tablet-specifické úpravy:
-  - Menší padding na 1024px a 1366px
-  - Menší font-size pro labels na 1024px
-  - Race bar title zmenšen na tablet
+  - 768px: iPad portrait (already existed)
+- [x] Touch targets increased from 44px to 48px:
+  - Global min-height in app.css
+  - Penalty cells in ResultsGrid
+  - Check buttons in ResultsGrid
+  - Group buttons in GateGroupSwitcher
+  - History items in Settings
+- [x] Tablet-specific adjustments:
+  - Smaller padding at 1024px and 1366px
+  - Smaller font-size for labels at 1024px
+  - Race bar title reduced on tablet
 
-### Změny souborů
+### File Changes
 
-- `src/styles/app.css` - globální tablet breakpointy a touch targets 48px
+- `src/styles/app.css` - global tablet breakpoints and touch targets 48px
 - `src/components/Layout/Layout.module.css` - tablet padding
-- `src/components/ResultsGrid/ResultsGrid.css` - tablet breakpointy, touch 48px
-- `src/components/RaceBar/RaceBar.css` - tablet breakpointy
-- `src/components/GateGroupSwitcher/GateGroupSwitcher.module.css` - tablet breakpointy, touch 48px
+- `src/components/ResultsGrid/ResultsGrid.css` - tablet breakpoints, touch 48px
+- `src/components/RaceBar/RaceBar.css` - tablet breakpoints
+- `src/components/GateGroupSwitcher/GateGroupSwitcher.module.css` - tablet breakpoints, touch 48px
 - `src/components/Settings/Settings.css` - touch 48px
 
-### Poznámky
+### Notes
 
-- Aplikace je navržena pro velké tablety (iPad Pro, Surface Pro), ne pro mobily
-- 48px touch targets jsou lepší než 44px pro ergonomii (snadnější trefit prstem)
-- Screenshoty pro tablet odloženy - E2E testy jsou zastaralé a vyžadují refaktoring
-
----
-
-## 2026-01-17 - Fáze 17G: Cleanup screenshoty
-
-### Cíl iterace
-
-Vyčistit screenshot složku - smazat zastaralé a mobilní screenshoty.
-
-### Dokončeno
-
-- [x] Smazán `scoring-live-replay.png` - starý screenshot před redesignem
-- [x] Smazány mobilní screenshoty `15-mobile-view.png` a `16-mobile-settings.png`
-- [x] Aktualizován PLAN.md
-
-### Poznámky
-
-- Tablet screenshoty (17G.3) odloženy - E2E testy jsou zastaralé (používají staré selektory)
-- Zůstává 15 screenshotů dokumentujících aktuální stav aplikace
-- Aplikace je optimalizována pro tablet, ne pro mobil
+- App is designed for large tablets (iPad Pro, Surface Pro), not for mobile
+- 48px touch targets are better than 44px for ergonomics (easier to hit with finger)
+- Tablet screenshots postponed - E2E tests are outdated and need refactoring
 
 ---
 
-## 2026-01-17 - Fáze 17H: Settings konsolidace
+## 2026-01-17 - Phase 17G: Screenshot Cleanup
 
-### Cíl iterace
+### Iteration Goal
 
-Audit a konsolidace settings ikon - řešení problému "3× zubatá kola".
+Clean up screenshot folder - delete outdated and mobile screenshots.
 
-### Dokončeno
+### Completed
 
-- [x] 17H.1: Audit settings ikon v celé aplikaci
-- [x] 17H.2: Verifikace že je jediný vstup: header ⚙ + Ctrl+,
-- [x] 17H.3: Potvrzeno že footer a grid nemají settings ikony
-- [x] 17H.4: Aktualizace PLAN.md
+- [x] Deleted `scoring-live-replay.png` - old screenshot before redesign
+- [x] Deleted mobile screenshots `15-mobile-view.png` and `16-mobile-settings.png`
+- [x] Updated PLAN.md
 
-### Audit výsledky
+### Notes
 
-| Umístění | Ikona | Akce | Status |
-|----------|-------|------|--------|
-| Header | ⚙ | Otevře Settings modal | ✅ Správně |
-| Ctrl+, | - | Otevře Settings modal | ✅ Správně |
-| GateGroupSwitcher | ✎ | Otevře GateGroupEditor | ✅ Odlišená ikona |
-| EmptyState (disconnected) | - | "Open Settings" button | ✅ Kontextuální |
-| Settings > Display | - | "Edit Gate Groups" button | ✅ Textové |
-| Footer | - | Žádná settings ikona | ✅ Čisté |
-
-### Poznámky
-
-- Problém "3× zubatá kola" byl již vyřešen v předchozích fázích
-- Fáze 17A změnila ikonu u gate groups z ⚙ na ✎ (edit)
-- Footer obsahuje pouze verzi a check progress, žádné settings
-- Aktuální stav je čistý a konzistentní
+- Tablet screenshots (17G.3) postponed - E2E tests are outdated (use old selectors)
+- 15 screenshots remain documenting current app state
+- App is optimized for tablet, not for mobile
 
 ---
 
-## 2026-01-17 - Redesign Header + Gate Group Indicators
+## 2026-01-17 - Phase 17H: Settings Consolidation
 
-### Cíl iterace
+### Iteration Goal
 
-Redesign hlavičky z 3 pruhů (~250px) na jeden kompaktní řádek (~44px) a přesun gate group indikátorů do gridu.
+Audit and consolidate settings icons - solving "3× gear icon" problem.
 
-### Iterace 1: Nový Header ✅
+### Completed
 
-- [x] Vytvořena `RaceSelector` komponenta se šipkami a dropdown selectorem
-- [x] Přepsána `Header` komponenta na kompaktní DS header
-- [x] Zjednodušen `Layout` - odstraněny `raceBar` a `toolbar` props
-- [x] Aktualizován `App.tsx` s novými props
+- [x] 17H.1: Audit settings icons across entire app
+- [x] 17H.2: Verified single entry: header ⚙ + Ctrl+,
+- [x] 17H.3: Confirmed footer and grid have no settings icons
+- [x] 17H.4: Updated PLAN.md
 
-### Iterace 2: Gate Group Indicators ✅
+### Audit Results
 
-- [x] Vytvořena `GateGroupIndicatorRow` komponenta v ResultsGrid
-- [x] Integrováno do ResultsGrid jako řádek nad čísly branek
-- [x] Přidány dimming styly pro neaktivní gate skupiny
-- [x] PenaltyCell rozšířen o `isDimmed` prop
+| Location | Icon | Action | Status |
+|----------|------|--------|--------|
+| Header | ⚙ | Opens Settings modal | ✅ Correct |
+| Ctrl+, | - | Opens Settings modal | ✅ Correct |
+| GateGroupSwitcher | ✎ | Opens GateGroupEditor | ✅ Different icon |
+| EmptyState (disconnected) | - | "Open Settings" button | ✅ Contextual |
+| Settings > Display | - | "Edit Gate Groups" button | ✅ Text |
+| Footer | - | No settings icon | ✅ Clean |
 
-### Iterace 3: Start Time sloupec ✅
+### Notes
 
-- [x] Přidán `showStartTime` do useSettings
-- [x] Přidán toggle v Settings modal (Display tab)
-- [x] Přidán Start Time sloupec do ResultsGrid (podmíněný)
-- [x] Poznámka: Finish time není implementován - C123ResultRow nemá finishTime pole
+- "3× gear icon" problem was already solved in previous phases
+- Phase 17A changed gate groups icon from ⚙ to ✎ (edit)
+- Footer contains only version and check progress, no settings
+- Current state is clean and consistent
 
-### Iterace 4: Cleanup ✅
+---
 
-- [x] Smazány složky `src/components/RaceBar/` a `src/components/GateGroupSwitcher/`
-- [x] Aktualizovány exporty v `src/components/index.ts`
-- [x] Odstraněny nepoužívané `.toolbar-content` styly z app.css
+## 2026-01-17 - Header Redesign + Gate Group Indicators
+
+### Iteration Goal
+
+Header redesign from 3 bars (~250px) to one compact row (~44px) and move gate group indicators to grid.
+
+### Iteration 1: New Header ✅
+
+- [x] Created `RaceSelector` component with arrows and dropdown selector
+- [x] Rewrote `Header` component to compact DS header
+- [x] Simplified `Layout` - removed `raceBar` and `toolbar` props
+- [x] Updated `App.tsx` with new props
+
+### Iteration 2: Gate Group Indicators ✅
+
+- [x] Created `GateGroupIndicatorRow` component in ResultsGrid
+- [x] Integrated into ResultsGrid as row above gate numbers
+- [x] Added dimming styles for inactive gate groups
+- [x] PenaltyCell extended with `isDimmed` prop
+
+### Iteration 3: Start Time Column ✅
+
+- [x] Added `showStartTime` to useSettings
+- [x] Added toggle in Settings modal (Display tab)
+- [x] Added Start Time column to ResultsGrid (conditional)
+- [x] Note: Finish time not implemented - C123ResultRow doesn't have finishTime field
+
+### Iteration 4: Cleanup ✅
+
+- [x] Deleted folders `src/components/RaceBar/` and `src/components/GateGroupSwitcher/`
+- [x] Updated exports in `src/components/index.ts`
+- [x] Removed unused `.toolbar-content` styles from app.css
 - [x] Build verification
 
-### Smazané soubory
+### Deleted Files
 
 ```
-src/components/RaceBar/         (celá složka)
-src/components/GateGroupSwitcher/  (celá složka)
+src/components/RaceBar/         (entire folder)
+src/components/GateGroupSwitcher/  (entire folder)
 ```
 
-### Poznámky
+### Notes
 
-- Header je nyní jeden kompaktní pruh (~44px) místo 3 pruhů (~250px)
-- Gate groups jsou nyní vizualizovány jako barevné pruhy nad sloupci branek v gridu
-- Klik na skupinu aktivuje dimming ostatních sloupců
-- Start time sloupec je volitelný (Settings > Display)
+- Header is now one compact bar (~44px) instead of 3 bars (~250px)
+- Gate groups are now visualized as colored bars above gate columns in grid
+- Click on group activates dimming of other columns
+- Start time column is optional (Settings > Display)
 
 ---
 
-## 2026-01-18 - Fáze 18 analýza (BLOKOVÁNO)
+## 2026-01-18 - Phase 18 Analysis (BLOCKED)
 
-### Cíl iterace
+### Iteration Goal
 
-Implementovat automatické načítání gate groups ze segmentů trati (fáze 18 z PLAN.md).
+Implement automatic gate groups loading from track segments (phase 18 from PLAN.md).
 
-### Zjištění
+### Findings
 
-Fáze 18 je **blokována** - vyžaduje změny v c123-server, což je v rozporu s pravidlem v CLAUDE.md.
+Phase 18 is **blocked** - requires changes in c123-server, which conflicts with rule in CLAUDE.md.
 
-**Analýza problému:**
+**Problem Analysis:**
 
-1. **XML data obsahují segment info:**
-   - `CourseData.CourseConfig: "NNRNSNNRNSRNNNSRNNNSRRNS"` kde `S` = split boundary
-   - Dokumentováno v `c123-protocol-docs/c123-xml-format.md`
+1. **XML data contains segment info:**
+   - `CourseData.CourseConfig: "NNRNSNNRNSRNNNSRNNNSRRNS"` where `S` = split boundary
+   - Documented in `c123-protocol-docs/c123-xml-format.md`
 
-2. **c123-server neparsuje CourseData:**
-   - `XmlDataService.ts` parsuje pouze `Participants`, `Schedule`, `Results`
-   - `CourseData` element je ignorován
-   - REST API nemá endpoint `/api/xml/courses`
+2. **c123-server doesn't parse CourseData:**
+   - `XmlDataService.ts` parses only `Participants`, `Schedule`, `Results`
+   - `CourseData` element is ignored
+   - REST API doesn't have endpoint `/api/xml/courses`
 
-3. **TCP stream nemá segment info:**
-   - `RaceConfig` zpráva má `gateConfig: "NNRNNRNRNNNRNNRNRNNRNNRN"` (bez S)
-   - `nrSplits` říká počet splitů, ale ne jejich pozice
+3. **TCP stream doesn't have segment info:**
+   - `RaceConfig` message has `gateConfig: "NNRNNRNRNNNRNNRNRNNRNNRN"` (without S)
+   - `nrSplits` tells split count, but not their positions
 
-4. **c123-scoring je připraven:**
-   - Typy `CourseSegment`, `createGroupsFromSegments()` existují
-   - `useGateGroups` hook má placeholder `parseSegmentsFromConfig()` vracející `[]`
+4. **c123-scoring is ready:**
+   - Types `CourseSegment`, `createGroupsFromSegments()` exist
+   - `useGateGroups` hook has placeholder `parseSegmentsFromConfig()` returning `[]`
 
-**Závěr:** Bez změny c123-serveru nelze segment data získat.
+**Conclusion:** Without c123-server change, segment data cannot be obtained.
 
-### Dokončeno
+### Completed
 
-- [x] Analýza struktury dat v c123-server
-- [x] Analýza XML formátu v c123-protocol-docs
-- [x] Aktualizace PLAN.md:
-  - Fáze 18 označena jako BLOKOVÁNO
-  - Přidána explicitní závislost na c123-server změnách
-  - Vytvořena Fáze 19 (E2E test refaktoring) jako alternativa
+- [x] Analysis of data structure in c123-server
+- [x] Analysis of XML format in c123-protocol-docs
+- [x] Updated PLAN.md:
+  - Phase 18 marked as BLOCKED
+  - Added explicit dependency on c123-server changes
+  - Created Phase 19 (E2E test refactoring) as alternative
 
-### Poznámky
+### Notes
 
-**Pro odblokování fáze 18 je potřeba:**
-1. Schválení změn v c123-server (výjimka z pravidla v CLAUDE.md)
-2. Implementace v c123-server:
-   - Parsování `CourseData` v `XmlDataService.ts`
+**To unblock phase 18:**
+1. Approval of c123-server changes (exception from CLAUDE.md rule)
+2. Implementation in c123-server:
+   - Parse `CourseData` in `XmlDataService.ts`
    - REST endpoint `GET /api/xml/courses`
-3. Až poté implementace v c123-scoring
+3. Then implementation in c123-scoring
 
-**Alternativa:** Přeskočit na fázi 19 (E2E testy) která je nezávislá.
+**Alternative:** Skip to phase 19 (E2E tests) which is independent.
 
 ---
 
-## 2026-01-18 - Fáze 19: E2E Test Refaktoring
+## 2026-01-18 - Phase 19: E2E Test Refactoring
 
-### Cíl iterace
+### Iteration Goal
 
-Aktualizovat E2E testy po redesignu UI - opravit zastaralé selektory a regenerovat screenshoty.
+Update E2E tests after UI redesign - fix outdated selectors and regenerate screenshots.
 
-### Dokončeno
+### Completed
 
 - [x] **screenshots-static.spec.ts:**
-  - Opraveny selektory pro Settings modal (použity data-testid atributy)
-  - Odstraněn mobilní test (16-mobile-settings) - aplikace cílí na tablety
-  - Přidán test pro Display tab (05-settings-display)
+  - Fixed selectors for Settings modal (used data-testid attributes)
+  - Removed mobile test (16-mobile-settings) - app targets tablets
+  - Added test for Display tab (05-settings-display)
 
 - [x] **screenshots-with-data.spec.ts:**
-  - Opraven selektor pro race selector: `.race-selector select` → `select[aria-label="Select race"]`
-  - Odstraněn neexistující selektor `.competitor-row` → použit `.results-grid tbody tr`
-  - Přejmenované screenshoty pro lepší popis:
+  - Fixed selector for race selector: `.race-selector select` → `select[aria-label="Select race"]`
+  - Removed non-existent selector `.competitor-row` → used `.results-grid tbody tr`
+  - Renamed screenshots for better description:
     - `10-grid-oncourse-section` → `10-gate-group-active`
     - `11-gate-group-switcher` → `11-gate-group-indicators`
     - `12-gate-group-editor` → `12-settings-display`
-  - Přeuspořádány testy (dark mode před tablet testy)
+  - Reordered tests (dark mode before tablet tests)
 
-- [x] **Screenshot regenerace:**
-  - Spuštěn `./scripts/take-screenshots.sh`
-  - 16 testů prošlo (5 statických + 11 s daty)
-  - 17 screenshotů vygenerováno
-  - Smazány staré screenshoty s nesprávnými názvy
+- [x] **Screenshot regeneration:**
+  - Ran `./scripts/take-screenshots.sh`
+  - 16 tests passed (5 static + 11 with data)
+  - 17 screenshots generated
+  - Deleted old screenshots with incorrect names
 
-### Vygenerované screenshoty
+### Generated Screenshots
 
-| # | Název | Popis |
-|---|-------|-------|
-| 01 | disconnected | Stav bez připojení |
-| 02 | connecting | Připojování k serveru |
+| # | Name | Description |
+|---|------|-------------|
+| 01 | disconnected | Disconnected state |
+| 02 | connecting | Connecting to server |
 | 03 | settings-panel | Settings modal - Server tab |
 | 04 | settings-keyboard | Settings modal - Keyboard shortcuts |
 | 05 | settings-display | Settings modal - Display options |
-| 07 | race-selector | Header s race selectorem |
-| 08 | grid-finished | Grid se závodníky |
-| 09 | grid-cell-focus | Grid s focusem na buňce |
-| 10 | gate-group-active | Aktivovaná gate group s dimming efektem |
-| 11 | gate-group-indicators | Gate group indikátory v gridu |
-| 12 | settings-display | Settings Display tab s daty |
-| 13 | competitor-actions | Context menu pro závodníka |
-| 14 | check-progress | Footer s check progress |
-| 17 | dark-mode | Tmavý režim |
+| 07 | race-selector | Header with race selector |
+| 08 | grid-finished | Grid with competitors |
+| 09 | grid-cell-focus | Grid with cell focus |
+| 10 | gate-group-active | Activated gate group with dimming effect |
+| 11 | gate-group-indicators | Gate group indicators in grid |
+| 12 | settings-display | Settings Display tab with data |
+| 13 | competitor-actions | Context menu for competitor |
+| 14 | check-progress | Footer with check progress |
+| 17 | dark-mode | Dark mode |
 | 18 | tablet-landscape | iPad Pro landscape |
 | 19 | tablet-portrait | iPad Pro portrait |
 
-### Poznámky
+### Notes
 
-- Screenshot 06 (no-competitors) chybí - obtížné vytvořit specifický stav
-- Screenshoty 15-16 (mobile) odstraněny - aplikace cílí na tablety
-- RaceSelector používá DS Select komponenty, ne vlastní CSS třídy
-- Settings modal má data-testid atributy pro spolehlivé testování
+- Screenshot 06 (no-competitors) missing - difficult to create specific state
+- Screenshots 15-16 (mobile) removed - app targets tablets
+- RaceSelector uses DS Select components, not custom CSS classes
+- Settings modal has data-testid attributes for reliable testing
 
 ---
 
-## 2026-01-18 - Fáze 18B: Auto-load Gate Groups
+## 2026-01-18 - Phase 18B: Auto-load Gate Groups
 
-### Cíl iterace
+### Iteration Goal
 
-Implementovat automatické načítání gate groups ze segmentů trati z REST API `/api/xml/courses`.
+Implement automatic gate groups loading from track segments from REST API `/api/xml/courses`.
 
-### Dokončeno
+### Completed
 
-- [x] **API client:** Nový `src/services/coursesApi.ts` pro fetch `/api/xml/courses`
-- [x] **Helper funkce:** `createSegmentsFromSplits()` v `src/types/gateGroups.ts`
-- [x] **Hook update:** `useGateGroups` nyní:
-  - Fetchuje courses z REST API při připojení
-  - Vytváří segment groups z splits dat
-  - Exportuje `availableCourses`, `coursesLoading`, `reloadCourses`
-- [x] **Barvy segmentů:** Přidána `SEGMENT_COLORS` paleta pro vizuální odlišení
-- [x] **UI integrace:** Segment groups se automaticky zobrazují v `GateGroupIndicatorRow`
+- [x] **API client:** New `src/services/coursesApi.ts` for fetch `/api/xml/courses`
+- [x] **Helper function:** `createSegmentsFromSplits()` in `src/types/gateGroups.ts`
+- [x] **Hook update:** `useGateGroups` now:
+  - Fetches courses from REST API on connection
+  - Creates segment groups from splits data
+  - Exports `availableCourses`, `coursesLoading`, `reloadCourses`
+- [x] **Segment colors:** Added `SEGMENT_COLORS` palette for visual differentiation
+- [x] **UI integration:** Segment groups automatically show in `GateGroupIndicatorRow`
 
-### Změny souborů
+### File Changes
 
-- `src/services/coursesApi.ts` - nový API client
+- `src/services/coursesApi.ts` - new API client
 - `src/services/index.ts` - export coursesApi
 - `src/types/gateGroups.ts` - `createSegmentsFromSplits()`, `SEGMENT_COLORS`
-- `src/hooks/useGateGroups.ts` - fetch courses, nové return hodnoty
+- `src/hooks/useGateGroups.ts` - fetch courses, new return values
 
-### Architektura
+### Architecture
 
 ```
 c123-scoring                     c123-server
@@ -1082,86 +1082,86 @@ createSegmentsFromSplits([5, 9, 14], 24)
 [Segment 1 (1-5), Segment 2 (6-9), Segment 3 (10-14), ...]
 ```
 
-### Poznámky
+### Notes
 
-- Segment groups se zobrazují automaticky v gridu nad gate headers
-- Klik na segment aktivuje dimming ostatních sloupců (stejně jako custom groups)
-- Replay server nemá CourseData, segmenty se zobrazí pouze s reálným C123/XML
-- Fáze 18C (verifikace) vyžaduje testování s reálným XML
-
----
-
-## 2026-01-18 - Fáze 20F: Grid highlighting redesign
-
-### Cíl iterace
-
-Změnit grid highlighting z background podbarvení na border, pro lepší čitelnost.
-
-### Dokončeno
-
-- [x] Row focus: horizontální bordery (top/bottom) na všech buňkách v řádku
-- [x] Column focus: vertikální bordery (left/right) na všech buňkách ve sloupci
-- [x] Focused buňka: plný 2px accent border
-- [x] Hover: jemný 1px muted border
-- [x] Crosshair efekt: kombinované row+column bordery na průsečíku buněk
-- [x] Změna `--in-group` z box-shadow na border-top (aby se nekonflikovalo)
-
-### Změněné soubory
-
-- `src/components/ResultsGrid/ResultsGrid.css` - nové border-based highlight styly
-
-### Poznámky
-
-- Původní background highlighting používal `color-mix()` pro průhledné overlay
-- Box-shadow se vzájemně přepisují, takže kombinace stylů vyžadovala explicitní CSS pravidla
-- `--in-group` změněno na `border-top` místo `box-shadow` aby fungovalo spolu s row/column highlights
+- Segment groups show automatically in grid above gate headers
+- Click on segment activates dimming of other columns (same as custom groups)
+- Replay server doesn't have CourseData, segments only show with real C123/XML
+- Phase 18C (verification) requires testing with real XML
 
 ---
 
-## 2026-01-18 - Fáze 20G: Theme toggle
+## 2026-01-18 - Phase 20F: Grid Highlighting Redesign
 
-### Cíl iterace
+### Iteration Goal
 
-Přidat možnost explicitně přepnout mezi light/dark mode v Settings.
+Change grid highlighting from background coloring to border, for better readability.
 
-### Dokončeno
+### Completed
 
-- [x] Přidán typ `ThemeMode = 'auto' | 'light' | 'dark'` do `useSettings.ts`
-- [x] Přidáno `theme` pole do `Settings` interface s defaultem 'auto'
-- [x] Theme selector v Settings modal (Display tab) pomocí DS Select komponenty
-- [x] `useEffect` v `App.tsx` aplikuje `.theme-light` / `.theme-dark` třídy na `document.documentElement`
-- [x] Auto mode neaplikuje žádnou třídu - DS používá `@media (prefers-color-scheme: dark)`
+- [x] Row focus: horizontal borders (top/bottom) on all cells in row
+- [x] Column focus: vertical borders (left/right) on all cells in column
+- [x] Focused cell: full 2px accent border
+- [x] Hover: subtle 1px muted border
+- [x] Crosshair effect: combined row+column borders at cell intersections
+- [x] Changed `--in-group` from box-shadow to border-top (to avoid conflicts)
 
-### Změněné soubory
+### Changed Files
 
-- `src/hooks/useSettings.ts` - nový typ a pole `theme`
-- `src/components/Settings/Settings.tsx` - theme selector v Display tabu
-- `src/App.tsx` - useEffect pro aplikování theme tříd
+- `src/components/ResultsGrid/ResultsGrid.css` - new border-based highlight styles
 
-### Poznámky
+### Notes
 
-- Design system (`timing-design-system`) používá CSS třídy `.theme-light` a `.theme-dark` na `:root` elementu
-- Pokud není nastavena žádná třída, DS automaticky respektuje systémové preference pomocí `@media (prefers-color-scheme: dark)`
-- Persistence do localStorage je automatická díky existující logice v `useSettings`
+- Original background highlighting used `color-mix()` for transparent overlay
+- Box-shadows override each other, so style combinations required explicit CSS rules
+- `--in-group` changed to `border-top` instead of `box-shadow` to work together with row/column highlights
 
 ---
 
-## Template pro další záznamy
+## 2026-01-18 - Phase 20G: Theme Toggle
+
+### Iteration Goal
+
+Add option to explicitly switch between light/dark mode in Settings.
+
+### Completed
+
+- [x] Added type `ThemeMode = 'auto' | 'light' | 'dark'` to `useSettings.ts`
+- [x] Added `theme` field to `Settings` interface with default 'auto'
+- [x] Theme selector in Settings modal (Display tab) using DS Select component
+- [x] `useEffect` in `App.tsx` applies `.theme-light` / `.theme-dark` classes to `document.documentElement`
+- [x] Auto mode doesn't apply any class - DS uses `@media (prefers-color-scheme: dark)`
+
+### Changed Files
+
+- `src/hooks/useSettings.ts` - new type and `theme` field
+- `src/components/Settings/Settings.tsx` - theme selector in Display tab
+- `src/App.tsx` - useEffect for applying theme classes
+
+### Notes
+
+- Design system (`timing-design-system`) uses CSS classes `.theme-light` and `.theme-dark` on `:root` element
+- If no class is set, DS automatically respects system preferences via `@media (prefers-color-scheme: dark)`
+- Persistence to localStorage is automatic thanks to existing logic in `useSettings`
+
+---
+
+## Template for Further Entries
 
 ```markdown
-## YYYY-MM-DD - Iterace X
+## YYYY-MM-DD - Iteration X
 
-### Cíl iterace
-[Co mělo být uděláno]
+### Iteration Goal
+[What was supposed to be done]
 
-### Dokončeno
+### Completed
 - [ ] Item 1
 - [ ] Item 2
 
-### Problémy a řešení
-1. **Problém:** [popis]
-   **Řešení:** [jak bylo vyřešeno]
+### Problems and Solutions
+1. **Problem:** [description]
+   **Solution:** [how it was resolved]
 
-### Poznámky
-[Cokoliv důležitého k zapamatování]
+### Notes
+[Anything important to remember]
 ```

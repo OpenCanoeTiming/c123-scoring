@@ -1,29 +1,29 @@
 # Claude Code Instructions - C123 Penalty Check
 
-## Projekt
+## Project
 
-C123 Penalty Check - webová aplikace pro kontrolu a korekci penalizací slalomových závodů měřených v Canoe123.
+C123 Penalty Check - web application for penalty verification and correction in canoe slalom races timed with Canoe123.
 
-**GitHub:** OpenCanoeTiming/c123-penalty-check | **Licence:** MIT
-
----
-
-## Důležitá pravidla
-
-1. **NEMĚNIT c123-server** - Server je stabilní, změny jen po explicitním schválení.
-
-2. **Povolené projekty pro úpravy:**
-   - `c123-penalty-check` (tento projekt) - hlavní práce
-   - `c123-protocol-docs/tools/` - pomocné nástroje (replay-server, recorder)
-
-3. **Pouze pro čtení:**
-   - `../c123-server/` - reference pro API, protokol
-   - `../c123-scoreboard/` - reference pro typy, WebSocket
-   - `../timing-design-system/` - UI komponenty
+**GitHub:** OpenCanoeTiming/c123-penalty-check | **License:** MIT
 
 ---
 
-## Architektura
+## Important Rules
+
+1. **DO NOT MODIFY c123-server** - Server is stable, changes only with explicit approval.
+
+2. **Allowed projects for modifications:**
+   - `c123-penalty-check` (this project) - main work
+   - `c123-protocol-docs/tools/` - helper tools (replay-server, recorder)
+
+3. **Read-only:**
+   - `../c123-server/` - reference for API, protocol
+   - `../c123-scoreboard/` - reference for types, WebSocket
+   - `../timing-design-system/` - UI components
+
+---
+
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -51,53 +51,53 @@ C123 Penalty Check - webová aplikace pro kontrolu a korekci penalizací slalomo
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Klíčový princip:** c123-penalty-check komunikuje výhradně s c123-server, nikdy přímo s C123.
+**Key principle:** c123-penalty-check communicates exclusively with c123-server, never directly with C123.
 
 ---
 
-## Cesty a dokumentace
+## Paths and Documentation
 
-| Účel | Cesta |
-|------|-------|
-| **Tento projekt** | `/workspace/timing/c123-penalty-check/` |
-| **Projektový záměr** | `./PROJECT.md` |
+| Purpose | Path |
+|---------|------|
+| **This project** | `/workspace/timing/c123-penalty-check/` |
+| **Project overview** | `./PROJECT.md` |
 | **C123 Server** | `../c123-server/` |
 | **Design system** | `../timing-design-system/` |
 | **Scoreboard (reference)** | `../c123-scoreboard/` |
-| **Protokol docs** | `../c123-protocol-docs/` |
+| **Protocol docs** | `../c123-protocol-docs/` |
 
-### Klíčové reference v c123-server
+### Key References in c123-server
 
-- **`../c123-server/docs/REST-API.md`** - REST API včetně Write API
-- **`../c123-server/docs/C123-PROTOCOL.md`** - WebSocket protokol, typy zpráv
-- **`../c123-server/PLAN.md`** - Write API specifikace (Bloky G, H, I)
+- **`../c123-server/docs/REST-API.md`** - REST API including Write API
+- **`../c123-server/docs/C123-PROTOCOL.md`** - WebSocket protocol, message types
+- **`../c123-server/PLAN.md`** - Write API specification (Blocks G, H, I)
 
-### Klíčové reference v c123-scoreboard
+### Key References in c123-scoreboard
 
-- **`../c123-scoreboard/src/types/c123server.ts`** - TypeScript typy pro WebSocket zprávy
-- **`../c123-scoreboard/src/App.tsx`** - Příklad WebSocket připojení
+- **`../c123-scoreboard/src/types/c123server.ts`** - TypeScript types for WebSocket messages
+- **`../c123-scoreboard/src/App.tsx`** - WebSocket connection example
 
-### Privátní zdroje
+### Private Resources
 
-- **`./resources-private/`** - Původní business logika (READONLY, nezmiňovat v kódu)
+- **`./resources-private/`** - Original business logic (READONLY, do not mention in code)
 
 ---
 
-## Komunikace s c123-server
+## Communication with c123-server
 
-### WebSocket (čtení dat)
+### WebSocket (reading data)
 
-Připojení: `ws://<server>:27123/ws`
+Connection: `ws://<server>:27123/ws`
 
-**Relevantní zprávy pro scoring:**
-| Typ | Obsah | Použití |
-|-----|-------|---------|
-| `OnCourse` | Závodníci na trati + penalizace | Hlavní data pro grid |
-| `Results` | Výsledky kategorie | Historická data |
-| `RaceConfig` | Počet branek, typy (N/R) | Konfigurace gridu |
-| `Schedule` | Seznam závodů + status | Přepínání kategorií |
+**Relevant messages for scoring:**
+| Type | Content | Usage |
+|------|---------|-------|
+| `OnCourse` | Competitors on course + penalties | Main data for grid |
+| `Results` | Category results | Historical data |
+| `RaceConfig` | Gate count, types (N/R) | Grid configuration |
+| `Schedule` | Race list + status | Category switching |
 
-### REST API (zápis)
+### REST API (writing)
 
 **Scoring endpoint:**
 ```
@@ -111,7 +111,7 @@ POST /api/c123/remove-from-course
 { "bib": "10", "reason": "DNS" }
 ```
 
-**Timing (manuální impuls):**
+**Timing (manual impulse):**
 ```
 POST /api/c123/timing
 { "bib": "10", "channelPosition": "Start" }
@@ -119,58 +119,58 @@ POST /api/c123/timing
 
 ---
 
-## Jazyk
+## Language
 
-- Komunikace s uživatelem: **čeština**
-- Dokumentace (README, docs): **angličtina**
-- Kód, komentáře, commit messages: **angličtina**
+- User communication: **Czech**
+- Documentation (README, docs): **English**
+- Code, comments, commit messages: **English**
 
 ---
 
-## Struktura projektu (plánovaná)
+## Project Structure (planned)
 
 ```
 c123-penalty-check/
 ├── src/
 │   ├── index.tsx             # Entry point
-│   ├── App.tsx               # Hlavní komponenta
-│   ├── components/           # UI komponenty
-│   │   ├── RaceSelector/     # Výběr závodu
-│   │   ├── PenaltyGrid/      # Grid penalizací
-│   │   └── ConnectionStatus/ # Stav připojení
+│   ├── App.tsx               # Main component
+│   ├── components/           # UI components
+│   │   ├── RaceSelector/     # Race selection
+│   │   ├── PenaltyGrid/      # Penalty grid
+│   │   └── ConnectionStatus/ # Connection status
 │   ├── hooks/                # React hooks
-│   │   ├── useWebSocket.ts   # WebSocket připojení
-│   │   └── useScoring.ts     # Scoring API volání
-│   ├── services/             # API komunikace
+│   │   ├── useWebSocket.ts   # WebSocket connection
+│   │   └── useScoring.ts     # Scoring API calls
+│   ├── services/             # API communication
 │   │   └── scoringApi.ts     # REST API client
 │   ├── store/                # State management
-│   └── types/                # TypeScript typy
-│       └── c123server.ts     # Kopie/adaptace z scoreboardu
-├── resources-private/        # Zdrojové materiály (NENÍ v gitu)
+│   └── types/                # TypeScript types
+│       └── c123server.ts     # Copy/adaptation from scoreboard
+├── resources-private/        # Source materials (NOT in git)
 └── package.json
 ```
 
 ---
 
-## Klíčové funkce
+## Key Features
 
-1. **Připojení k serveru** - WebSocket k c123-server, analogicky jako c123-scoreboard
-2. **Zobrazení závodů** - probíhající závody podle Schedule, indikace aktivních
-3. **Grid jezdců** - kdo pojede, kdo jede, kdo má dojeto, stav penalizací
-4. **Inline editace** - klávesnicové ovládání, navigace šipkami
-5. **Odesílání penalizací** - REST API POST /api/c123/scoring
-6. **Seskupování branek** - podle segmentů nebo vlastní skupiny
-7. **Kontrola penalizací** - označování zkontrolovaných protokolů
-8. **Persistence** - nastavení v localStorage
+1. **Server connection** - WebSocket to c123-server, analogous to c123-scoreboard
+2. **Race display** - Active races from Schedule, active indicators
+3. **Competitor grid** - Who will race, who is racing, who finished, penalty status
+4. **Inline editing** - Keyboard control, arrow navigation
+5. **Penalty submission** - REST API POST /api/c123/scoring
+6. **Gate grouping** - By segments or custom groups
+7. **Protocol verification** - Marking verified protocols
+8. **Persistence** - Settings in localStorage
 
 ---
 
-## Design system
+## Design System
 
-Striktně využívat `@opencanoetiming/timing-design-system`:
-- Základní komponenty z design systému
-- Specifické komponenty (PenaltyGrid) stylovat podle tokenů
-- Chybějící komponenty → vytvořit podnět pro rozšíření DS
+Strictly use `@opencanoetiming/timing-design-system`:
+- Basic components from design system
+- Specific components (PenaltyGrid) styled according to tokens
+- Missing components → create request for DS extension
 
 ```bash
 npm install @opencanoetiming/timing-design-system
@@ -178,10 +178,10 @@ npm install @opencanoetiming/timing-design-system
 
 ---
 
-## Vývoj
+## Development
 
 ```bash
-# Instalace
+# Installation
 npm install
 
 # Dev server
@@ -191,108 +191,108 @@ npm run dev
 npm run build
 ```
 
-**Testování s c123-server:**
+**Testing with c123-server:**
 ```bash
-# V jiném terminálu spustit c123-server
+# In another terminal start c123-server
 cd ../c123-server && npm start
 
-# Scoring app se připojí na ws://localhost:27123/ws
+# Scoring app connects to ws://localhost:27123/ws
 ```
 
 ---
 
-## Screenshoty (DŮLEŽITÉ!)
+## Screenshots (IMPORTANT!)
 
-**Po každé vizuální změně UI aktualizovat screenshoty!**
+**After every visual UI change, update screenshots!**
 
 ```bash
-# Automatický skript - spustí replay + c123-server + dev server + Playwright
+# Automatic script - starts replay + c123-server + dev server + Playwright
 ./scripts/take-screenshots.sh
 
-# Pouze statické screenshoty (bez serveru)
+# Static screenshots only (no server)
 ./scripts/take-screenshots.sh --static-only
 ```
 
-**Co skript dělá:**
-1. Spustí replay-server (simuluje C123 na portu 27333)
-2. Spustí c123-server (připojí se k replay)
-3. Spustí Vite dev server
-4. Spustí Playwright testy
-5. Automaticky uklidí všechny procesy
+**What the script does:**
+1. Starts replay-server (simulates C123 on port 27333)
+2. Starts c123-server (connects to replay)
+3. Starts Vite dev server
+4. Runs Playwright tests
+5. Automatically cleans up all processes
 
-**Kdy aktualizovat screenshoty:**
-- Po změně layoutu (Header, Footer, Grid)
-- Po změně komponent (Settings, Modals)
-- Po změně barev/stylů
-- Po přidání nových features
+**When to update screenshots:**
+- After layout changes (Header, Footer, Grid)
+- After component changes (Settings, Modals)
+- After color/style changes
+- After adding new features
 
-**Test soubory:**
-- `tests/screenshots-static.spec.ts` - bez dat (loading, disconnected, settings)
-- `tests/screenshots-with-data.spec.ts` - s replay daty (grid, gates, actions)
+**Test files:**
+- `tests/screenshots-static.spec.ts` - without data (loading, disconnected, settings)
+- `tests/screenshots-with-data.spec.ts` - with replay data (grid, gates, actions)
 
 ---
 
-## Proces
+## Process
 
-### Před začátkem práce
+### Before Starting Work
 
-1. Přečíst `PLAN.md` - zjistit aktuální stav a co je další na řadě
-2. Přečíst `DEVLOG.md` - pochopit kontext z předchozích iterací
+1. Read `PLAN.md` - find current state and what's next
+2. Read `DEVLOG.md` - understand context from previous iterations
 
-### Během práce
+### During Work
 
-1. **Plánování:** Nejprve aktualizovat `PLAN.md` s novými kroky
-2. **Realizace:** Pracovat po blocích (cca 70% kontextu)
-3. **Commit:** Nejpozději po každém bloku
-4. **Aktualizace PLAN.md:** Po dokončení kroku označit `- [x]`
-5. Nedělat víc než jeden blok před clear/compact
+1. **Planning:** First update `PLAN.md` with new steps
+2. **Implementation:** Work in blocks (~70% context usage)
+3. **Commit:** At latest after each block
+4. **Update PLAN.md:** After completing a step, mark `- [x]`
+5. Don't do more than one block before clear/compact
 
-### Po dokončení bloku/iterace
+### After Completing Block/Iteration
 
-1. **PLAN.md:** Označit dokončené kroky jako `- [x]`
-2. **DEVLOG.md:** Přidat záznam o tom co bylo uděláno:
-   - Co se podařilo
-   - Jaké byly problémy a jak se řešily
-   - Poznámky k rozhodnutím
-3. **Commit:** Commitnout změny včetně dokumentace
+1. **PLAN.md:** Mark completed steps as `- [x]`
+2. **DEVLOG.md:** Add record of what was done:
+   - What succeeded
+   - What problems occurred and how they were solved
+   - Notes on decisions
+3. **Commit:** Commit changes including documentation
 
-### Formát záznamu v DEVLOG.md
+### DEVLOG.md Entry Format
 
 ```markdown
-## YYYY-MM-DD - Iterace X / Popis práce
+## YYYY-MM-DD - Iteration X / Work description
 
-### Dokončeno
-- [x] Popis úkolu 1
-- [x] Popis úkolu 2
+### Completed
+- [x] Task description 1
+- [x] Task description 2
 
-### Problémy a řešení
-1. **Problém:** [popis]
-   **Řešení:** [jak bylo vyřešeno]
+### Problems and Solutions
+1. **Problem:** [description]
+   **Solution:** [how it was resolved]
 
-### Poznámky
-[Důležitá rozhodnutí, odchylky od plánu, TODO pro příště]
+### Notes
+[Important decisions, deviations from plan, TODO for next time]
 ```
 
-### Při problémech
+### When Problems Occur
 
-- Aktualizovat `PLAN.md` o nové sekce a kroky
-- Zapsat do `DEVLOG.md` co nefungovalo
-- Skončit a nechat práci na čerstvé instance
-
----
-
-## Projektové soubory
-
-| Soubor | Účel |
-|--------|------|
-| `PROJECT.md` | Projektový záměr a motivace (stabilní) |
-| `PLAN.md` | Implementační plán s checkboxy (aktualizovat průběžně) |
-| `DEVLOG.md` | Deníček vývoje (přidávat záznamy po každé iteraci) |
-| `CLAUDE.md` | Instrukce pro Claude Code (tento soubor) |
+- Update `PLAN.md` with new sections and steps
+- Write to `DEVLOG.md` what didn't work
+- Finish and leave work to fresh instance
 
 ---
 
-## Commit message formát
+## Project Files
+
+| File | Purpose |
+|------|---------|
+| `PROJECT.md` | Project overview and motivation (stable) |
+| `PLAN.md` | Implementation plan with checkboxes (update continuously) |
+| `DEVLOG.md` | Development diary (add entries after each iteration) |
+| `CLAUDE.md` | Claude Code instructions (this file) |
+
+---
+
+## Commit Message Format
 
 ```
 feat: add penalty grid with keyboard navigation
@@ -302,4 +302,4 @@ refactor: extract WebSocket logic to hook
 
 ---
 
-*Projektový záměr → viz `./PROJECT.md`*
+*Project overview → see `./PROJECT.md`*

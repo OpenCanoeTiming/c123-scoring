@@ -1,143 +1,143 @@
-# C123-PENALTY-CHECK - Projektový záměr
+# C123-PENALTY-CHECK - Project Overview
 
-Webová aplikace s vysoce optimalizovaným UX pro kontrolu a korekci penalizací slalomových závodů měřených v systému Canoe123.
+Web application with highly optimized UX for penalty verification and correction in canoe slalom races timed with Canoe123 system.
 
-## Motivace
+## Motivation
 
-Reimplementace stávajícího C123 terminálu. Důvody:
+Reimplementation of the existing C123 terminal. Reasons:
 
-- **Ergonomie pro celodenní práci** - na závodech se s aplikací pracuje mnoho hodin v kuse
-- **Přehlednost** - původní terminál je malý a nepřehledný, zvlášť při únavě
-- **Čitelnost** - dostatečná velikost písma a prvků, jasné vizuální odlišení stavů
-- **Snížení chybovosti** - zřetelná indikace aktivní buňky, potvrzení akcí
-- **Komfort obsluhy** - minimalizace klikání, efektivní klávesové zkratky
+- **Ergonomics for all-day work** - the app is used for many hours during race days
+- **Clarity** - original terminal is small and unclear, especially when tired
+- **Readability** - sufficient font size and element sizing, clear visual state differentiation
+- **Error reduction** - clear indication of active cell, action confirmations
+- **Operator comfort** - minimized clicking, efficient keyboard shortcuts
 
 ---
 
-## Architektura
+## Architecture
 
-Aplikace běží jako **čistě frontendové řešení** (React + TypeScript) a komunikuje s **c123-server** jako backendem:
+The application runs as a **pure frontend solution** (React + TypeScript) and communicates with **c123-server** as backend:
 
 ```
-c123-penalty-check (tento projekt)
+c123-penalty-check (this project)
     │
-    ├─► WebSocket ws://server:27123/ws  (čtení real-time dat)
+    ├─► WebSocket ws://server:27123/ws  (reading real-time data)
     │     - OnCourse, Results, RaceConfig, Schedule
     │
-    └─► REST API http://server:27123/api/c123/*  (zápis)
+    └─► REST API http://server:27123/api/c123/*  (writing)
           - POST /api/c123/scoring
           - POST /api/c123/remove-from-course
           - POST /api/c123/timing
 ```
 
-**Proč c123-server?**
-- Browser nemůže komunikovat přímo s C123 (TCP:27333)
-- c123-server již má implementované Write API pro odesílání penalizací
-- Sdílená infrastruktura se scoreboardem
+**Why c123-server?**
+- Browser cannot communicate directly with C123 (TCP:27333)
+- c123-server already has implemented Write API for sending penalties
+- Shared infrastructure with scoreboard
 
-**Reference:** Připojení analogicky k `c123-scoreboard` - viz `../c123-scoreboard/src/types/c123server.ts`
+**Reference:** Connection analogous to `c123-scoreboard` - see `../c123-scoreboard/src/types/c123server.ts`
 
 ---
 
-## Hlavní požadavky
+## Main Requirements
 
-### Zobrazení dat
+### Data Display
 
-- Zobrazení probíhajících závodů podle stavu (Schedule), indikace aktivního závodu
-- Grid jezdců s vyznačením: kdo pojede, kdo jede, kdo má dojeto, stav penalizací
-- Aktualizace podle nastavení závodu a trati (RaceConfig - rozlišení typů branek N/R)
+- Display active races based on state (Schedule), indication of active race
+- Competitor grid showing: who will race, who is racing, who finished, penalty status
+- Updates according to race and course settings (RaceConfig - gate types N/R differentiation)
 
-### Editace penalizací
+### Penalty Editing
 
-- Efektivní "inline" editace v tabulce penalizací
-- Navigace pomocí šipek, ovládání přes klávesnici
-- Zadávání bez zbytečného klikání
-- Penalizace odpovídají typu závodu (0 = čistě, 2 = dotek, 50 = nejetí)
-- Velmi přehledná navigace - vždy vidím jakého jezdce a jakou branku edituji
-- **Odesílání:** REST API `POST /api/c123/scoring`
+- Efficient "inline" editing in penalty table
+- Arrow key navigation, keyboard control
+- Input without unnecessary clicking
+- Penalties match race type (0 = clean, 2 = touch, 50 = missed)
+- Very clear navigation - always see which competitor and which gate being edited
+- **Submission:** REST API `POST /api/c123/scoring`
 
-### Kontrola penalizací
+### Protocol Verification
 
-- Označování zkontrolovaných protokolů
-- Možnost seskupování podle branek:
-  - Kontrolor dostává papírový protokol jen za několik branek
-  - Výchozí skupiny podle segmentů nastavení C123 trati
-  - Možnost předefinovat v aplikaci
-  - Podpora překrývajících se segmentů (např. rozhodčí 1: brány 1-4, rozhodčí 2: brány 5-8, pomocný: brány 4-6)
+- Marking verified protocols
+- Gate grouping capability:
+  - Controller receives paper protocol for only a few gates
+  - Default groups based on C123 course segment settings
+  - Ability to redefine in application
+  - Support for overlapping segments (e.g., judge 1: gates 1-4, judge 2: gates 5-8, helper: gates 4-6)
 
 ### Persistence
 
-- Nastavení v localStorage
-- Adresa serveru, vybraný závod, konfigurace skupin branek
+- Settings in localStorage
+- Server address, selected race, gate group configuration
 
 ---
 
-## Komunikace s c123-server
+## Communication with c123-server
 
-### WebSocket - čtení dat
+### WebSocket - Reading Data
 
-| Zpráva | Obsah | Použití |
-|--------|-------|---------|
-| `OnCourse` | Závodníci na trati, penalizace per branka | Hlavní data pro grid |
-| `Results` | Výsledky kategorie | Historická data, kontrola |
-| `RaceConfig` | nrGates, gateConfig (N/R) | Konfigurace gridu |
-| `Schedule` | Seznam závodů, raceStatus | Přepínání kategorií |
+| Message | Content | Usage |
+|---------|---------|-------|
+| `OnCourse` | Competitors on course, penalties per gate | Main data for grid |
+| `Results` | Category results | Historical data, verification |
+| `RaceConfig` | nrGates, gateConfig (N/R) | Grid configuration |
+| `Schedule` | Race list, raceStatus | Category switching |
 
-### REST API - zápis
+### REST API - Writing
 
 ```typescript
-// Penalizace
+// Penalty
 POST /api/c123/scoring
 { "bib": "10", "gate": 5, "value": 2 }
 
-// Status závodníka (DNS/DNF/CAP)
+// Competitor status (DNS/DNF/CAP)
 POST /api/c123/remove-from-course
 { "bib": "10", "reason": "DNS" }
 
-// Manuální časový impuls
+// Manual timing impulse
 POST /api/c123/timing
 { "bib": "10", "channelPosition": "Start" }
 ```
 
 ---
 
-## Zdroje a dokumenty
+## Sources and Documents
 
-### Pro implementaci
+### For Implementation
 
-| Zdroj | Účel |
-|-------|------|
-| `../c123-server/docs/REST-API.md` | REST API dokumentace |
-| `../c123-server/docs/C123-PROTOCOL.md` | WebSocket protokol |
-| `../c123-scoreboard/src/types/c123server.ts` | TypeScript typy (lze zkopírovat/adaptovat) |
-| `../timing-design-system/` | UI komponenty a tokeny |
+| Source | Purpose |
+|--------|---------|
+| `../c123-server/docs/REST-API.md` | REST API documentation |
+| `../c123-server/docs/C123-PROTOCOL.md` | WebSocket protocol |
+| `../c123-scoreboard/src/types/c123server.ts` | TypeScript types (can copy/adapt) |
+| `../timing-design-system/` | UI components and tokens |
 
-### Pro business logiku
+### For Business Logic
 
-| Zdroj | Účel |
-|-------|------|
-| `./resources-private/` | Původní implementace (READONLY, nezmiňovat v kódu) |
-| `../c123-protocol-docs/c123-xml-format.md` | Formát penalizací (Gates field) |
+| Source | Purpose |
+|--------|---------|
+| `./resources-private/` | Original implementation (READONLY, do not mention in code) |
+| `../c123-protocol-docs/c123-xml-format.md` | Penalty format (Gates field) |
 
 ---
 
-## Technologie
+## Technology
 
 - **React** + TypeScript
-- **Vite** jako build tool
-- **@opencanoetiming/timing-design-system** pro UI
-- **localStorage** pro persistence
-- **WebSocket** pro real-time data
-- **fetch** pro REST API
+- **Vite** as build tool
+- **@opencanoetiming/timing-design-system** for UI
+- **localStorage** for persistence
+- **WebSocket** for real-time data
+- **fetch** for REST API
 
 ---
 
-## Odlišnosti od scoreboardu
+## Differences from Scoreboard
 
-| Aspekt | c123-scoreboard | c123-penalty-check |
+| Aspect | c123-scoreboard | c123-penalty-check |
 |--------|-----------------|--------------|
-| Účel | Zobrazení výsledků | Zadávání penalizací |
-| Směr dat | Pouze čtení | Čtení + zápis |
-| Interakce | Pasivní | Aktivní (editace) |
-| API | Pouze WebSocket | WebSocket + REST |
-| Hlavní data | Results, OnCourse | OnCourse (penalizace per gate) |
+| Purpose | Results display | Penalty entry |
+| Data direction | Read only | Read + write |
+| Interaction | Passive | Active (editing) |
+| API | WebSocket only | WebSocket + REST |
+| Main data | Results, OnCourse | OnCourse (penalties per gate) |
