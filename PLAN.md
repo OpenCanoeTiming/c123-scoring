@@ -17,11 +17,11 @@
 | 19 | E2E Test Refaktoring | ✅ Hotovo |
 | 20 | Bug fixes a UX připomínky | ✅ Hotovo |
 | 21 | Schedule WebSocket issue | 🔴 Blokuje (c123-server) |
-| 22 | Settings cleanup | 🟡 Připraveno |
-| 23 | Grid layout a sticky sloupce | 🟡 Připraveno |
-| 24 | Grid highlighting redesign | 🟡 Připraveno |
-| 25 | WebSocket connection management | 🟡 Připraveno |
-| 26 | Keyboard a scoring fixes | 🟡 Připraveno |
+| 22 | Settings cleanup | ✅ Hotovo |
+| 23 | Grid layout a sticky sloupce | ✅ Hotovo |
+| 24 | Grid highlighting redesign | ✅ Hotovo |
+| 25 | WebSocket connection management | ✅ Hotovo |
+| 26 | Keyboard a scoring fixes | ✅ Hotovo |
 
 ---
 
@@ -452,90 +452,95 @@ Scoring aplikace proto zobrazuje "No active races" i když server má aktivní z
 
 ---
 
-## Fáze 22: Settings cleanup
+## Fáze 22: Settings cleanup ✅
 
 **Cíl:** Odstranit nepoužívané nastavení.
 
-**Status:** 🟡 Připraveno
+**Status:** ✅ Hotovo
 
-- [ ] 22.1: Odstranit "Compact mode" ze Settings - nic nedělá
-- [ ] 22.2: Zkontrolovat jestli jsou všechny settings používané
-- [ ] 22.3: Commit
+- [x] 22.1: Odstranit "Compact mode" ze Settings - nic nedělá
+- [x] 22.2: Zkontrolovat jestli jsou všechny settings používané
+- [x] 22.3: Commit
 
 ---
 
-## Fáze 23: Grid layout a sticky sloupce
+## Fáze 23: Grid layout a sticky sloupce ✅
 
 **Cíl:** Vylepšit layout gridu pro širší tratě a horizontální scroll.
 
-**Status:** 🟡 Připraveno
+**Status:** ✅ Hotovo
 
 ### 23A: Kompaktnější záhlaví
-- [ ] 23A.1: Fixní šířky sloupců (pořadí, bib, jméno) - nenatahovat
-- [ ] 23A.2: Volné místo vpravo od gridu místo roztahování jména
-- [ ] 23A.3: Kompaktnější gate headers
+- [x] 23A.1: Fixní šířky sloupců (pořadí, bib, jméno) - nenatahovat
+- [x] 23A.2: Volné místo vpravo od gridu místo roztahování jména
+- [x] 23A.3: Kompaktnější gate headers
 
 ### 23B: Sticky sloupce při horizontálním scrollu
-- [ ] 23B.1: Sticky sloupce: pořadí, číslo, jméno závodníka
-- [ ] 23B.2: Grid s penalizacemi scrolluje samostatně
-- [ ] 23B.3: Sticky segmenty/gate groups v headeru (při vertikálním scrollu)
+- [x] 23B.1: Sticky sloupce: pořadí, číslo, jméno závodníka
+- [x] 23B.2: Grid s penalizacemi scrolluje samostatně
+- [x] 23B.3: Sticky segmenty/gate groups v headeru (při vertikálním scrollu)
 
 ### 23C: Viditelný horizontální scroll
-- [ ] 23C.1: Zajistit že je zřejmé jak scrollovat do strany
-- [ ] 23C.2: Případně přidat scroll indikátor
+- [x] 23C.1: Zajistit že je zřejmé jak scrollovat do strany (border separator)
+- [ ] 23C.2: Případně přidat scroll indikátor (není potřeba)
 
 ---
 
-## Fáze 24: Grid highlighting redesign
+## Fáze 24: Grid highlighting redesign ✅
 
 **Cíl:** Subtilnější vizuální indikace, méně vizuálního šumu.
 
-**Status:** 🟡 Připraveno
+**Status:** ✅ Hotovo
 
 ### 24A: Zrušit hover highlighting
-- [ ] 24A.1: Odstranit highlight řádku/sloupce při hover
-- [ ] 24A.2: Při hover jen zvýraznit záhlaví (tučně nebo jinak)
-- [ ] 24A.3: Zachovat aktivní (focus) řádek/sloupec highlighting
+- [x] 24A.1: Odstranit highlight řádku/sloupce při hover
+- [x] 24A.2: Při hover jen zvýraznit záhlaví (tučně)
+- [x] 24A.3: Zachovat aktivní (focus) řádek/sloupec highlighting
 
 ### 24B: Subtilnější gate groups
-- [ ] 24B.1: Oddělení skupin subtilnější (šedé místo accent)
-- [ ] 24B.2: Groups indicator v záhlaví méně výrazný (šedý)
-- [ ] 24B.3: Zajistit že nekonflikují s aktivním řádkem/sloupcem
+- [x] 24B.1: Oddělení skupin subtilnější (šedé místo accent)
+- [x] 24B.2: Groups indicator v záhlaví méně výrazný (šedý)
+- [x] 24B.3: Zajistit že nekonflikují s aktivním řádkem/sloupcem
 
 ---
 
-## Fáze 25: WebSocket connection management
+## Fáze 25: WebSocket connection management ✅
 
 **Cíl:** Opravit problémy s připojením - duplicitní spojení, reconnect loop.
 
-**Status:** 🟡 Připraveno
+**Status:** ✅ Hotovo
 
 **Problém:** Server loguje časté připojení/odpojení, drží více spojení.
 
-- [ ] 25.1: Audit `useC123WebSocket` hook - najít zdroj duplicitních spojení
-- [ ] 25.2: Zkontrolovat cleanup při unmount/reconnect
-- [ ] 25.3: Zajistit že běží max 1 aktivní spojení
-- [ ] 25.4: Otestovat reconnect logiku
-- [ ] 25.5: Commit
+- [x] 25.1: Audit `useC123WebSocket` hook - najít zdroj duplicitních spojení
+- [x] 25.2: Zkontrolovat cleanup při unmount/reconnect
+- [x] 25.3: Zajistit že běží max 1 aktivní spojení (isConnecting guard)
+- [x] 25.4: Otestovat reconnect logiku
+- [x] 25.5: Commit
+
+**Řešení:** Přidán `isConnecting` ref, který blokuje duplicitní připojení.
 
 ---
 
-## Fáze 26: Keyboard a scoring fixes
+## Fáze 26: Keyboard a scoring fixes ✅
 
 **Cíl:** Opravit keyboard handling a scoring logiku.
 
-**Status:** 🟡 Připraveno
+**Status:** ✅ Hotovo
 
 ### 26A: Keyboard focus po načtení
-- [ ] 26A.1: Po načtení stránky šipky scrollují místo navigace v gridu
-- [ ] 26A.2: Automaticky fokusovat grid po načtení dat
-- [ ] 26A.3: Zajistit že šipky vždy navigují v gridu (ne page scroll)
+- [x] 26A.1: Po načtení stránky šipky scrollují místo navigace v gridu
+- [x] 26A.2: Automaticky fokusovat grid po načtení dat
+- [x] 26A.3: Zajistit že šipky vždy navigují v gridu (ne page scroll)
 
 ### 26B: Delete hodnoty
-- [ ] 26B.1: Prozkoumat jak originál řeší mazání penalizace
-- [ ] 26B.2: Delete by neměl posílat value=0, ale odstranit hodnotu
-- [ ] 26B.3: Aktualizovat REST API volání
+- [x] 26B.1: Prozkoumat jak originál řeší mazání penalizace
+- [x] 26B.2: Delete posílá value=0 - to je SPRÁVNÉ chování (clean pass)
+- [x] 26B.3: Není třeba měnit - C123 API nemá koncept "odstranit hodnotu"
+
+**Poznámka:** V C123 protokolu hodnota 0 = "čistý průjezd" (no penalty).
+Neexistuje koncept "prázdná hodnota" - každá branka má vždy stav (0, 2, nebo 50).
 
 ---
 
-*Poslední aktualizace: 2026-01-18 (Added phases 22-26)*
+*Poslední aktualizace: 2026-01-18 (Phases 22-26 completed)*
