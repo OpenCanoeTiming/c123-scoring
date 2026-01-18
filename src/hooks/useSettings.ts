@@ -18,6 +18,8 @@ export interface Settings {
   serverUrl: string
   /** History of previously used server URLs */
   serverHistory: string[]
+  /** Client identifier sent to server (for distinguishing multiple scoring clients) */
+  clientId: string
   /** Whether to show finished competitors in the grid */
   showFinished: boolean
   /** Whether to show on-course competitors (still racing) in the grid */
@@ -33,6 +35,7 @@ export interface Settings {
 const DEFAULT_SETTINGS: Settings = {
   serverUrl: DEFAULT_SERVER_URL,
   serverHistory: [],
+  clientId: 'c123-scoring',
   showFinished: true,
   showOnCourse: true,
   showStartTime: false,

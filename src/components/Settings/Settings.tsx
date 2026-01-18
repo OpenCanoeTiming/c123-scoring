@@ -220,6 +220,24 @@ export function Settings({
                     </div>
                   </div>
                 )}
+
+                <div className="form-group">
+                  <label htmlFor="client-id" className="form-label">
+                    Client ID
+                  </label>
+                  <Input
+                    id="client-id"
+                    type="text"
+                    value={settings.clientId ?? 'c123-scoring'}
+                    onChange={(e) => onSettingsChange({ clientId: e.target.value })}
+                    placeholder="c123-scoring"
+                    data-testid="settings-client-id"
+                  />
+                  <p className="form-hint">
+                    Identifier sent to server to distinguish this client from others.
+                    Use unique names like "scoring-1", "scoring-finish", etc.
+                  </p>
+                </div>
               </div>
             </TabPanel>
 

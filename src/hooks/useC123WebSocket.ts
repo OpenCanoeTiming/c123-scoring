@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type {
   C123Message,
   C123OnCourseData,
@@ -36,6 +36,8 @@ export interface C123WebSocketState {
 
 export interface UseC123WebSocketOptions {
   url: string
+  /** Client identifier sent to server (appended as ?clientId=...) */
+  clientId?: string
   autoConnect?: boolean
   reconnectInterval?: number
   maxReconnectAttempts?: number
@@ -62,10 +64,25 @@ const DEFAULT_MAX_ATTEMPTS = Infinity
 export function useC123WebSocket(options: UseC123WebSocketOptions): UseC123WebSocketReturn {
   const {
     url,
+    clientId,
     autoConnect = true,
     reconnectInterval = DEFAULT_RECONNECT_INTERVAL,
     maxReconnectAttempts = DEFAULT_MAX_ATTEMPTS,
   } = options
+
+  // Build WebSocket URL with clientId query parameter
+  const wsUrl = useMemo(() => {
+    if (!clientId) return url
+    try {
+      const parsed = new URL(url)
+      parsed.searchParams.set('clientId', clientId)
+      return parsed.toString()
+    } catch {
+      // If URL parsing fails, append manually
+      const separator = url.includes('?') ? '&' : '?'
+      return `${url}${separator}clientId=${encodeURIComponent(clientId)}`
+    }
+  }, [url, clientId])
 
   // State
   const [state, setState] = useState<C123WebSocketState>({
@@ -153,7 +170,7 @@ export function useC123WebSocket(options: UseC123WebSocketOptions): UseC123WebSo
     setState((prev) => ({ ...prev, connectionState: 'connecting', lastError: null }))
 
     try {
-      const ws = new WebSocket(url)
+      const ws = new WebSocket(wsUrl)
       wsRef.current = ws
 
       ws.onopen = () => {
@@ -197,7 +214,7 @@ export function useC123WebSocket(options: UseC123WebSocketOptions): UseC123WebSo
         lastError: error instanceof Error ? error.message : 'Failed to connect',
       }))
     }
-  }, [url, handleMessage, maxReconnectAttempts, getReconnectDelay])
+  }, [wsUrl, handleMessage, maxReconnectAttempts, getReconnectDelay])
 
   // Disconnect from WebSocket
   const disconnect = useCallback(() => {
@@ -224,7 +241,7 @@ export function useC123WebSocket(options: UseC123WebSocketOptions): UseC123WebSo
 
   // Auto-connect on mount
   useEffect(() => {
-    if (autoConnect && url) {
+    if (autoConnect && wsUrl) {
       connect()
     }
 
@@ -240,7 +257,7 @@ export function useC123WebSocket(options: UseC123WebSocketOptions): UseC123WebSo
         wsRef.current = null
       }
     }
-  }, [autoConnect, url, connect])
+  }, [autoConnect, wsUrl, connect])
 
   return {
     ...state,

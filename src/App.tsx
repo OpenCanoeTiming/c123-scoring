@@ -43,7 +43,10 @@ function App() {
     results,
     raceConfig,
     connect,
-  } = useC123WebSocket({ url: settings.serverUrl })
+  } = useC123WebSocket({
+    url: settings.serverUrl,
+    clientId: settings.clientId,
+  })
 
   const { activeRaces, runningRace, getRaceById } = useSchedule(schedule)
 
