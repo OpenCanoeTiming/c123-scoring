@@ -55,14 +55,94 @@ export interface CourseSegment {
 }
 
 /**
+ * Default colors for segment groups (distinct from GROUP_COLORS for custom groups)
+ */
+export const SEGMENT_COLORS = [
+  '#0ea5e9', // Sky blue
+  '#22c55e', // Green
+  '#f59e0b', // Amber
+  '#ef4444', // Red
+  '#a855f7', // Purple
+  '#ec4899', // Pink
+  '#14b8a6', // Teal
+  '#f97316', // Orange
+] as const
+
+/**
  * Create gate groups from course segments
  */
 export function createGroupsFromSegments(segments: CourseSegment[]): GateGroup[] {
-  return segments.map((segment) => ({
+  return segments.map((segment, index) => ({
     id: `segment-${segment.number}`,
     name: segment.name || `Segment ${segment.number}`,
     gates: createGateRange(segment.startGate, segment.endGate),
+    color: SEGMENT_COLORS[index % SEGMENT_COLORS.length],
   }))
+}
+
+/**
+ * Create course segments from split gate numbers
+ *
+ * Splits are gate numbers where timing checkpoints occur.
+ * Each segment runs from the previous split (exclusive) to the current split (inclusive).
+ * First segment starts at gate 1.
+ *
+ * @param splits - Array of gate numbers where splits occur (1-indexed, sorted)
+ * @param totalGates - Total number of gates in the course
+ * @returns Array of CourseSegment objects
+ *
+ * @example
+ * createSegmentsFromSplits([5, 9, 14], 14)
+ * // Returns:
+ * // [
+ * //   { number: 1, name: "Segment 1", startGate: 1, endGate: 5 },
+ * //   { number: 2, name: "Segment 2", startGate: 6, endGate: 9 },
+ * //   { number: 3, name: "Segment 3", startGate: 10, endGate: 14 }
+ * // ]
+ */
+export function createSegmentsFromSplits(
+  splits: number[],
+  totalGates: number
+): CourseSegment[] {
+  if (splits.length === 0 || totalGates === 0) {
+    return []
+  }
+
+  // Sort splits to ensure correct order
+  const sortedSplits = [...splits].sort((a, b) => a - b)
+
+  const segments: CourseSegment[] = []
+  let startGate = 1
+
+  for (let i = 0; i < sortedSplits.length; i++) {
+    const endGate = sortedSplits[i]
+
+    // Skip if split is beyond total gates or invalid
+    if (endGate > totalGates || endGate < startGate) {
+      continue
+    }
+
+    segments.push({
+      number: segments.length + 1,
+      name: `Segment ${segments.length + 1}`,
+      startGate,
+      endGate,
+    })
+
+    startGate = endGate + 1
+  }
+
+  // Add final segment if there are gates after the last split
+  if (startGate <= totalGates) {
+    segments.push({
+      number: segments.length + 1,
+      name: `Segment ${segments.length + 1}`,
+      startGate,
+      endGate: totalGates,
+    })
+  }
+
+  return segments
 }
 
 // =============================================================================

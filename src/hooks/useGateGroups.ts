@@ -7,11 +7,13 @@ import {
   DEFAULT_GATE_GROUPS_CONFIG,
   type CourseSegment,
   createGroupsFromSegments,
+  createSegmentsFromSplits,
   createGateGroup,
   updateGateGroup as updateGateGroupUtil,
   removeGateGroup as removeGateGroupUtil,
   getNextGroupColor,
 } from '../types/gateGroups'
+import { fetchCourses, type CourseData } from '../services/coursesApi'
 
 // =============================================================================
 // Types
@@ -22,6 +24,8 @@ export interface UseGateGroupsOptions {
   raceConfig?: C123RaceConfigData | null
   /** Race ID for localStorage key scoping */
   raceId?: string | null
+  /** Course number for segment loading (default: 1) */
+  courseNr?: number
   /** localStorage key prefix */
   storageKeyPrefix?: string
 }
@@ -29,7 +33,7 @@ export interface UseGateGroupsOptions {
 export interface UseGateGroupsReturn {
   /** All available groups (segments + custom) */
   allGroups: GateGroup[]
-  /** Segment-based groups from race config */
+  /** Segment-based groups from course splits */
   segmentGroups: GateGroup[]
   /** User-defined custom groups */
   customGroups: GateGroup[]
@@ -39,6 +43,10 @@ export interface UseGateGroupsReturn {
   activeGroupId: string | null
   /** Total number of gates in the race */
   totalGates: number
+  /** Available courses from XML data */
+  availableCourses: CourseData[]
+  /** Whether courses are loading */
+  coursesLoading: boolean
 
   // Actions
   /** Set the active group by ID */
@@ -53,6 +61,8 @@ export interface UseGateGroupsReturn {
   clearCustomGroups: () => void
   /** Reset to default state (all gates) */
   reset: () => void
+  /** Reload courses from server */
+  reloadCourses: () => void
 }
 
 // =============================================================================
@@ -105,17 +115,16 @@ function saveToStorage(key: string, config: GateGroupsConfig): void {
 // =============================================================================
 
 /**
- * Parse segments from race config
- * Currently C123 doesn't provide segment info directly,
- * but this is prepared for future expansion
+ * Create segments from course data splits
  */
-function parseSegmentsFromConfig(
-  _raceConfig: C123RaceConfigData | null | undefined
+function createSegmentsFromCourse(
+  course: CourseData | undefined,
+  totalGates: number
 ): CourseSegment[] {
-  void _raceConfig // Explicitly mark as intentionally unused
-  // TODO: When c123-server provides segment data, parse it here
-  // For now, return empty array (no auto-segments)
-  return []
+  if (!course || course.splits.length === 0 || totalGates === 0) {
+    return []
+  }
+  return createSegmentsFromSplits(course.splits, totalGates)
 }
 
 // =============================================================================
@@ -126,6 +135,7 @@ export function useGateGroups(options: UseGateGroupsOptions = {}): UseGateGroups
   const {
     raceConfig = null,
     raceId = null,
+    courseNr = 1,
     storageKeyPrefix = 'c123-scoring-gate-groups',
   } = options
 
@@ -139,6 +149,8 @@ export function useGateGroups(options: UseGateGroupsOptions = {}): UseGateGroups
   const [config, setConfig] = useState<GateGroupsConfig>(() =>
     loadFromStorage(storageKey)
   )
+  const [courses, setCourses] = useState<CourseData[]>([])
+  const [coursesLoading, setCoursesLoading] = useState(false)
 
   // Load from storage when race changes
   useEffect(() => {
@@ -150,14 +162,41 @@ export function useGateGroups(options: UseGateGroupsOptions = {}): UseGateGroups
     saveToStorage(storageKey, config)
   }, [storageKey, config])
 
-  // Parse segments from race config
-  const segments = useMemo(() => parseSegmentsFromConfig(raceConfig), [raceConfig])
+  // Fetch courses from server
+  const loadCourses = useCallback(async () => {
+    setCoursesLoading(true)
+    try {
+      const data = await fetchCourses()
+      setCourses(data?.courses ?? [])
+    } catch {
+      setCourses([])
+    } finally {
+      setCoursesLoading(false)
+    }
+  }, [])
 
-  // Create segment-based groups
-  const segmentGroups = useMemo(() => createGroupsFromSegments(segments), [segments])
+  // Load courses on mount and when race changes
+  useEffect(() => {
+    loadCourses()
+  }, [loadCourses, raceId])
 
   // Total gates from race config
   const totalGates = raceConfig?.nrGates ?? 0
+
+  // Find the selected course
+  const selectedCourse = useMemo(
+    () => courses.find((c) => c.courseNr === courseNr),
+    [courses, courseNr]
+  )
+
+  // Create segments from course splits
+  const segments = useMemo(
+    () => createSegmentsFromCourse(selectedCourse, totalGates),
+    [selectedCourse, totalGates]
+  )
+
+  // Create segment-based groups
+  const segmentGroups = useMemo(() => createGroupsFromSegments(segments), [segments])
 
   // All groups: ALL_GATES + segments + custom
   const allGroups = useMemo(
@@ -241,6 +280,8 @@ export function useGateGroups(options: UseGateGroupsOptions = {}): UseGateGroups
     activeGroup,
     activeGroupId: config.activeGroupId,
     totalGates,
+    availableCourses: courses,
+    coursesLoading,
 
     setActiveGroup,
     addGroup,
@@ -248,5 +289,6 @@ export function useGateGroups(options: UseGateGroupsOptions = {}): UseGateGroups
     removeGroup,
     clearCustomGroups,
     reset,
+    reloadCourses: loadCourses,
   }
 }

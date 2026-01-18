@@ -13,7 +13,7 @@
 | 17F | UX Polish (Tablet) | ✅ Hotovo |
 | 17G | UX Polish (Screenshots) | ✅ Hotovo |
 | 17H | UX Polish (Settings) | ✅ Hotovo |
-| 18 | Auto-load Gate Groups | 🟡 Připraveno |
+| 18 | Auto-load Gate Groups | 🟢 Hotovo (18B) |
 | 19 | E2E Test Refaktoring | ✅ Hotovo |
 | 20 | Bug fixes a UX připomínky | 🔴 TODO |
 
@@ -228,13 +228,13 @@ npx playwright test screenshots-with-data.spec.ts
 - [x] 18A.2: Přidat REST endpoint `GET /api/xml/courses`
 - [x] 18A.3: Dokumentovat v `REST-API.md`
 
-### 18B: Integrace v c123-scoring
+### 18B: Integrace v c123-scoring ✅
 
-- [ ] 18B.1: Přidat API client pro `/api/xml/courses` do `src/services/`
-- [ ] 18B.2: Přidat helper `createSegmentsFromSplits(splits: number[], totalGates: number)` do `src/types/gateGroups.ts`
-- [ ] 18B.3: Update `useGateGroups` hook - fetch courses API a parsovat segmenty
-- [ ] 18B.4: UI pro přepínání mezi "All Gates" / "Segment 1" / "Segment 2" / custom groups
-- [ ] 18B.5: Commit
+- [x] 18B.1: Přidat API client pro `/api/xml/courses` do `src/services/`
+- [x] 18B.2: Přidat helper `createSegmentsFromSplits(splits: number[], totalGates: number)` do `src/types/gateGroups.ts`
+- [x] 18B.3: Update `useGateGroups` hook - fetch courses API a parsovat segmenty
+- [x] 18B.4: UI pro přepínání mezi "All Gates" / "Segment 1" / "Segment 2" / custom groups
+- [x] 18B.5: Commit
 
 ### 18C: Verifikace
 

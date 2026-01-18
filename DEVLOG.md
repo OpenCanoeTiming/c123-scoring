@@ -1013,6 +1013,60 @@ Aktualizovat E2E testy po redesignu UI - opravit zastaralé selektory a regenero
 
 ---
 
+## 2026-01-18 - Fáze 18B: Auto-load Gate Groups
+
+### Cíl iterace
+
+Implementovat automatické načítání gate groups ze segmentů trati z REST API `/api/xml/courses`.
+
+### Dokončeno
+
+- [x] **API client:** Nový `src/services/coursesApi.ts` pro fetch `/api/xml/courses`
+- [x] **Helper funkce:** `createSegmentsFromSplits()` v `src/types/gateGroups.ts`
+- [x] **Hook update:** `useGateGroups` nyní:
+  - Fetchuje courses z REST API při připojení
+  - Vytváří segment groups z splits dat
+  - Exportuje `availableCourses`, `coursesLoading`, `reloadCourses`
+- [x] **Barvy segmentů:** Přidána `SEGMENT_COLORS` paleta pro vizuální odlišení
+- [x] **UI integrace:** Segment groups se automaticky zobrazují v `GateGroupIndicatorRow`
+
+### Změny souborů
+
+- `src/services/coursesApi.ts` - nový API client
+- `src/services/index.ts` - export coursesApi
+- `src/types/gateGroups.ts` - `createSegmentsFromSplits()`, `SEGMENT_COLORS`
+- `src/hooks/useGateGroups.ts` - fetch courses, nové return hodnoty
+
+### Architektura
+
+```
+c123-scoring                     c123-server
+     │                                │
+     │ GET /api/xml/courses          │
+     ├───────────────────────────────>│
+     │                                │
+     │ { courses: [                   │
+     │   { courseNr: 1,               │
+     │     splits: [5, 9, 14, ...] }  │
+     │ ]}                             │
+     │<───────────────────────────────┤
+     │                                │
+     ▼
+createSegmentsFromSplits([5, 9, 14], 24)
+     │
+     ▼
+[Segment 1 (1-5), Segment 2 (6-9), Segment 3 (10-14), ...]
+```
+
+### Poznámky
+
+- Segment groups se zobrazují automaticky v gridu nad gate headers
+- Klik na segment aktivuje dimming ostatních sloupců (stejně jako custom groups)
+- Replay server nemá CourseData, segmenty se zobrazí pouze s reálným C123/XML
+- Fáze 18C (verifikace) vyžaduje testování s reálným XML
+
+---
+
 ## Template pro další záznamy
 
 ```markdown
