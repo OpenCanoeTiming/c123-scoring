@@ -337,6 +337,7 @@ export function ResultsGrid({
         <TableBody>
           {sortedRows.map((row, rowIndex) => {
             const penalties = parseResultsGatesWithConfig(row.gates, gateConfig)
+            const totalPenalty = penalties.reduce((sum, p) => sum + (p.value ?? 0), 0)
             const hasStatus = !!row.status
 
             const isRowFocused = position.row === rowIndex
@@ -372,7 +373,7 @@ export function ResultsGrid({
                   {hasStatus ? '-' : `${formatTimeAsSeconds(row.time)}s`}
                 </TableCell>
                 <TableCell numeric className="col-pen">
-                  {!hasStatus && row.pen > 0 ? `+${row.pen}` : ''}
+                  {!hasStatus && totalPenalty > 0 ? `+${totalPenalty}` : ''}
                 </TableCell>
                 {visibleGateIndices.map((gateIndex, visibleColIndex) => {
                   const gateNum = gateIndex + 1

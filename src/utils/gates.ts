@@ -130,10 +130,18 @@ export function parseGatesWithConfig(
 }
 
 /**
- * Calculate total penalty seconds from gates string
+ * Calculate total penalty seconds from OnCourse gates string (comma-separated)
  */
 export function calculateTotalPenalty(gates: string): number {
   const values = parseGatesString(gates)
+  return values.reduce<number>((sum, val) => sum + (val ?? 0), 0)
+}
+
+/**
+ * Calculate total penalty seconds from Results gates string (space-separated/fixed-width)
+ */
+export function calculateResultsTotalPenalty(gates: string): number {
+  const values = parseResultsGatesString(gates)
   return values.reduce<number>((sum, val) => sum + (val ?? 0), 0)
 }
 

@@ -6,6 +6,7 @@ import {
   parseGatesWithConfig,
   parseResultsGatesWithConfig,
   calculateTotalPenalty,
+  calculateResultsTotalPenalty,
   formatPenalty,
   getPenaltyClass,
 } from './gates'
@@ -202,6 +203,33 @@ describe('gates utilities', () => {
 
     it('handles empty string', () => {
       const result = calculateTotalPenalty('')
+      expect(result).toBe(0)
+    })
+  })
+
+  describe('calculateResultsTotalPenalty', () => {
+    it('calculates zero for all clear', () => {
+      const result = calculateResultsTotalPenalty(sampleGatesStrings.results.allClear)
+      expect(result).toBe(0)
+    })
+
+    it('calculates correct total with penalties', () => {
+      const result = calculateResultsTotalPenalty(sampleGatesStrings.results.withPenalties)
+      expect(result).toBe(54) // 2 + 2 + 50
+    })
+
+    it('calculates correct total for multiple misses', () => {
+      const result = calculateResultsTotalPenalty(sampleGatesStrings.results.multipleMisses)
+      expect(result).toBe(156) // 50 + 50 + 50 + 2 + 2 + 2
+    })
+
+    it('handles fixed-width format', () => {
+      const result = calculateResultsTotalPenalty(sampleGatesStrings.results.fixedWidth)
+      expect(result).toBe(54)
+    })
+
+    it('handles empty string', () => {
+      const result = calculateResultsTotalPenalty('')
       expect(result).toBe(0)
     })
   })
