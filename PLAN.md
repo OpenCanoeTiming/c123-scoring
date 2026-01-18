@@ -16,7 +16,12 @@
 | 18 | Auto-load Gate Groups | ✅ Hotovo |
 | 19 | E2E Test Refaktoring | ✅ Hotovo |
 | 20 | Bug fixes a UX připomínky | ✅ Hotovo |
-| 21 | Schedule WebSocket issue | 🔴 Blokuje |
+| 21 | Schedule WebSocket issue | 🔴 Blokuje (c123-server) |
+| 22 | Settings cleanup | 🟡 Připraveno |
+| 23 | Grid layout a sticky sloupce | 🟡 Připraveno |
+| 24 | Grid highlighting redesign | 🟡 Připraveno |
+| 25 | WebSocket connection management | 🟡 Připraveno |
+| 26 | Keyboard a scoring fixes | 🟡 Připraveno |
 
 ---
 
@@ -447,4 +452,90 @@ Scoring aplikace proto zobrazuje "No active races" i když server má aktivní z
 
 ---
 
-*Poslední aktualizace: 2026-01-18 (Phase 18C: verified segments, found Schedule issue)*
+## Fáze 22: Settings cleanup
+
+**Cíl:** Odstranit nepoužívané nastavení.
+
+**Status:** 🟡 Připraveno
+
+- [ ] 22.1: Odstranit "Compact mode" ze Settings - nic nedělá
+- [ ] 22.2: Zkontrolovat jestli jsou všechny settings používané
+- [ ] 22.3: Commit
+
+---
+
+## Fáze 23: Grid layout a sticky sloupce
+
+**Cíl:** Vylepšit layout gridu pro širší tratě a horizontální scroll.
+
+**Status:** 🟡 Připraveno
+
+### 23A: Kompaktnější záhlaví
+- [ ] 23A.1: Fixní šířky sloupců (pořadí, bib, jméno) - nenatahovat
+- [ ] 23A.2: Volné místo vpravo od gridu místo roztahování jména
+- [ ] 23A.3: Kompaktnější gate headers
+
+### 23B: Sticky sloupce při horizontálním scrollu
+- [ ] 23B.1: Sticky sloupce: pořadí, číslo, jméno závodníka
+- [ ] 23B.2: Grid s penalizacemi scrolluje samostatně
+- [ ] 23B.3: Sticky segmenty/gate groups v headeru (při vertikálním scrollu)
+
+### 23C: Viditelný horizontální scroll
+- [ ] 23C.1: Zajistit že je zřejmé jak scrollovat do strany
+- [ ] 23C.2: Případně přidat scroll indikátor
+
+---
+
+## Fáze 24: Grid highlighting redesign
+
+**Cíl:** Subtilnější vizuální indikace, méně vizuálního šumu.
+
+**Status:** 🟡 Připraveno
+
+### 24A: Zrušit hover highlighting
+- [ ] 24A.1: Odstranit highlight řádku/sloupce při hover
+- [ ] 24A.2: Při hover jen zvýraznit záhlaví (tučně nebo jinak)
+- [ ] 24A.3: Zachovat aktivní (focus) řádek/sloupec highlighting
+
+### 24B: Subtilnější gate groups
+- [ ] 24B.1: Oddělení skupin subtilnější (šedé místo accent)
+- [ ] 24B.2: Groups indicator v záhlaví méně výrazný (šedý)
+- [ ] 24B.3: Zajistit že nekonflikují s aktivním řádkem/sloupcem
+
+---
+
+## Fáze 25: WebSocket connection management
+
+**Cíl:** Opravit problémy s připojením - duplicitní spojení, reconnect loop.
+
+**Status:** 🟡 Připraveno
+
+**Problém:** Server loguje časté připojení/odpojení, drží více spojení.
+
+- [ ] 25.1: Audit `useC123WebSocket` hook - najít zdroj duplicitních spojení
+- [ ] 25.2: Zkontrolovat cleanup při unmount/reconnect
+- [ ] 25.3: Zajistit že běží max 1 aktivní spojení
+- [ ] 25.4: Otestovat reconnect logiku
+- [ ] 25.5: Commit
+
+---
+
+## Fáze 26: Keyboard a scoring fixes
+
+**Cíl:** Opravit keyboard handling a scoring logiku.
+
+**Status:** 🟡 Připraveno
+
+### 26A: Keyboard focus po načtení
+- [ ] 26A.1: Po načtení stránky šipky scrollují místo navigace v gridu
+- [ ] 26A.2: Automaticky fokusovat grid po načtení dat
+- [ ] 26A.3: Zajistit že šipky vždy navigují v gridu (ne page scroll)
+
+### 26B: Delete hodnoty
+- [ ] 26B.1: Prozkoumat jak originál řeší mazání penalizace
+- [ ] 26B.2: Delete by neměl posílat value=0, ale odstranit hodnotu
+- [ ] 26B.3: Aktualizovat REST API volání
+
+---
+
+*Poslední aktualizace: 2026-01-18 (Added phases 22-26)*
