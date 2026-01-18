@@ -27,18 +27,55 @@ export function parseGatesString(gates: string): (number | null)[] {
 
 /**
  * Parse the gates string from C123 Results into an array of penalty values
- * Format: "0  0  0  2  0  0  2  0  50" (space-separated, may have multiple spaces)
- * All gates should have values in Results
+ *
+ * Handles multiple formats:
+ * 1. Fixed-width 3 chars (raw C123 XML): "  0  0  2 50  0" with leading space
+ * 2. Double-space separated: "0  0  2  50  0"
+ * 3. Single-space separated: "0 0 2 50 0"
+ *
+ * Empty positions (deleted penalties) are preserved as null.
  */
 export function parseResultsGatesString(gates: string): (number | null)[] {
   if (!gates) return []
 
-  // Split by one or more whitespace characters and filter out empty strings
-  return gates.trim().split(/\s+/).map((val) => {
+  // Detect format: if starts with space, it's fixed-width 3-char format
+  if (gates.startsWith(' ')) {
+    return parseFixedWidthGates(gates)
+  }
+
+  // Otherwise use space-separated parsing
+  // Normalize double spaces to single space first
+  const normalized = gates.trim().replace(/ {2,}/g, ' ')
+  return normalized.split(' ').map((val) => {
     if (val === '' || val === undefined) return null
     const num = parseInt(val, 10)
     return isNaN(num) ? null : num
   })
+}
+
+/**
+ * Parse fixed-width 3-character gates format from raw C123 XML
+ * Each gate value occupies exactly 3 characters, right-aligned
+ */
+function parseFixedWidthGates(gates: string): (number | null)[] {
+  const result: (number | null)[] = []
+
+  for (let i = 0; i < gates.length; i += 3) {
+    const block = gates.substring(i, i + 3).trim()
+    if (block === '') {
+      result.push(null)
+    } else {
+      const num = parseInt(block, 10)
+      result.push(isNaN(num) ? null : num)
+    }
+  }
+
+  // Remove trailing nulls (padding from C123 XML)
+  while (result.length > 0 && result[result.length - 1] === null) {
+    result.pop()
+  }
+
+  return result
 }
 
 /**

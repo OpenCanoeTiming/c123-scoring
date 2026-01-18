@@ -171,10 +171,50 @@ export function ResultsGrid({
     [handleInputKeyDown, handleNavKeyDown]
   )
 
-  // Focus the grid when position changes
+  // Scroll focused cell into view (respecting sticky areas)
   useEffect(() => {
-    if (focusedCellRef.current) {
-      focusedCellRef.current.focus()
+    const container = gridRef.current
+    if (!container) return
+
+    // Find focused cell by class (more reliable than ref timing)
+    const cell = container.querySelector('.penalty-cell--focused') as HTMLElement
+    if (!cell) return
+
+    // Get dimensions
+    const cellRect = cell.getBoundingClientRect()
+    const containerRect = container.getBoundingClientRect()
+
+    // Calculate sticky areas
+    const penCol = container.querySelector('tbody .col-pen') as HTMLElement
+    const thead = container.querySelector('thead') as HTMLElement
+    const stickyLeft = penCol ? penCol.getBoundingClientRect().right - containerRect.left : 350
+    const stickyTop = thead ? thead.getBoundingClientRect().height : 44
+
+    // Visible area (excluding sticky regions and scrollbars)
+    const visibleLeft = containerRect.left + stickyLeft
+    const visibleTop = containerRect.top + stickyTop
+    const visibleRight = containerRect.right - 14
+    const visibleBottom = containerRect.bottom - 14
+
+    // Calculate needed scroll
+    let scrollX = 0
+    let scrollY = 0
+
+    if (cellRect.left < visibleLeft) {
+      scrollX = cellRect.left - visibleLeft - 4
+    } else if (cellRect.right > visibleRight) {
+      scrollX = cellRect.right - visibleRight + 4
+    }
+
+    if (cellRect.top < visibleTop) {
+      scrollY = cellRect.top - visibleTop - 4
+    } else if (cellRect.bottom > visibleBottom) {
+      scrollY = cellRect.bottom - visibleBottom + 4
+    }
+
+    // Scroll
+    if (scrollX !== 0 || scrollY !== 0) {
+      container.scrollBy({ left: scrollX, top: scrollY, behavior: 'auto' })
     }
   }, [position])
 

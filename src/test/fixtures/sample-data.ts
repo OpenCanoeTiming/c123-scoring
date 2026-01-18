@@ -26,6 +26,10 @@ export const sampleGatesStrings = {
     multipleMisses: '50 0 0 2 0 50 2 0 0 0 0 2 0 0 0 50 0 0 0 0 0 0 0 0',
     // Real C123 data has double spaces between values
     doubleSpaces: '0  0  0  2  0  0  2  0  50  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0',
+    // Fixed-width 3-char format (raw C123 XML) - leading space indicates format
+    fixedWidth: '  0  0  0  2  0  0  2  0 50  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0',
+    // Fixed-width with empty value (deleted penalty at gate 4)
+    fixedWidthWithEmpty: '  0  0  0     0  0  2  0 50  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0',
   },
 }
 

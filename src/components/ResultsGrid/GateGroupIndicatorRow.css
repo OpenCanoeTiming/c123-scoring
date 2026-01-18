@@ -11,8 +11,10 @@
 }
 
 .gate-group-indicator-spacer {
+  position: sticky;
+  left: 0;
   background: var(--color-bg-surface);
-  z-index: 20; /* Same as sticky header columns */
+  z-index: 30; /* Same as sticky header corner columns */
 }
 
 .gate-group-indicator {

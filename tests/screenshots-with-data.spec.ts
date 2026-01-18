@@ -173,4 +173,67 @@ test.describe('Screenshot Tests - With Data', () => {
     await waitForDataAndSelectRace(page);
     await takeDocScreenshot(page, '19-tablet-portrait');
   });
+
+  test('20 - horizontal scroll with sticky columns', async ({ page }) => {
+    await waitForDataAndSelectRace(page);
+
+    // Scroll the grid horizontally to the right
+    const grid = page.locator('.results-grid');
+    await grid.evaluate((el) => {
+      el.scrollLeft = 400; // Scroll right to show sticky columns in action
+    });
+    await page.waitForTimeout(300);
+    await takeDocScreenshot(page, '20-horizontal-scroll');
+  });
+
+  test('21 - vertical scroll with sticky header', async ({ page }) => {
+    await waitForDataAndSelectRace(page);
+
+    // Scroll the grid vertically down
+    const grid = page.locator('.results-grid');
+    await grid.evaluate((el) => {
+      el.scrollTop = 200; // Scroll down to show sticky header
+    });
+    await page.waitForTimeout(300);
+    await takeDocScreenshot(page, '21-vertical-scroll');
+  });
+
+  test('22 - debug header visibility', async ({ page }) => {
+    await waitForDataAndSelectRace(page);
+
+    // Debug: check if thead exists and is visible
+    const thead = page.locator('.results-grid thead');
+    const theadVisible = await thead.isVisible();
+    const theadCount = await thead.count();
+    const headerCells = await page.locator('.results-grid thead th').count();
+
+    console.log(`[Debug] thead visible: ${theadVisible}, count: ${theadCount}, header cells: ${headerCells}`);
+
+    // Get thead bounding box
+    const box = await thead.boundingBox();
+    console.log(`[Debug] thead bounding box:`, box);
+
+    // Get positions of various elements
+    const gridBox = await page.locator('.results-grid').boundingBox();
+    const appHeaderBox = await page.locator('header').first().boundingBox();
+    const mainBox = await page.locator('main').boundingBox();
+    const tbodyBox = await page.locator('.results-grid tbody').boundingBox();
+    const firstRow = await page.locator('.results-grid tbody tr').first().boundingBox();
+
+    console.log(`[Debug] App header:`, appHeaderBox);
+    console.log(`[Debug] Main:`, mainBox);
+    console.log(`[Debug] Grid:`, gridBox);
+    console.log(`[Debug] Tbody:`, tbodyBox);
+    console.log(`[Debug] First data row:`, firstRow);
+
+    // Check thead row count
+    const theadRows = await page.locator('.results-grid thead tr').count();
+    console.log(`[Debug] Thead rows: ${theadRows}`);
+
+    // Get first header row height
+    const firstHeaderRow = await page.locator('.results-grid thead tr').first().boundingBox();
+    console.log(`[Debug] First header row:`, firstHeaderRow);
+
+    await takeDocScreenshot(page, '22-debug-header');
+  });
 });

@@ -84,6 +84,28 @@ export function ResultsGridNew({
     return activeGateGroup.gates.map((g) => g - 1).filter((i) => i >= 0 && i < nrGates)
   }, [activeGateGroup, nrGates])
 
+  // Detect group boundaries for visual separators
+  const groupBoundaries = useMemo(() => {
+    const boundaries = new Set<number>()
+    if (customGroups.length === 0) return boundaries
+
+    for (let i = 0; i < visibleGateIndices.length - 1; i++) {
+      const currentGate = visibleGateIndices[i] + 1
+      const nextGate = visibleGateIndices[i + 1] + 1
+
+      for (const group of customGroups) {
+        const currentInGroup = group.gates.includes(currentGate)
+        const nextInGroup = group.gates.includes(nextGate)
+
+        if (currentInGroup && !nextInGroup) {
+          boundaries.add(currentGate)
+        }
+      }
+    }
+
+    return boundaries
+  }, [visibleGateIndices, customGroups])
+
   // Sort rows
   const sortedRows = useMemo(() => {
     const sorted = [...rows]
@@ -299,10 +321,12 @@ export function ResultsGridNew({
                 const gateNum = gateIndex + 1
                 const isReverse = gateConfig[gateIndex] === 'R'
                 const isFocused = colIndex === position.column
+                const isBoundary = groupBoundaries.has(gateNum)
 
                 let className = ''
                 if (isReverse) className += ` ${styles.reverse}`
                 if (isFocused) className += ` ${styles.focused}`
+                if (isBoundary) className += ` ${styles.boundary}`
 
                 return (
                   <th key={gateIndex} className={className}>
@@ -355,9 +379,11 @@ export function ResultsGridNew({
               <tr key={row.bib}>
                 {visibleGateIndices.map((gateIndex, colIndex) => {
                   const { value, className } = getPenaltyDisplay(row, gateIndex)
+                  const gateNum = gateIndex + 1
                   const isFocused = rowIndex === position.row && colIndex === position.column
                   const isColFocus = colIndex === position.column && rowIndex !== position.row
                   const isRowFocus = rowIndex === position.row && colIndex !== position.column
+                  const isBoundary = groupBoundaries.has(gateNum)
 
                   let cellClass = className
                   if (isFocused) {
@@ -368,6 +394,9 @@ export function ResultsGridNew({
                     cellClass += ` ${styles.penaltyCellColFocus}`
                   } else if (isRowFocus) {
                     cellClass += ` ${styles.penaltyCellRowFocus}`
+                  }
+                  if (isBoundary) {
+                    cellClass += ` ${styles.penaltyBoundary}`
                   }
 
                   return (

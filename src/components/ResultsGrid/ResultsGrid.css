@@ -1,26 +1,35 @@
-/* ResultsGrid - DS Table extension for penalty grid */
+/* ResultsGrid - Penalty grid with sticky header and columns */
 
-/* Grid container - scrollable both directions */
+/* ==========================================================================
+   SCROLL CONTAINER
+   ========================================================================== */
+
 .results-grid {
   flex: 1;
+  min-height: 0; /* Required for flex scrolling */
   overflow: auto;
-  /* No padding - maximize space for grid */
 }
 
-/* Ensure table doesn't stretch to fill available width */
-.results-grid .table {
-  width: auto;
-  min-width: min-content;
+.results-grid:focus {
+  outline: none;
 }
 
-/* Visible scrollbar styling */
+.results-grid--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--color-text-secondary);
+}
+
+/* Scrollbar styling */
 .results-grid::-webkit-scrollbar {
+  width: 12px;
   height: 12px;
 }
 
 .results-grid::-webkit-scrollbar-track {
   background: var(--color-bg-elevated);
-  border-radius: 6px;
 }
 
 .results-grid::-webkit-scrollbar-thumb {
@@ -33,46 +42,48 @@
   background: var(--color-text-secondary);
 }
 
-/* Firefox scrollbar */
 .results-grid {
   scrollbar-width: auto;
   scrollbar-color: var(--color-border) var(--color-bg-elevated);
 }
 
-.results-grid--empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 200px;
-  color: var(--color-text-secondary);
+/* ==========================================================================
+   TABLE BASE
+   ========================================================================== */
+
+.results-grid .table {
+  width: auto;
+  min-width: min-content;
+  /* CRITICAL: border-collapse: separate is required for sticky positioning */
+  border-collapse: separate !important;
+  border-spacing: 0;
 }
 
-/* Table header sticky - both rows (groups + gates) */
+/* ==========================================================================
+   STICKY HEADER (vertical scroll)
+   All thead cells stick to top
+   ========================================================================== */
+
 .results-grid .table thead th,
 .results-grid .table thead td {
   position: sticky;
-  z-index: 10;
+  top: 0;
+  z-index: 20;
   background: var(--color-bg-surface);
 }
 
-/* First row (gate groups) sticks at top: 0 */
-.results-grid .table thead tr:first-child th,
-.results-grid .table thead tr:first-child td {
-  top: 0;
+/* When there are 2 header rows (gate groups + gates), second row needs offset */
+.results-grid .table thead tr + tr th,
+.results-grid .table thead tr + tr td {
+  top: 32px; /* Height of first header row */
 }
 
-/* Second row (gate numbers) sticks below first row */
-.results-grid .table thead tr:nth-child(2) th,
-.results-grid .table thead tr:nth-child(2) td {
-  top: 32px; /* Height of group indicator row */
-}
+/* ==========================================================================
+   STICKY COLUMNS (horizontal scroll)
+   Fixed columns: #, Bib, Name, Time, Pen
+   ========================================================================== */
 
-/* When no group indicator row, first row is the only row */
-.results-grid .table thead tr:only-child th {
-  top: 0;
-}
-
-/* Fixed column widths - prevent stretching */
+/* Column widths */
 .col-pos {
   width: 40px;
   min-width: 40px;
@@ -87,10 +98,10 @@
 }
 
 .col-name {
-  text-align: left;
   width: 140px;
   min-width: 140px;
   max-width: 200px;
+  text-align: left;
   font-weight: var(--font-semibold);
   white-space: nowrap;
   overflow: hidden;
@@ -121,18 +132,23 @@
   font-size: var(--text-sm);
 }
 
-/* Sticky columns for horizontal scroll */
+/* Sticky positioning for fixed columns */
 .results-grid .table th.col-pos,
 .results-grid .table th.col-bib,
 .results-grid .table th.col-name,
+.results-grid .table th.col-time,
+.results-grid .table th.col-pen,
 .results-grid .table td.col-pos,
 .results-grid .table td.col-bib,
-.results-grid .table td.col-name {
+.results-grid .table td.col-name,
+.results-grid .table td.col-time,
+.results-grid .table td.col-pen {
   position: sticky;
   background: var(--color-bg-surface);
-  z-index: 5; /* Above regular cells, below header */
+  z-index: 10;
 }
 
+/* Left offsets for each sticky column */
 .results-grid .table th.col-pos,
 .results-grid .table td.col-pos {
   left: 0;
@@ -146,45 +162,63 @@
 .results-grid .table th.col-name,
 .results-grid .table td.col-name {
   left: 90px;
+}
+
+.results-grid .table th.col-time,
+.results-grid .table td.col-time {
+  left: 230px;
+}
+
+.results-grid .table th.col-pen,
+.results-grid .table td.col-pen {
+  left: 300px;
   border-right: 1px solid var(--color-border-muted);
 }
 
-/* Sticky header + sticky column = highest z-index */
+/* Corner cells (header + sticky column) need highest z-index */
 .results-grid .table thead th.col-pos,
 .results-grid .table thead th.col-bib,
-.results-grid .table thead th.col-name {
-  z-index: 20;
+.results-grid .table thead th.col-name,
+.results-grid .table thead th.col-time,
+.results-grid .table thead th.col-pen,
+.results-grid .table thead td.col-pos,
+.results-grid .table thead td.col-bib,
+.results-grid .table thead td.col-name,
+.results-grid .table thead td.col-time,
+.results-grid .table thead td.col-pen {
+  z-index: 30;
 }
 
-/* Sticky columns need solid background on ALL rows (odd + even) */
-.results-grid .table tbody tr td.col-pos,
-.results-grid .table tbody tr td.col-bib,
-.results-grid .table tbody tr td.col-name {
-  background: var(--color-bg-surface);
-}
-
+/* Alternate row backgrounds for sticky columns */
 .results-grid .table tbody tr:nth-child(even) td.col-pos,
 .results-grid .table tbody tr:nth-child(even) td.col-bib,
-.results-grid .table tbody tr:nth-child(even) td.col-name {
+.results-grid .table tbody tr:nth-child(even) td.col-name,
+.results-grid .table tbody tr:nth-child(even) td.col-time,
+.results-grid .table tbody tr:nth-child(even) td.col-pen {
   background: var(--color-bg-elevated);
 }
 
-/* Penalty cell base */
+/* ==========================================================================
+   PENALTY CELLS
+   ========================================================================== */
+
 .penalty-cell {
+  position: relative;
+  z-index: 1;
   width: 36px;
   min-width: 36px;
   cursor: pointer;
   user-select: none;
   text-align: center;
   font-family: var(--font-mono);
-  transition: background-color var(--transition-fast), color var(--transition-fast);
+  transition: background-color var(--transition-fast);
 }
 
 .penalty-cell:hover:not(.penalty-cell--focused) {
   filter: brightness(0.95);
 }
 
-/* Penalty values - using DS color tokens */
+/* Penalty values */
 .penalty-cell--empty {
   background: var(--color-bg-surface);
 }
@@ -211,30 +245,39 @@
   border-bottom: 2px solid var(--color-warning);
 }
 
-/* Gate header for reverse gates */
 th.gate-header--reverse {
   background: var(--color-warning-subtle);
   color: var(--color-warning);
 }
 
-/* Column focus highlight - stronger left/right borders */
+/* ==========================================================================
+   FOCUS & SELECTION
+   ========================================================================== */
+
+/* Focus ring on active cell */
+.penalty-cell--focused {
+  outline: 4px solid var(--color-accent);
+  outline-offset: 0px;
+  z-index: 5;
+}
+
+/* Column highlight */
 .penalty-cell--col-focus:not(.penalty-cell--focused) {
   box-shadow: inset 2px 0 0 var(--color-accent), inset -2px 0 0 var(--color-accent);
 }
 
-/* Gate header focus - accent border and color */
 th.gate-header--focus {
   box-shadow: inset 2px 0 0 var(--color-accent), inset -2px 0 0 var(--color-accent);
   color: var(--color-accent);
   font-weight: var(--font-semibold);
 }
 
-/* Row focus highlight - top/bottom borders on all cells */
+/* Row highlight */
 .results-row--focus > td:not(.penalty-cell--focused) {
   box-shadow: inset 0 2px 0 var(--color-accent), inset 0 -2px 0 var(--color-accent);
 }
 
-/* Cell in focus row + focus column gets combined borders (crosshair effect) */
+/* Crosshair effect (row + column) */
 .results-row--focus > .penalty-cell--col-focus:not(.penalty-cell--focused) {
   box-shadow:
     inset 2px 0 0 var(--color-accent),
@@ -243,45 +286,37 @@ th.gate-header--focus {
     inset 0 -2px 0 var(--color-accent);
 }
 
-/* Focus state - full border around the focused cell */
-.penalty-cell--focused {
-  box-shadow: inset 0 0 0 2px var(--color-accent);
-  position: relative;
-  z-index: 2;
-}
-
-/* Pending edit state */
+/* Pending edit animation */
 .penalty-cell--pending {
   animation: penalty-pulse 0.5s ease-in-out infinite alternate;
 }
 
 @keyframes penalty-pulse {
-  from {
-    box-shadow: inset 0 0 0 2px var(--color-bg-surface);
-  }
-  to {
-    box-shadow: inset 0 0 8px var(--color-accent);
-  }
+  from { box-shadow: inset 0 0 0 2px var(--color-bg-surface); }
+  to { box-shadow: inset 0 0 8px var(--color-accent); }
 }
 
-/* Group boundary - subtle gray separator */
+/* ==========================================================================
+   GATE GROUPS
+   ========================================================================== */
+
+/* Group boundary separator */
 .penalty-cell--boundary {
   border-right: 2px solid var(--color-border);
 }
 
-/* Active group indication - subtle gray top border */
+/* Active group indication */
 .penalty-cell--in-group {
   border-top: 2px solid var(--color-border);
 }
 
-/* Header cell for gates in active group - subtle gray styling */
 th.gate-header--in-group {
   background: var(--color-bg-elevated);
   font-weight: var(--font-semibold);
   border-top: 2px solid var(--color-border);
 }
 
-/* Dimmed columns (when a gate group is active) */
+/* Dimmed columns (not in active group) */
 th.gate-header--dimmed {
   opacity: 0.4;
   filter: grayscale(0.5);
@@ -292,7 +327,6 @@ th.gate-header--dimmed {
   filter: grayscale(0.5);
 }
 
-/* Ensure focused/hovered dimmed cells are still usable */
 .penalty-cell--dimmed.penalty-cell--focused {
   opacity: 0.7;
   filter: grayscale(0.3);
@@ -302,12 +336,14 @@ th.gate-header--dimmed {
   opacity: 0.6;
 }
 
-/* Row states */
+/* ==========================================================================
+   ROW STATES
+   ========================================================================== */
+
 .results-row--status {
   opacity: 0.7;
 }
 
-/* Section separator */
 .section-separator td {
   background: var(--color-bg-elevated);
   padding: var(--space-1) var(--space-4);
@@ -321,12 +357,10 @@ th.gate-header--dimmed {
   border-bottom: 2px solid var(--color-border);
 }
 
-/* Focus on grid container */
-.results-grid:focus {
-  outline: none;
-}
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
 
-/* Touch device optimizations */
 @media (pointer: coarse) {
   .penalty-cell {
     width: 48px;
@@ -336,7 +370,6 @@ th.gate-header--dimmed {
   }
 }
 
-/* Tablet breakpoints */
 @media (max-width: 1024px) {
   .col-name {
     width: 120px;
@@ -345,7 +378,6 @@ th.gate-header--dimmed {
   }
 }
 
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .penalty-cell {
     transition: none;

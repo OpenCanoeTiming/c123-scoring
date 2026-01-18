@@ -81,6 +81,23 @@ describe('gates utilities', () => {
       expect(result[6]).toBe(2)
       expect(result[8]).toBe(50)
     })
+
+    it('parses fixed-width 3-char format (raw C123 XML)', () => {
+      const result = parseResultsGatesString(sampleGatesStrings.results.fixedWidth)
+      expect(result).toHaveLength(24)
+      expect(result[0]).toBe(0)
+      expect(result[3]).toBe(2)
+      expect(result[8]).toBe(50)
+    })
+
+    it('parses fixed-width format with empty value (deleted penalty)', () => {
+      const result = parseResultsGatesString(sampleGatesStrings.results.fixedWidthWithEmpty)
+      expect(result).toHaveLength(24)
+      expect(result[0]).toBe(0)
+      expect(result[3]).toBeNull() // deleted penalty
+      expect(result[4]).toBe(0)
+      expect(result[8]).toBe(50)
+    })
   })
 
   describe('parseGateConfig', () => {
