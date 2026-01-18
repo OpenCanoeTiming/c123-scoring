@@ -265,7 +265,6 @@ function App() {
           activeGateGroup={activeGroup}
           allGateGroups={allGroups}
           sortBy={settings.sortBy}
-          showStartTime={settings.showStartTime}
           onGroupSelect={setActiveGroup}
           onPenaltySubmit={handlePenaltySubmit}
         />

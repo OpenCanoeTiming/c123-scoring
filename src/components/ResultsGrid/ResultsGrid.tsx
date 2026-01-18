@@ -29,7 +29,6 @@ interface ResultsGridProps {
   activeGateGroup: GateGroup | null
   allGateGroups: GateGroup[]
   sortBy: ResultsSortOption
-  showStartTime?: boolean
   onGroupSelect?: (groupId: string | null) => void
   onPenaltySubmit: (bib: string, gate: number, value: PenaltyValue, raceId?: string) => void
 }
@@ -56,7 +55,6 @@ export function ResultsGrid({
   allGateGroups,
   sortBy,
   onGroupSelect,
-  // showStartTime = false, // TODO: implement
   onPenaltySubmit,
 }: ResultsGridProps) {
   // Refs for scroll sync

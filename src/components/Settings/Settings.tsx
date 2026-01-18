@@ -18,7 +18,6 @@ import {
   TabPanel,
   Input,
   Button,
-  Checkbox,
   Kbd,
   Badge,
   Select,
@@ -223,47 +222,6 @@ export function Settings({
                   )}
                 </div>
 
-                <div className="form-group">
-                  <Checkbox
-                    checked={settings.showFinished ?? true}
-                    onChange={(e) =>
-                      onSettingsChange({ showFinished: e.target.checked })
-                    }
-                  >
-                    Show finished competitors
-                  </Checkbox>
-                  <p className="form-hint">
-                    Display competitors who have completed their run in the grid.
-                  </p>
-                </div>
-
-                <div className="form-group">
-                  <Checkbox
-                    checked={settings.showOnCourse ?? true}
-                    onChange={(e) =>
-                      onSettingsChange({ showOnCourse: e.target.checked })
-                    }
-                  >
-                    Show on-course competitors
-                  </Checkbox>
-                  <p className="form-hint">
-                    Display competitors who are still racing on the course.
-                  </p>
-                </div>
-
-                <div className="form-group">
-                  <Checkbox
-                    checked={settings.showStartTime ?? false}
-                    onChange={(e) =>
-                      onSettingsChange({ showStartTime: e.target.checked })
-                    }
-                  >
-                    Show start time column
-                  </Checkbox>
-                  <p className="form-hint">
-                    Display the competitor's start time in the results grid.
-                  </p>
-                </div>
               </div>
             </TabPanel>
 

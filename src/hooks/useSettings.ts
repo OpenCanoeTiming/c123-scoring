@@ -20,12 +20,6 @@ export interface Settings {
   serverHistory: string[]
   /** Client identifier sent to server (for distinguishing multiple scoring clients) */
   clientId: string
-  /** Whether to show finished competitors in the grid */
-  showFinished: boolean
-  /** Whether to show on-course competitors (still racing) in the grid */
-  showOnCourse: boolean
-  /** Show start time column in grid */
-  showStartTime: boolean
   /** Theme mode: auto (system), light, or dark */
   theme: ThemeMode
   /** Sort option for results grid */
@@ -36,9 +30,6 @@ const DEFAULT_SETTINGS: Settings = {
   serverUrl: DEFAULT_SERVER_URL,
   serverHistory: [],
   clientId: 'c123-scoring',
-  showFinished: true,
-  showOnCourse: true,
-  showStartTime: false,
   theme: 'auto',
   sortBy: 'startOrder',
 }
