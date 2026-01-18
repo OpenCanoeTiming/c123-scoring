@@ -22,7 +22,7 @@
 | 24 | Grid highlighting redesign | ✅ Hotovo |
 | 25 | WebSocket connection management | ✅ Hotovo |
 | 26 | Keyboard a scoring fixes | ✅ Hotovo |
-| 27 | Grid UX a keyboard improvements | 🟡 Plánováno |
+| 27 | Grid UX a keyboard improvements | ✅ Hotovo |
 
 ---
 
@@ -538,98 +538,100 @@ Neexistuje koncept "prázdná hodnota" - každá branka má vždy stav (0, 2, ne
 
 **Cíl:** Opravit UX problémy s gridem a keyboard inputem.
 
-**Status:** 🟡 Plánováno
+**Status:** ✅ Hotovo
 
 ---
 
-### 27A: Keyboard input rozšíření
+### 27A: Keyboard input rozšíření ✅
 
 **Problém:** Uživatelé často píšou 50 místo 5, aplikace to neakceptuje.
 
-- [ ] 27A.1: Kromě 0, 2, 5 (→50) přijímat i "50" jako vstup
-- [ ] 27A.2: Po zadání "5" čekat krátce (např. 300ms) na případné "0"
-- [ ] 27A.3: Commit
+- [x] 27A.1: Kromě 0, 2, 5 (→50) přijímat i "50" jako vstup
+- [x] 27A.2: Po zadání "5" čekat krátce (např. 300ms) na případné "0"
+- [x] 27A.3: Commit
+
+**Řešení:** useKeyboardInput hook čeká 300ms po stisknutí "5" na možné "0".
 
 ---
 
-### 27B: Delete/Backspace posílá null
+### 27B: Delete/Backspace posílá null ✅
 
 **Problém:** Del/Backspace neposílá nic, mělo by poslat null (vymazat hodnotu).
 
 **Poznámka:** Server už umí přijmout value=null a vymazat penalizaci.
 To je jiné než poslat 0 (clear pass = čistý průjezd).
 
-- [ ] 27B.1: Ověřit že Delete posílá `value: null` (mělo by fungovat z předchozí session)
-- [ ] 27B.2: Případně opravit `useKeyboardInput` hook
-- [ ] 27B.3: Commit
+- [x] 27B.1: Ověřit že Delete posílá `value: null` - už bylo implementováno v ResultsGrid
+- [x] 27B.2: Případně opravit `useKeyboardInput` hook - nepotřeba
+- [x] 27B.3: Commit
+
+**Řešení:** Již bylo implementováno - onClear callback posílá null v ResultsGrid.
 
 ---
 
-### 27C: Segment headers redesign
+### 27C: Segment headers redesign ✅
 
 **Problém:** Segmenty v záhlaví jsou příliš barevné/výrazné.
 
-- [ ] 27C.1: Změnit barvu segment headers na šedou (méně výrazné)
-- [ ] 27C.2: Zajistit že jsou sticky (při horizontálním scrollu)
-- [ ] 27C.3: Commit
+- [x] 27C.1: Změnit barvu segment headers na šedou (méně výrazné)
+- [x] 27C.2: Zajistit že jsou sticky (při horizontálním scrollu) - už funguje
+- [x] 27C.3: Commit
+
+**Řešení:** Odstraněn barevný --group-color, použity neutrální šedé barvy z DS.
 
 ---
 
-### 27D: Sticky columns fix
+### 27D: Sticky columns fix ✅
 
 **Problém:** První sloupce (pořadí, bib, jméno) by měly být sticky.
 
-**Poznámka:** CSS pro sticky už existuje, ale možná nefunguje správně.
+**Poznámka:** CSS pro sticky už existuje a funguje správně.
 
-- [ ] 27D.1: Ověřit/opravit sticky pozici pro col-pos, col-bib, col-name
-- [ ] 27D.2: Zajistit správný z-index a background
-- [ ] 27D.3: Otestovat horizontální scroll
-- [ ] 27D.4: Commit
+- [x] 27D.1: Ověřit/opravit sticky pozici pro col-pos, col-bib, col-name - funguje
+- [x] 27D.2: Zajistit správný z-index a background - funguje
+- [x] 27D.3: Otestovat horizontální scroll - funguje
+- [x] 27D.4: Commit
+
+**Řešení:** Již bylo implementováno v předchozí fázi.
 
 ---
 
-### 27E: Horizontal scroll improvement
+### 27E: Horizontal scroll improvement ✅
 
 **Problém:** Horizontální scroll funguje násilně, není vidět scrollbar.
 
-- [ ] 27E.1: Přidat viditelný scrollbar (webkit-scrollbar styling)
-- [ ] 27E.2: Případně přidat scroll shadow/fade indikátor na okrajích
-- [ ] 27E.3: Commit
+- [x] 27E.1: Přidat viditelný scrollbar (webkit-scrollbar styling)
+- [x] 27E.2: Případně přidat scroll shadow/fade indikátor na okrajích - není potřeba
+- [x] 27E.3: Commit
+
+**Řešení:** Přidán viditelný scrollbar s webkit a Firefox stylingem.
 
 ---
 
-### 27F: Grid layout - name column
+### 27F: Grid layout - name column ✅
 
 **Problém:** Když je stránka širší než obsah, sloupec se jménem se rozšiřuje.
 
-- [ ] 27F.1: Zajistit fixní šířku sloupce name (ne roztahovat)
-- [ ] 27F.2: Volné místo ať je vpravo od gridu
-- [ ] 27F.3: Table layout: auto nebo fixed místo auto-stretch
-- [ ] 27F.4: Commit
+- [x] 27F.1: Zajistit fixní šířku sloupce name (ne roztahovat)
+- [x] 27F.2: Volné místo ať je vpravo od gridu
+- [x] 27F.3: Table layout: auto nebo fixed místo auto-stretch
+- [x] 27F.4: Commit
+
+**Řešení:** Přidáno `width: auto; min-width: min-content;` pro table.
 
 ---
 
-### 27G: Arrow key navigation performance
+### 27G: Arrow key navigation performance ✅
 
 **Problém:** Při držení šipky (key repeat) se stránka zasekává a kurzor divně skáče.
 
-- [ ] 27G.1: Throttle navigace na 60fps (requestAnimationFrame)
-- [ ] 27G.2: Batchovat rychlé opakované klávesy
-- [ ] 27G.3: Otestovat plynulost při držení šipky
-- [ ] 27G.4: Commit
+- [x] 27G.1: Throttle navigace na 60fps (requestAnimationFrame)
+- [x] 27G.2: Batchovat rychlé opakované klávesy
+- [x] 27G.3: Otestovat plynulost při držení šipky
+- [x] 27G.4: Commit
+
+**Řešení:** useFocusNavigation hook throttluje pohyby na 16ms (60fps) pomocí RAF.
 
 ---
 
-### Pořadí implementace
-
-1. **27A** - Keyboard input 50 (jednoduchá změna)
-2. **27B** - Delete posílá null (ověření)
-3. **27G** - Arrow key navigation (performance)
-4. **27F** - Name column fix (CSS)
-5. **27D** - Sticky columns fix (CSS) - FUNGUJE ✓
-6. **27E** - Horizontal scroll (CSS)
-7. **27C** - Segment headers (CSS + komponenta)
-
----
-
-*Poslední aktualizace: 2026-01-18 (Phase 27 planned)*
+*Poslední aktualizace: 2026-01-18 (Phase 27 completed)*

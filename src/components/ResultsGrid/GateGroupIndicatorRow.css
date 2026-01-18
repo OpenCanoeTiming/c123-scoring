@@ -16,12 +16,13 @@
 
 .gate-group-indicator {
   position: relative;
-  background: color-mix(in srgb, var(--group-color, var(--color-border)) 10%, transparent);
-  border-left: 2px solid var(--group-color, var(--color-border));
+  background: var(--color-bg-elevated);
+  border-left: 2px solid var(--color-border);
 }
 
 .gate-group-indicator--active {
-  background: color-mix(in srgb, var(--group-color, var(--color-border)) 20%, transparent);
+  background: var(--color-bg-surface);
+  border-left-color: var(--color-text-secondary);
 }
 
 .gate-group-indicator-btn {
@@ -33,7 +34,7 @@
   padding: var(--space-1) var(--space-2);
   border: none;
   background: transparent;
-  color: var(--group-color, var(--color-text-secondary));
+  color: var(--color-text-secondary);
   font-size: var(--text-xs);
   font-weight: var(--font-medium);
   cursor: pointer;
@@ -44,17 +45,18 @@
 }
 
 .gate-group-indicator-btn:hover {
-  background: color-mix(in srgb, var(--group-color, var(--color-border)) 15%, transparent);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
 }
 
 .gate-group-indicator-btn:focus-visible {
-  outline: 2px solid var(--group-color, var(--color-border));
+  outline: 2px solid var(--color-border);
   outline-offset: -2px;
 }
 
 .gate-group-indicator--active .gate-group-indicator-btn {
   color: var(--color-text-primary);
-  font-weight: var(--font-bold);
+  font-weight: var(--font-semibold);
 }
 
 .gate-group-indicator-empty {

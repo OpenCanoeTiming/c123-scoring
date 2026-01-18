@@ -130,16 +130,12 @@ export function GateGroupIndicatorRow({
         if (startingSpan) {
           // Render the group indicator that starts here
           const isActive = activeGroupId === startingSpan.group.id
-          const color = startingSpan.group.color || 'var(--color-accent)'
 
           return (
             <td
               key={gateNum}
               colSpan={startingSpan.span}
               className={`gate-group-indicator ${isActive ? 'gate-group-indicator--active' : ''}`}
-              style={{
-                '--group-color': color,
-              } as React.CSSProperties}
             >
               <button
                 type="button"

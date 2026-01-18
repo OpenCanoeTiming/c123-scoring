@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useRef, useEffect } from 'react'
 
 /**
  * Penalty values supported by C123
@@ -43,6 +43,9 @@ export interface KeyboardInputResult {
   handleKeyDown: (event: KeyboardEvent | React.KeyboardEvent) => boolean
 }
 
+// Delay to wait for second digit when typing "50"
+const MULTI_DIGIT_DELAY = 300
+
 /**
  * Hook for keyboard input of penalty values
  *
@@ -50,9 +53,10 @@ export interface KeyboardInputResult {
  * - 0 key = Clear (no penalty)
  * - 2 key = Touch (2 seconds)
  * - 5 key = Missed gate (50 seconds)
+ * - 50 keys = Missed gate (50 seconds) - when typed quickly
  * - Enter = Confirm
  * - Escape = Cancel
- * - Delete/Backspace = Clear value
+ * - Delete/Backspace = Clear value (sends null)
  * - ? or F1 = Show help
  */
 export function useKeyboardInput(
@@ -69,9 +73,32 @@ export function useKeyboardInput(
 
   const [pendingValue, setPendingValue] = useState<PenaltyValue | null>(null)
 
+  // Track pending "5" input waiting for possible "0"
+  const pendingFiveRef = useRef<boolean>(false)
+  const fiveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Clear timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (fiveTimeoutRef.current) {
+        clearTimeout(fiveTimeoutRef.current)
+      }
+    }
+  }, [])
+
   const clearPendingValue = useCallback(() => {
     setPendingValue(null)
   }, [])
+
+  const submitFifty = useCallback(() => {
+    pendingFiveRef.current = false
+    if (fiveTimeoutRef.current) {
+      clearTimeout(fiveTimeoutRef.current)
+      fiveTimeoutRef.current = null
+    }
+    setPendingValue(50)
+    onPenaltyInput?.(50)
+  }, [onPenaltyInput])
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent | React.KeyboardEvent): boolean => {
@@ -84,6 +111,13 @@ export function useKeyboardInput(
       // Number keys for penalty values
       if (key === '0' || key === 'Numpad0') {
         event.preventDefault()
+
+        // If we had a pending "5", this completes "50"
+        if (pendingFiveRef.current) {
+          submitFifty()
+          return true
+        }
+
         setPendingValue(0)
         onPenaltyInput?.(0)
         return true
@@ -91,22 +125,54 @@ export function useKeyboardInput(
 
       if (key === '2' || key === 'Numpad2') {
         event.preventDefault()
+
+        // Cancel any pending "5"
+        if (pendingFiveRef.current) {
+          pendingFiveRef.current = false
+          if (fiveTimeoutRef.current) {
+            clearTimeout(fiveTimeoutRef.current)
+            fiveTimeoutRef.current = null
+          }
+        }
+
         setPendingValue(2)
         onPenaltyInput?.(2)
         return true
       }
 
-      // 5 key = 50 (missed gate)
+      // 5 key = 50 (missed gate) - wait briefly for possible "0"
       if (key === '5' || key === 'Numpad5') {
         event.preventDefault()
-        setPendingValue(50)
-        onPenaltyInput?.(50)
+
+        // If already pending, submit immediately
+        if (pendingFiveRef.current) {
+          submitFifty()
+          return true
+        }
+
+        // Start waiting for possible "0"
+        pendingFiveRef.current = true
+        setPendingValue(50) // Show 50 immediately as preview
+
+        // After delay, submit 50 if no "0" was pressed
+        fiveTimeoutRef.current = setTimeout(() => {
+          if (pendingFiveRef.current) {
+            submitFifty()
+          }
+        }, MULTI_DIGIT_DELAY)
+
         return true
       }
 
       // Confirmation
       if (key === 'Enter') {
         event.preventDefault()
+
+        // If we have pending 5, submit it first
+        if (pendingFiveRef.current) {
+          submitFifty()
+        }
+
         onConfirm?.()
         return true
       }
@@ -114,14 +180,34 @@ export function useKeyboardInput(
       // Cancel
       if (key === 'Escape') {
         event.preventDefault()
+
+        // Cancel pending 5
+        if (pendingFiveRef.current) {
+          pendingFiveRef.current = false
+          if (fiveTimeoutRef.current) {
+            clearTimeout(fiveTimeoutRef.current)
+            fiveTimeoutRef.current = null
+          }
+        }
+
         clearPendingValue()
         onCancel?.()
         return true
       }
 
-      // Clear/Delete
+      // Clear/Delete - sends null to clear the penalty
       if (key === 'Delete' || key === 'Backspace') {
         event.preventDefault()
+
+        // Cancel pending 5
+        if (pendingFiveRef.current) {
+          pendingFiveRef.current = false
+          if (fiveTimeoutRef.current) {
+            clearTimeout(fiveTimeoutRef.current)
+            fiveTimeoutRef.current = null
+          }
+        }
+
         clearPendingValue()
         onClear?.()
         return true
@@ -144,6 +230,7 @@ export function useKeyboardInput(
       onClear,
       onHelp,
       clearPendingValue,
+      submitFifty,
     ]
   )
 

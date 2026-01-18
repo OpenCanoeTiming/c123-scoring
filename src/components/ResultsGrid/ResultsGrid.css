@@ -6,6 +6,38 @@
   padding: var(--space-4);
 }
 
+/* Ensure table doesn't stretch to fill available width */
+.results-grid .table {
+  width: auto;
+  min-width: min-content;
+}
+
+/* Visible scrollbar styling */
+.results-grid::-webkit-scrollbar {
+  height: 12px;
+}
+
+.results-grid::-webkit-scrollbar-track {
+  background: var(--color-bg-elevated);
+  border-radius: 6px;
+}
+
+.results-grid::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 6px;
+  border: 2px solid var(--color-bg-elevated);
+}
+
+.results-grid::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* Firefox scrollbar */
+.results-grid {
+  scrollbar-width: auto;
+  scrollbar-color: var(--color-border) var(--color-bg-elevated);
+}
+
 .results-grid--empty {
   display: flex;
   align-items: center;
