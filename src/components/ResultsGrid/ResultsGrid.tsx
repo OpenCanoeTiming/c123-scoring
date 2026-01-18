@@ -11,13 +11,15 @@
  * +------------------------+------------------------+
  */
 
-import { useRef, useEffect, useCallback, useMemo, type UIEvent } from 'react'
+import { useRef, useEffect, useCallback, useMemo, useState, type UIEvent } from 'react'
 import type { C123ResultRow, C123RaceConfigData } from '../../types/c123server'
 import type { GateGroup, ResultsSortOption } from '../../types/ui'
 import type { PenaltyValue } from '../../types/scoring'
 import { useFocusNavigation } from '../../hooks/useFocusNavigation'
 import { useKeyboardInput } from '../../hooks/useKeyboardInput'
+import { useMultiTap } from '../../hooks/useCellInteraction'
 import { parseResultsGatesString } from '../../utils/gates'
+import { PenaltyContextMenu } from './PenaltyContextMenu'
 import styles from './ResultsGrid.module.css'
 
 interface ResultsGridProps {
@@ -62,6 +64,18 @@ export function ResultsGrid({
   const colHeadersRef = useRef<HTMLDivElement>(null)
   const rowHeadersRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
+
+  // Context menu state
+  const [contextMenu, setContextMenu] = useState<{
+    x: number
+    y: number
+    row: number
+    col: number
+  } | null>(null)
+
+  // Long press timer ref
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const longPressTriggered = useRef(false)
 
   // Filter gate groups (exclude 'all' group)
   const customGroups = useMemo(() =>
@@ -246,11 +260,154 @@ export function ResultsGrid({
     return { value, className }
   }
 
-  // Handle cell click
-  const handleCellClick = useCallback((rowIndex: number, colIndex: number) => {
-    setPosition({ row: rowIndex, column: colIndex })
+  // Submit penalty for a specific cell
+  const submitPenalty = useCallback(
+    (rowIndex: number, colIndex: number, value: PenaltyValue) => {
+      const row = sortedRows[rowIndex]
+      if (!row) return
+      const gateIndex = visibleGateIndices[colIndex]
+      const gate = gateIndex + 1
+      onPenaltySubmit(row.bib, gate, value, raceId ?? undefined)
+    },
+    [sortedRows, visibleGateIndices, onPenaltySubmit, raceId]
+  )
+
+  // Multi-tap handler: 1=select, 2=0, 3=2, 4=50
+  const handleMultiTap = useCallback(
+    (count: number, rowIndex: number, colIndex: number) => {
+      // Always select the cell first
+      setPosition({ row: rowIndex, column: colIndex })
+      contentRef.current?.focus()
+
+      // Apply penalty based on tap count
+      switch (count) {
+        case 2:
+          submitPenalty(rowIndex, colIndex, 0)
+          break
+        case 3:
+          submitPenalty(rowIndex, colIndex, 2)
+          break
+        case 4:
+          submitPenalty(rowIndex, colIndex, 50)
+          break
+        // case 1: just select (no penalty change)
+      }
+    },
+    [setPosition, submitPenalty]
+  )
+
+  // Use multi-tap hook
+  const handleCellTap = useMultiTap(handleMultiTap)
+
+  // Handle cell click - now uses multi-tap detection
+  const handleCellClick = useCallback(
+    (_e: React.MouseEvent, rowIndex: number, colIndex: number) => {
+      // Ignore if long press was triggered
+      if (longPressTriggered.current) {
+        longPressTriggered.current = false
+        return
+      }
+      handleCellTap(rowIndex, colIndex)
+    },
+    [handleCellTap]
+  )
+
+  // Clear long press timer
+  const clearLongPress = useCallback(() => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current)
+      longPressTimer.current = null
+    }
+  }, [])
+
+  // Long press / right-click opens context menu
+  const openContextMenu = useCallback(
+    (rowIndex: number, colIndex: number, x: number, y: number) => {
+      setPosition({ row: rowIndex, column: colIndex })
+      setContextMenu({ x, y, row: rowIndex, col: colIndex })
+      longPressTriggered.current = true
+    },
+    [setPosition]
+  )
+
+  // Mouse down - start long press timer
+  const handleCellMouseDown = useCallback(
+    (e: React.MouseEvent, rowIndex: number, colIndex: number) => {
+      if (e.button !== 0) return // Only left button
+      clearLongPress()
+      longPressTriggered.current = false
+      longPressTimer.current = setTimeout(() => {
+        openContextMenu(rowIndex, colIndex, e.clientX, e.clientY)
+      }, 500)
+    },
+    [clearLongPress, openContextMenu]
+  )
+
+  // Mouse up - clear long press timer
+  const handleCellMouseUp = useCallback(() => {
+    clearLongPress()
+  }, [clearLongPress])
+
+  // Mouse leave - clear long press timer
+  const handleCellMouseLeave = useCallback(() => {
+    clearLongPress()
+  }, [clearLongPress])
+
+  // Touch start - start long press timer
+  const handleCellTouchStart = useCallback(
+    (e: React.TouchEvent, rowIndex: number, colIndex: number) => {
+      clearLongPress()
+      longPressTriggered.current = false
+      const touch = e.touches[0]
+      longPressTimer.current = setTimeout(() => {
+        openContextMenu(rowIndex, colIndex, touch.clientX, touch.clientY)
+      }, 500)
+    },
+    [clearLongPress, openContextMenu]
+  )
+
+  // Touch end - clear long press timer
+  const handleCellTouchEnd = useCallback(() => {
+    clearLongPress()
+  }, [clearLongPress])
+
+  // Right-click opens context menu
+  const handleCellContextMenu = useCallback(
+    (e: React.MouseEvent, rowIndex: number, colIndex: number) => {
+      e.preventDefault()
+      openContextMenu(rowIndex, colIndex, e.clientX, e.clientY)
+    },
+    [openContextMenu]
+  )
+
+  // Handle context menu selection
+  const handleContextMenuSelect = useCallback(
+    (value: PenaltyValue) => {
+      if (contextMenu) {
+        submitPenalty(contextMenu.row, contextMenu.col, value)
+      }
+    },
+    [contextMenu, submitPenalty]
+  )
+
+  // Close context menu
+  const handleContextMenuClose = useCallback(() => {
+    setContextMenu(null)
     contentRef.current?.focus()
-  }, [setPosition])
+  }, [])
+
+  // Get current cell value for context menu
+  const getContextMenuValue = (): PenaltyValue => {
+    if (!contextMenu) return null
+    const row = sortedRows[contextMenu.row]
+    if (!row) return null
+    const gateIndex = visibleGateIndices[contextMenu.col]
+    const penalties = parseResultsGatesString(row.gates)
+    const value = penalties[gateIndex]
+    // Cast to PenaltyValue - in practice only 0, 2, 50, or null
+    if (value === 0 || value === 2 || value === 50) return value
+    return null
+  }
 
   if (sortedRows.length === 0 || nrGates === 0) {
     return <div className={styles.gridContainer}>No data</div>
@@ -414,7 +571,13 @@ export function ResultsGrid({
                     <td
                       key={gateIndex}
                       className={cellClass}
-                      onClick={() => handleCellClick(rowIndex, colIndex)}
+                      onClick={(e) => handleCellClick(e, rowIndex, colIndex)}
+                      onMouseDown={(e) => handleCellMouseDown(e, rowIndex, colIndex)}
+                      onMouseUp={handleCellMouseUp}
+                      onMouseLeave={handleCellMouseLeave}
+                      onTouchStart={(e) => handleCellTouchStart(e, rowIndex, colIndex)}
+                      onTouchEnd={handleCellTouchEnd}
+                      onContextMenu={(e) => handleCellContextMenu(e, rowIndex, colIndex)}
                     >
                       {value}
                     </td>
@@ -425,6 +588,17 @@ export function ResultsGrid({
           </tbody>
         </table>
       </div>
+
+      {/* Context Menu */}
+      {contextMenu && (
+        <PenaltyContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          currentValue={getContextMenuValue()}
+          onSelect={handleContextMenuSelect}
+          onClose={handleContextMenuClose}
+        />
+      )}
     </div>
   )
 }
