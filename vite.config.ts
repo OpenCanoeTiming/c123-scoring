@@ -13,6 +13,12 @@ export default defineConfig({
       brotliSize: true,
     }),
   ],
+  server: {
+    fs: {
+      // Allow serving fonts from linked timing-design-system package
+      allow: ['.', '../timing-design-system'],
+    },
+  },
   resolve: {
     dedupe: ['react', 'react-dom'],
   },

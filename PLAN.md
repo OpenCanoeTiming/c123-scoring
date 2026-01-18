@@ -15,6 +15,7 @@
 | 17H | UX Polish (Settings) | ✅ Hotovo |
 | 18 | Auto-load Gate Groups | ⏸️ Blokováno (c123-server) |
 | 19 | E2E Test Refaktoring | ✅ Hotovo |
+| 20 | Bug fixes a UX připomínky | 🔴 TODO |
 
 ---
 
@@ -294,4 +295,109 @@ npx playwright test screenshots-with-data.spec.ts
 
 ---
 
-*Poslední aktualizace: 2026-01-18 (Phase 19 completed)*
+## Fáze 20: Bug fixes a UX připomínky
+
+**Cíl:** Opravit kritické bugy a UX problémy z uživatelského testování.
+
+**Status:** 🔴 TODO
+
+---
+
+### 20A: Kritické bugy (PRVNÍ)
+
+**Problém:** Vite blokuje fonty z linkovaného design-system.
+
+- [x] 20A.0: Přidat `server.fs.allow` do `vite.config.ts` pro `../timing-design-system`
+
+**Problém:** Zápis penalizací nefunguje.
+
+- [ ] 20A.1: Investigace - proč se penalizace neposílají do C123
+  - Toast "zapisuje se" se zobrazí, ale do C123 to neprojde
+  - Opačný směr (C123 → scoring) funguje správně
+- [ ] 20A.2: Debug REST API volání (`POST /api/c123/scoring`)
+- [ ] 20A.3: Opravit a otestovat s reálným C123
+- [ ] 20A.4: Commit
+
+**Problém:** Zadaná hodnota se drží v buňce po přesunu šipkami.
+
+- [ ] 20A.5: Investigace - stav buňky se neresetuje při změně aktivní buňky
+- [ ] 20A.6: Opravit keyboard navigaci - při opuštění buňky resetovat lokální stav
+- [ ] 20A.7: Commit
+
+---
+
+### 20B: Layout fixes
+
+**Problém:** Header není sticky - scrolluje se pryč.
+
+- [ ] 20B.1: Změnit header na `position: sticky; top: 0`
+- [ ] 20B.2: Zajistit správný z-index (nad gridem)
+- [ ] 20B.3: Commit
+
+---
+
+### 20C: Keyboard fixes
+
+**Problém:** Space klávesa stránkuje místo označování zkontrolovaných.
+
+- [ ] 20C.1: Přidat `preventDefault()` pro Space v gridu
+- [ ] 20C.2: Space = toggle "zkontrolováno" pro aktuální řádek
+- [ ] 20C.3: Commit
+
+---
+
+### 20D: Toast → Footer pending writes
+
+**Problém:** Toasty pro zápisy jsou rušivé.
+
+- [ ] 20D.1: Odstranit toast notifikace pro scoring writes
+- [ ] 20D.2: Přidat "pending writes" indikátor do footeru (spinner + počet)
+- [ ] 20D.3: Commit
+
+---
+
+### 20E: Odstranit zbytečné UI prvky
+
+**Problém:** Některé UI prvky nepřinášejí hodnotu.
+
+- [ ] 20E.1: Odstranit první zaškrtávací sloupeček z gridu
+- [ ] 20E.2: Odstranit context menu (DNS/DNF/CAP) nad gridem
+- [ ] 20E.3: Commit
+
+---
+
+### 20F: Grid highlighting redesign
+
+**Problém:** Podbarvení řádku/sloupce není čitelné, okraje by byly lepší.
+
+- [ ] 20F.1: Změnit row/column highlight z background na border
+- [ ] 20F.2: Aktivní buňka: silný border (např. 2px accent)
+- [ ] 20F.3: Hover: slabší border (např. 1px muted)
+- [ ] 20F.4: Commit
+
+---
+
+### 20G: Light/Dark mode switch
+
+**Problém:** Nelze explicitně přepnout mezi light/dark mode.
+
+- [ ] 20G.1: Přidat theme toggle do Settings (nebo header)
+- [ ] 20G.2: Možnosti: Auto (system) / Light / Dark
+- [ ] 20G.3: Persistence do localStorage
+- [ ] 20G.4: Commit
+
+---
+
+### Pořadí implementace
+
+1. **20A** - Kritické bugy (zápis nefunguje!)
+2. **20B** - Sticky header
+3. **20C** - Space klávesa
+4. **20D** - Pending writes footer
+5. **20E** - Odstranit zbytečné UI
+6. **20F** - Grid highlighting
+7. **20G** - Theme switch
+
+---
+
+*Poslední aktualizace: 2026-01-18 (Phase 20 planned)*
