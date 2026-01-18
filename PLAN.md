@@ -13,6 +13,8 @@
 | 17F | UX Polish (Tablet) | ✅ Hotovo |
 | 17G | UX Polish (Screenshots) | ✅ Hotovo |
 | 17H | UX Polish (Settings) | ✅ Hotovo |
+| 18 | Auto-load Gate Groups | ⏸️ Blokováno (c123-server) |
+| 19 | E2E Test Refaktoring | ✅ Hotovo |
 
 ---
 
@@ -256,27 +258,34 @@ npx playwright test screenshots-with-data.spec.ts
 
 **Cíl:** Aktualizovat E2E testy a screenshoty po redesignu UI.
 
-**Status:** 📋 PŘIPRAVENO
+**Status:** ✅ Hotovo
 
 **Problém:**
-- E2E testy v `tests/` používají zastaralé selektory (`.gate-cell`, `.competitor-row`)
-- Po redesignu headeru a gridu jsou testy nepoužitelné
-- Screenshoty neodpovídají aktuálnímu UI
+- E2E testy v `tests/` používaly zastaralé selektory (`.gate-cell`, `.competitor-row`)
+- Po redesignu headeru a gridu testy nefungovaly
+- Screenshoty neodpovídaly aktuálnímu UI
 
 ---
 
-### 19A: E2E test audit
+### 19A: E2E test audit ✅
 
-- [ ] 19A.1: Projít `tests/screenshots-static.spec.ts` a aktualizovat selektory
-- [ ] 19A.2: Projít `tests/screenshots-with-data.spec.ts` a aktualizovat selektory
-- [ ] 19A.3: Aktualizovat `tests/fixtures/mock-data.ts` pokud potřeba
+- [x] 19A.1: Aktualizovat `tests/screenshots-static.spec.ts`:
+  - Opraveny selektory pro Settings modal (data-testid)
+  - Odstraněn mobilní test (16-mobile-settings)
+  - Přidán test pro Display tab (05-settings-display)
+- [x] 19A.2: Aktualizovat `tests/screenshots-with-data.spec.ts`:
+  - Opraven selektor pro race selector (`select[aria-label="Select race"]`)
+  - Odstraněn zastaralý selektor `.competitor-row` → `.results-grid tbody tr`
+  - Přejmenované screenshoty: 10-gate-group-active, 11-gate-group-indicators, 12-settings-display
+  - Přeuspořádány testy (dark mode před tablet testy)
+- [x] 19A.3: Mock-data.ts nevyžadovaly změny
 
-### 19B: Screenshot regenerace
+### 19B: Screenshot regenerace ✅
 
-- [ ] 19B.1: Spustit `./scripts/take-screenshots.sh`
-- [ ] 19B.2: Zkontrolovat výstupy v `docs/screenshots/`
-- [ ] 19B.3: Přidat tablet screenshoty (`18-tablet-landscape.png`, `19-tablet-portrait.png`)
-- [ ] 19B.4: Aktualizovat `README.md` s novými screenshoty
+- [x] 19B.1: Spustit `./scripts/take-screenshots.sh` - 16 testů prošlo
+- [x] 19B.2: Zkontrolovat výstupy - 17 screenshotů vygenerováno
+- [x] 19B.3: Tablet screenshoty přidány (18-tablet-landscape, 19-tablet-portrait)
+- [ ] 19B.4: Aktualizovat `README.md` s novými screenshoty (TODO)
 
 ### 19C: CI/CD update
 
@@ -285,4 +294,4 @@ npx playwright test screenshots-with-data.spec.ts
 
 ---
 
-*Poslední aktualizace: 2026-01-18 (Phase 18 blocked, Phase 19 prepared)*
+*Poslední aktualizace: 2026-01-18 (Phase 19 completed)*

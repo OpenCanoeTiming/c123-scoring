@@ -955,6 +955,64 @@ Fáze 18 je **blokována** - vyžaduje změny v c123-server, což je v rozporu s
 
 ---
 
+## 2026-01-18 - Fáze 19: E2E Test Refaktoring
+
+### Cíl iterace
+
+Aktualizovat E2E testy po redesignu UI - opravit zastaralé selektory a regenerovat screenshoty.
+
+### Dokončeno
+
+- [x] **screenshots-static.spec.ts:**
+  - Opraveny selektory pro Settings modal (použity data-testid atributy)
+  - Odstraněn mobilní test (16-mobile-settings) - aplikace cílí na tablety
+  - Přidán test pro Display tab (05-settings-display)
+
+- [x] **screenshots-with-data.spec.ts:**
+  - Opraven selektor pro race selector: `.race-selector select` → `select[aria-label="Select race"]`
+  - Odstraněn neexistující selektor `.competitor-row` → použit `.results-grid tbody tr`
+  - Přejmenované screenshoty pro lepší popis:
+    - `10-grid-oncourse-section` → `10-gate-group-active`
+    - `11-gate-group-switcher` → `11-gate-group-indicators`
+    - `12-gate-group-editor` → `12-settings-display`
+  - Přeuspořádány testy (dark mode před tablet testy)
+
+- [x] **Screenshot regenerace:**
+  - Spuštěn `./scripts/take-screenshots.sh`
+  - 16 testů prošlo (5 statických + 11 s daty)
+  - 17 screenshotů vygenerováno
+  - Smazány staré screenshoty s nesprávnými názvy
+
+### Vygenerované screenshoty
+
+| # | Název | Popis |
+|---|-------|-------|
+| 01 | disconnected | Stav bez připojení |
+| 02 | connecting | Připojování k serveru |
+| 03 | settings-panel | Settings modal - Server tab |
+| 04 | settings-keyboard | Settings modal - Keyboard shortcuts |
+| 05 | settings-display | Settings modal - Display options |
+| 07 | race-selector | Header s race selectorem |
+| 08 | grid-finished | Grid se závodníky |
+| 09 | grid-cell-focus | Grid s focusem na buňce |
+| 10 | gate-group-active | Aktivovaná gate group s dimming efektem |
+| 11 | gate-group-indicators | Gate group indikátory v gridu |
+| 12 | settings-display | Settings Display tab s daty |
+| 13 | competitor-actions | Context menu pro závodníka |
+| 14 | check-progress | Footer s check progress |
+| 17 | dark-mode | Tmavý režim |
+| 18 | tablet-landscape | iPad Pro landscape |
+| 19 | tablet-portrait | iPad Pro portrait |
+
+### Poznámky
+
+- Screenshot 06 (no-competitors) chybí - obtížné vytvořit specifický stav
+- Screenshoty 15-16 (mobile) odstraněny - aplikace cílí na tablety
+- RaceSelector používá DS Select komponenty, ne vlastní CSS třídy
+- Settings modal má data-testid atributy pro spolehlivé testování
+
+---
+
 ## Template pro další záznamy
 
 ```markdown

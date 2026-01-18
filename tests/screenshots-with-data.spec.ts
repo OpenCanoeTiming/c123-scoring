@@ -30,21 +30,26 @@ async function waitForDataAndSelectRace(page: Page) {
   await page.waitForTimeout(2000);
 
   // Try to select K1m 2. jízda (the race with Results data in replay)
-  // New RaceSelector uses a select inside .race-selector
-  const raceSelector = page.locator('.race-selector select');
+  // RaceSelector uses select[aria-label="Select race"] from DS Select component
+  const raceSelector = page.locator('select[aria-label="Select race"]');
   if (await raceSelector.isVisible()) {
-    // Find K1m 2. jízda option specifically
-    const k1m2Option = page.locator('.race-selector select option:has-text("K1m"):has-text("2. jízda")').first();
-    if (await k1m2Option.count() > 0) {
-      const value = await k1m2Option.getAttribute('value');
-      if (value) {
-        await raceSelector.selectOption(value);
-        await page.waitForTimeout(2000); // Wait for data to load
+    // Get all options and find K1m 2. jízda
+    const options = page.locator('select[aria-label="Select race"] option');
+    const count = await options.count();
+    for (let i = 0; i < count; i++) {
+      const text = await options.nth(i).textContent();
+      if (text?.includes('K1m') && text?.includes('2.')) {
+        const value = await options.nth(i).getAttribute('value');
+        if (value) {
+          await raceSelector.selectOption(value);
+          await page.waitForTimeout(2000); // Wait for data to load
+          break;
+        }
       }
     }
   }
 
-  // Wait for grid to appear (with longer timeout) - now uses .results-grid table tbody tr
+  // Wait for grid to appear (with longer timeout) - uses .results-grid table tbody tr
   await page.waitForSelector('.results-grid tbody tr', { timeout: 15000 }).catch(() => {});
   await page.waitForTimeout(500);
 }
@@ -76,7 +81,7 @@ test.describe('Screenshot Tests - With Data', () => {
     await takeDocScreenshot(page, '09-grid-cell-focus');
   });
 
-  test('10 - grid with gate group indicator', async ({ page }) => {
+  test('10 - grid with gate group indicator active', async ({ page }) => {
     await waitForDataAndSelectRace(page);
 
     // Click on a gate group indicator button to show dimming effect
@@ -85,33 +90,40 @@ test.describe('Screenshot Tests - With Data', () => {
       await groupButtons.first().click();
       await page.waitForTimeout(300);
     }
-    await takeDocScreenshot(page, '10-grid-oncourse-section');
+    await takeDocScreenshot(page, '10-gate-group-active');
   });
 
-  test('11 - gate group indicators', async ({ page }) => {
+  test('11 - gate group indicators row', async ({ page }) => {
     await waitForDataAndSelectRace(page);
-    // Gate groups are now shown in the grid header as GateGroupIndicatorRow
-    await takeDocScreenshot(page, '11-gate-group-switcher');
+    // Gate groups are shown in the grid header as GateGroupIndicatorRow
+    // Make sure gate groups are visible (deactivate any active group)
+    const activeGroup = page.locator('.gate-group-indicator--active');
+    if (await activeGroup.count() > 0) {
+      await activeGroup.click();
+      await page.waitForTimeout(300);
+    }
+    await takeDocScreenshot(page, '11-gate-group-indicators');
   });
 
-  test('12 - settings display tab', async ({ page }) => {
+  test('12 - gate group editor in settings', async ({ page }) => {
     await waitForDataAndSelectRace(page);
 
     // Open settings
     await page.click('button[aria-label="Settings"]');
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="settings-panel"]', { timeout: 5000 });
+    await page.waitForTimeout(300);
 
-    // Click on Display tab
+    // Click on Display tab to show gate group options
     await page.click('[data-testid="settings-tab-display"]');
     await page.waitForTimeout(300);
 
-    await takeDocScreenshot(page, '12-gate-group-editor');
+    await takeDocScreenshot(page, '12-settings-display');
   });
 
   test('13 - competitor actions menu', async ({ page }) => {
     await waitForDataAndSelectRace(page);
 
-    // Use table row for right-click menu
+    // Use table row for right-click context menu
     const competitorRow = page.locator('.results-grid tbody tr').first();
     if (await competitorRow.isVisible()) {
       await competitorRow.click({ button: 'right' });
@@ -123,8 +135,7 @@ test.describe('Screenshot Tests - With Data', () => {
   test('14 - check progress in footer', async ({ page }) => {
     await waitForDataAndSelectRace(page);
 
-    // Try to click check buttons if they are enabled (only for finished competitors)
-    // New class is .check-btn
+    // Click check buttons for some finished competitors
     const checkButtons = page.locator('.check-btn:not([disabled])');
     const count = await checkButtons.count();
     for (let i = 0; i < Math.min(3, count); i++) {
@@ -139,7 +150,15 @@ test.describe('Screenshot Tests - With Data', () => {
     await takeDocScreenshot(page, '14-check-progress');
   });
 
-  // Mobile view removed - targeting tablets, not phones
+  test('17 - dark mode', async ({ page }) => {
+    // Enable dark mode via media query emulation BEFORE navigation
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await waitForDataAndSelectRace(page);
+    // Wait for grid rows to appear
+    await page.waitForSelector('.results-grid tbody tr', { timeout: 10000 }).catch(() => {});
+    await page.waitForTimeout(500);
+    await takeDocScreenshot(page, '17-dark-mode');
+  });
 
   test('18 - tablet landscape', async ({ page }) => {
     // iPad Pro 12.9" landscape
@@ -153,15 +172,5 @@ test.describe('Screenshot Tests - With Data', () => {
     await page.setViewportSize({ width: 1024, height: 1366 });
     await waitForDataAndSelectRace(page);
     await takeDocScreenshot(page, '19-tablet-portrait');
-  });
-
-  test('17 - dark mode', async ({ page }) => {
-    // Enable dark mode via media query emulation BEFORE navigation
-    await page.emulateMedia({ colorScheme: 'dark' });
-    await waitForDataAndSelectRace(page);
-    // Extra wait to ensure K1m data loads
-    await page.waitForSelector('.competitor-row', { timeout: 10000 }).catch(() => {});
-    await page.waitForTimeout(500);
-    await takeDocScreenshot(page, '17-dark-mode');
   });
 });
