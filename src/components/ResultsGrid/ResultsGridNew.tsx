@@ -310,6 +310,8 @@ export function ResultsGridNew({
                   </th>
                 )
               })}
+              {/* Spacer for scrollbar */}
+              <th className={styles.scrollbarSpacer} />
             </tr>
           </thead>
         </table>
@@ -332,6 +334,10 @@ export function ResultsGridNew({
                 </tr>
               )
             })}
+            {/* Spacer row for scrollbar */}
+            <tr className={styles.scrollbarSpacerRow}>
+              <td colSpan={5} />
+            </tr>
           </tbody>
         </table>
       </div>

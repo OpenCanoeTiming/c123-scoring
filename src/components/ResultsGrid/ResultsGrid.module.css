@@ -137,6 +137,15 @@
   box-shadow: inset 2px 0 0 var(--color-accent), inset -2px 0 0 var(--color-accent);
 }
 
+/* Spacer to compensate for content scrollbar */
+.scrollbarSpacer {
+  width: 14px;
+  min-width: 14px;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+}
+
 /* ==========================================================================
    ROW HEADERS - Competitor info (syncs vertically with content)
    ========================================================================== */
@@ -169,6 +178,13 @@
 
 .rowHeaders tr.focused td {
   box-shadow: inset 0 2px 0 var(--color-accent), inset 0 -2px 0 var(--color-accent);
+}
+
+/* Spacer row to compensate for content scrollbar */
+.scrollbarSpacerRow td {
+  height: 14px;
+  padding: 0 !important;
+  border: none !important;
 }
 
 /* Fixed column styles */
