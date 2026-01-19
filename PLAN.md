@@ -19,6 +19,7 @@
 | 27 | Grid UX and keyboard improvements | ✅ Done |
 | 28 | Grid layout fixes | ✅ Done |
 | 29 | Code Review Cleanup | ✅ Done |
+| 30 | Hook Unit Tests | ✅ Done |
 
 **Current version:** v1.1.0
 
@@ -236,14 +237,58 @@ npm test             # All pass
 
 ---
 
+## Phase 30: Hook Unit Tests
+
+Added comprehensive unit tests for critical hooks.
+
+### 30A: useScoring Hook Tests
+
+- [x] **30A.1:** Test initial state (empty pending, no loading, no error)
+- [x] **30A.2:** Test `setGatePenalty` - API call format, raceId inclusion
+- [x] **30A.3:** Test loading state during pending operations
+- [x] **30A.4:** Test duplicate operation prevention (same bib+gate)
+- [x] **30A.5:** Test API error handling (400, 503)
+- [x] **30A.6:** Test network error handling
+- [x] **30A.7:** Test `removeFromCourse` for DNS/DNF
+- [x] **30A.8:** Test `sendTimingImpulse` for Start/Finish
+- [x] **30A.9:** Test `isPending` for specific gate and any bib operation
+- [x] **30A.10:** Test `clearError` functionality
+- [x] **30A.11:** Test server URL from localStorage (with fallback for invalid URLs)
+- [x] **30A.12:** Test multiple concurrent operations tracking
+- [x] **30A.13:** Test C123 disconnected (503) and validation (400) error types
+
+### 30B: useKeyboardInput Hook Tests
+
+- [x] **30B.1:** Test initial state (null pending value)
+- [x] **30B.2:** Test penalty input keys (0, 2, 5, numpad variants)
+- [x] **30B.3:** Test 5→0 sequence for immediate 50
+- [x] **30B.4:** Test 5 alone with timeout submits 50
+- [x] **30B.5:** Test double 5 press submits 50 immediately
+- [x] **30B.6:** Test 2 after pending 5 cancels timeout
+- [x] **30B.7:** Test Enter key (with and without pending 5)
+- [x] **30B.8:** Test Escape key cancels pending value and timeout
+- [x] **30B.9:** Test Delete/Backspace clears value and cancels timeout
+- [x] **30B.10:** Test ? and F1 for help
+- [x] **30B.11:** Test enabled flag (ignore input when disabled)
+- [x] **30B.12:** Test unhandled keys return false
+- [x] **30B.13:** Test setPendingValue and clearPendingValue
+- [x] **30B.14:** Test cleanup on unmount (clear timeout)
+- [x] **30B.15:** Test React.KeyboardEvent compatibility
+
+### Impact
+
+- **+550 lines** of test code (22 tests for useScoring, 28 tests for useKeyboardInput)
+- **194 total tests** passing
+- Critical REST API and user input flows now covered
+
+---
+
 ## Future Ideas
 
-- [ ] Add unit tests for `useScoring` hook (critical - REST API for penalty writes)
-- [ ] Add unit tests for `useKeyboardInput` hook (user input handling)
 - [ ] Test with real C123 hardware (scoring write verification)
 - [ ] Tablet screenshots in tests (currently postponed)
 - [ ] Performance profiling for large grids (30+ gates)
 
 ---
 
-*Last updated: 2026-01-19 (Phase 29 completed - all tests passing)*
+*Last updated: 2026-01-19 (Phase 30 completed - 194 tests passing)*
