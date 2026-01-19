@@ -11,7 +11,7 @@
  * +------------------------+------------------------+
  */
 
-import { useRef, useEffect, useCallback, useMemo, useState, type UIEvent } from 'react'
+import { useRef, useEffect, useCallback, useMemo, useState, memo, type UIEvent } from 'react'
 import type { C123ResultRow, C123RaceConfigData } from '../../types/c123server'
 import type { GateGroup, ResultsSortOption } from '../../types/ui'
 import type { PenaltyValue } from '../../types/scoring'
@@ -21,6 +21,100 @@ import { useMultiTap } from '../../hooks/useCellInteraction'
 import { parseResultsGatesString } from '../../utils/gates'
 import { PenaltyContextMenu } from './PenaltyContextMenu'
 import styles from './ResultsGrid.module.css'
+
+/** Pre-parsed penalty values for a single row (parsed once, used for all cells) */
+type ParsedPenalties = (number | null)[]
+
+/** Props for memoized PenaltyCell component */
+interface PenaltyCellProps {
+  penalties: ParsedPenalties
+  gateIndex: number
+  colIndex: number
+  rowIndex: number
+  isReverse: boolean
+  isFocused: boolean
+  isColFocus: boolean
+  isRowFocus: boolean
+  isBoundary: boolean
+  onCellClick: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void
+  onMouseDown: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void
+  onMouseUp: () => void
+  onMouseLeave: () => void
+  onTouchStart: (e: React.TouchEvent, rowIndex: number, colIndex: number) => void
+  onTouchEnd: () => void
+  onContextMenu: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void
+}
+
+/** Memoized penalty cell - only re-renders when its specific props change */
+const PenaltyCell = memo(function PenaltyCell({
+  penalties,
+  gateIndex,
+  colIndex,
+  rowIndex,
+  isReverse,
+  isFocused,
+  isColFocus,
+  isRowFocus,
+  isBoundary,
+  onCellClick,
+  onMouseDown,
+  onMouseUp,
+  onMouseLeave,
+  onTouchStart,
+  onTouchEnd,
+  onContextMenu,
+}: PenaltyCellProps) {
+  const pen = penalties[gateIndex]
+
+  // Build class name based on penalty value
+  let className = styles.penaltyCell
+  let value = ''
+
+  if (pen === 0) {
+    className += ` ${styles.penaltyClear}`
+    value = '0'
+  } else if (pen === 2) {
+    className += ` ${styles.penaltyTouch}`
+    value = '2'
+  } else if (pen === 50) {
+    className += ` ${styles.penaltyMiss}`
+    value = '50'
+  } else {
+    className += ` ${styles.penaltyEmpty}`
+  }
+
+  if (isReverse) {
+    className += ` ${styles.penaltyReverse}`
+  }
+
+  // Focus states
+  if (isFocused) {
+    className += ` ${styles.penaltyCellFocused}`
+  } else if (isColFocus) {
+    className += ` ${styles.penaltyCellColFocus}`
+  } else if (isRowFocus) {
+    className += ` ${styles.penaltyCellRowFocus}`
+  }
+
+  if (isBoundary) {
+    className += ` ${styles.penaltyBoundary}`
+  }
+
+  return (
+    <td
+      className={className}
+      onClick={(e) => onCellClick(e, rowIndex, colIndex)}
+      onMouseDown={(e) => onMouseDown(e, rowIndex, colIndex)}
+      onMouseUp={onMouseUp}
+      onMouseLeave={onMouseLeave}
+      onTouchStart={(e) => onTouchStart(e, rowIndex, colIndex)}
+      onTouchEnd={onTouchEnd}
+      onContextMenu={(e) => onContextMenu(e, rowIndex, colIndex)}
+    >
+      {value}
+    </td>
+  )
+})
 
 interface ResultsGridProps {
   rows: C123ResultRow[]
@@ -47,9 +141,8 @@ function formatTime(seconds: number | null | undefined): string {
   return `${seconds.toFixed(2)}s`
 }
 
-// Calculate and format penalty total from gates string
-function calculatePenaltyFromGates(gates: string): string {
-  const penalties = parseResultsGatesString(gates)
+// Calculate penalty total from pre-parsed penalties array
+function calculatePenaltyTotal(penalties: ParsedPenalties): string {
   const total = penalties.reduce<number>((sum, p) => sum + (p ?? 0), 0)
   if (total === 0) return ''
   return `+${total}`
@@ -140,6 +233,16 @@ export function ResultsGrid({
     }
     return sorted
   }, [rows, sortBy])
+
+  // Pre-parse penalties for all rows (once per row, not per cell)
+  // Maps bib -> parsed penalties array
+  const parsedPenaltiesMap = useMemo(() => {
+    const map = new Map<string, ParsedPenalties>()
+    for (const row of sortedRows) {
+      map.set(row.bib, parseResultsGatesString(row.gates))
+    }
+    return map
+  }, [sortedRows])
 
   // Focus navigation
   const {
@@ -236,35 +339,6 @@ export function ResultsGrid({
       contentRef.current?.focus()
     }
   }, [sortedRows.length > 0])
-
-  // Get penalty value for display
-  const getPenaltyDisplay = (row: C123ResultRow, gateIndex: number): { value: string; className: string } => {
-    const penalties = parseResultsGatesString(row.gates)
-    const pen = penalties[gateIndex]
-    const isReverse = gateConfig[gateIndex] === 'R'
-
-    let className = styles.penaltyCell
-    let value = ''
-
-    if (pen === 0) {
-      className += ` ${styles.penaltyClear}`
-      value = '0'
-    } else if (pen === 2) {
-      className += ` ${styles.penaltyTouch}`
-      value = '2'
-    } else if (pen === 50) {
-      className += ` ${styles.penaltyMiss}`
-      value = '50'
-    } else {
-      className += ` ${styles.penaltyEmpty}`
-    }
-
-    if (isReverse) {
-      className += ` ${styles.penaltyReverse}`
-    }
-
-    return { value, className }
-  }
 
   // Submit penalty for a specific cell
   const submitPenalty = useCallback(
@@ -402,23 +476,6 @@ export function ResultsGrid({
     contentRef.current?.focus()
   }, [])
 
-  // Get current cell value for context menu
-  const getContextMenuValue = (): PenaltyValue => {
-    if (!contextMenu) return null
-    const row = sortedRows[contextMenu.row]
-    if (!row) return null
-    const gateIndex = visibleGateIndices[contextMenu.col]
-    const penalties = parseResultsGatesString(row.gates)
-    const value = penalties[gateIndex]
-    // Cast to PenaltyValue - in practice only 0, 2, 50, or null
-    if (value === 0 || value === 2 || value === 50) return value
-    return null
-  }
-
-  if (sortedRows.length === 0 || nrGates === 0) {
-    return <div className={styles.gridContainer}>No data</div>
-  }
-
   // Handle group click
   const handleGroupClick = useCallback((groupId: string) => {
     if (!onGroupSelect) return
@@ -428,6 +485,23 @@ export function ResultsGrid({
       onGroupSelect(groupId)
     }
   }, [onGroupSelect, activeGateGroup])
+
+  // Get current cell value for context menu
+  const getContextMenuValue = (): PenaltyValue => {
+    if (!contextMenu) return null
+    const row = sortedRows[contextMenu.row]
+    if (!row) return null
+    const gateIndex = visibleGateIndices[contextMenu.col]
+    const penalties = parsedPenaltiesMap.get(row.bib) ?? []
+    const value = penalties[gateIndex]
+    // Cast to PenaltyValue - in practice only 0, 2, 50, or null
+    if (value === 0 || value === 2 || value === 50) return value
+    return null
+  }
+
+  if (sortedRows.length === 0 || nrGates === 0) {
+    return <div className={styles.gridContainer}>No data</div>
+  }
 
   return (
     <div
@@ -512,6 +586,7 @@ export function ResultsGrid({
             {sortedRows.map((row, rowIndex) => {
               const isFocused = rowIndex === position.row
               const isDisabled = isRowDisabled(row)
+              const penalties = parsedPenaltiesMap.get(row.bib) ?? []
               const rowClasses = [
                 isFocused && styles.focused,
                 isDisabled && styles.disabled,
@@ -525,7 +600,7 @@ export function ResultsGrid({
                     {isDisabled ? row.status : formatTime(row.time ? parseFloat(row.time) : null)}
                   </td>
                   <td className={styles.colPen}>
-                    {isDisabled ? '' : calculatePenaltyFromGates(row.gates)}
+                    {isDisabled ? '' : calculatePenaltyTotal(penalties)}
                   </td>
                 </tr>
               )
@@ -549,42 +624,37 @@ export function ResultsGrid({
           <tbody>
             {sortedRows.map((row, rowIndex) => {
               const isDisabled = isRowDisabled(row)
+              const penalties = parsedPenaltiesMap.get(row.bib) ?? []
               return (
               <tr key={row.bib} className={isDisabled ? styles.disabled : undefined}>
                 {visibleGateIndices.map((gateIndex, colIndex) => {
-                  const { value, className } = getPenaltyDisplay(row, gateIndex)
                   const gateNum = gateIndex + 1
                   const isFocused = rowIndex === position.row && colIndex === position.column
                   const isColFocus = colIndex === position.column && rowIndex !== position.row
                   const isRowFocus = rowIndex === position.row && colIndex !== position.column
                   const isBoundary = groupBoundaries.has(gateNum)
-
-                  let cellClass = className
-                  if (isFocused) {
-                    cellClass += ` ${styles.penaltyCellFocused}`
-                  } else if (isColFocus) {
-                    cellClass += ` ${styles.penaltyCellColFocus}`
-                  } else if (isRowFocus) {
-                    cellClass += ` ${styles.penaltyCellRowFocus}`
-                  }
-                  if (isBoundary) {
-                    cellClass += ` ${styles.penaltyBoundary}`
-                  }
+                  const isReverse = gateConfig[gateIndex] === 'R'
 
                   return (
-                    <td
+                    <PenaltyCell
                       key={gateIndex}
-                      className={cellClass}
-                      onClick={(e) => handleCellClick(e, rowIndex, colIndex)}
-                      onMouseDown={(e) => handleCellMouseDown(e, rowIndex, colIndex)}
+                      penalties={penalties}
+                      gateIndex={gateIndex}
+                      colIndex={colIndex}
+                      rowIndex={rowIndex}
+                      isReverse={isReverse}
+                      isFocused={isFocused}
+                      isColFocus={isColFocus}
+                      isRowFocus={isRowFocus}
+                      isBoundary={isBoundary}
+                      onCellClick={handleCellClick}
+                      onMouseDown={handleCellMouseDown}
                       onMouseUp={handleCellMouseUp}
                       onMouseLeave={handleCellMouseLeave}
-                      onTouchStart={(e) => handleCellTouchStart(e, rowIndex, colIndex)}
+                      onTouchStart={handleCellTouchStart}
                       onTouchEnd={handleCellTouchEnd}
-                      onContextMenu={(e) => handleCellContextMenu(e, rowIndex, colIndex)}
-                    >
-                      {value}
-                    </td>
+                      onContextMenu={handleCellContextMenu}
+                    />
                   )
                 })}
               </tr>

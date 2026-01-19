@@ -130,14 +130,17 @@ Estimated cleanup: **~1,800 lines** of dead code.
 
 ### 29C: Performance Optimizations
 
-- [ ] **29C.1:** Memoize row penalties in `ResultsGrid.tsx`
-  - Parse once per row, not per cell (2500 → ~100 parses)
+- [x] **29C.1:** Memoize row penalties in `ResultsGrid.tsx` ✓
+  - Parse once per row, not per cell (625 → ~25 parses for 25x25 grid)
+  - Added `parsedPenaltiesMap: Map<bib, ParsedPenalties>` with useMemo
 
-- [ ] **29C.2:** Add memoized `PenaltyCell` component
-  - Prevent re-renders with `React.memo()` and custom equality
+- [x] **29C.2:** Add memoized `PenaltyCell` component ✓
+  - Extracted as `React.memo()` component with all logic inline
+  - Receives pre-parsed penalties array instead of parsing per-cell
 
-- [ ] **29C.3:** Add debounce to `useSettings.ts`
-  - Prevent localStorage thrashing on rapid updates
+- [x] **29C.3:** Add debounce to `useSettings.ts` ✓
+  - Added 300ms debounce to localStorage saves
+  - Prevents thrashing on rapid setting changes
 
 ### 29D: Critical Fixes
 

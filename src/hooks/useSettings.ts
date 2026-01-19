@@ -4,12 +4,13 @@
  * Central state management for application settings with localStorage persistence.
  */
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import type { ResultsSortOption } from '../types/ui'
 
 const STORAGE_KEY = 'c123-scoring-settings'
 const DEFAULT_SERVER_URL = 'ws://localhost:27123/ws'
 const MAX_HISTORY_LENGTH = 10
+const SAVE_DEBOUNCE_MS = 300
 
 export type ThemeMode = 'auto' | 'light' | 'dark'
 
@@ -68,10 +69,25 @@ function saveSettings(settings: Settings): void {
 
 export function useSettings(): UseSettingsReturn {
   const [settings, setSettings] = useState<Settings>(loadSettings)
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Save to localStorage whenever settings change
+  // Debounced save to localStorage whenever settings change
   useEffect(() => {
-    saveSettings(settings)
+    // Clear any pending save
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current)
+    }
+    // Schedule new save
+    saveTimeoutRef.current = setTimeout(() => {
+      saveSettings(settings)
+    }, SAVE_DEBOUNCE_MS)
+
+    // Cleanup on unmount or before next effect
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current)
+      }
+    }
   }, [settings])
 
   const updateSettings = useCallback((updates: Partial<Settings>) => {
