@@ -183,19 +183,19 @@ Estimated cleanup: **~1,800 lines** of dead code.
 
 ### 29G: Import/Export Cleanup
 
-- [ ] **29G.1:** Add missing barrel export
-  - Export `useCellInteraction` from `src/hooks/index.ts`
-  - Fix deep import in `ResultsGrid.tsx:20`
+- [x] **29G.1:** Add missing barrel export ✓
+  - Exported `useMultiTap` from `src/hooks/index.ts`
+  - Updated import in `ResultsGrid.tsx` to use barrel
 
-- [ ] **29G.2:** Create `src/utils/index.ts` barrel file
-  - Export all utility functions
+- [x] **29G.2:** Create `src/utils/index.ts` barrel file ✓
+  - Created barrel file exporting `parseResultsGatesString`
+  - Updated import in `ResultsGrid.tsx` to use barrel
 
-- [ ] **29G.3:** Clean up service exports
-  - Remove unused default exports from `scoringApi.ts`, `coursesApi.ts`
-  - Simplify `src/services/index.ts`
+- [x] **29G.3:** Clean up service exports ✓
+  - Removed unused default exports from `scoringApi.ts`, `coursesApi.ts`
+  - Simplified `src/services/index.ts`
 
-- [ ] **29G.4:** Move `ws` to devDependencies in `package.json`
-  - Only used in test mock server
+- [x] **29G.4:** Already done - `ws` was already in devDependencies ✓
 
 ### 29H: Test Infrastructure Review
 

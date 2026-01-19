@@ -267,5 +267,3 @@ export const scoringApi = {
   sendRemoveFromCourse,
   sendTiming,
 }
-
-export default scoringApi

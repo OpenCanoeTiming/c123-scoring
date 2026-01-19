@@ -97,5 +97,3 @@ export const coursesApi = {
   fetchCourses,
   getCourseSplits,
 }
-
-export default coursesApi

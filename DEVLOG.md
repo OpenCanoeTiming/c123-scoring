@@ -1205,6 +1205,48 @@ Improve code readability by extracting magic numbers and simplifying complex con
 
 ---
 
+## 2026-01-19 - Phase 29G: Import/Export Cleanup
+
+### Iteration Goal
+
+Clean up imports and exports across the codebase - add barrel files, remove unused default exports.
+
+### Completed
+
+- [x] **29G.1:** Added `useMultiTap` export to `src/hooks/index.ts`
+  - Updated `ResultsGrid.tsx` to use barrel import instead of deep import
+
+- [x] **29G.2:** Created `src/utils/index.ts` barrel file
+  - Exports `parseResultsGatesString` from `gates.ts`
+  - Updated `ResultsGrid.tsx` to use barrel import
+
+- [x] **29G.3:** Removed unused default exports
+  - Removed `export default scoringApi` from `scoringApi.ts`
+  - Removed `export default coursesApi` from `coursesApi.ts`
+  - Simplified `services/index.ts` to only use named re-exports
+
+- [x] **29G.4:** Verified `ws` is already in devDependencies (no change needed)
+
+### File Changes
+
+**New files:**
+- `src/utils/index.ts` - barrel export for utils
+
+**Modified files:**
+- `src/hooks/index.ts` - added `useMultiTap` export
+- `src/services/index.ts` - removed default export re-exports
+- `src/services/scoringApi.ts` - removed default export
+- `src/services/coursesApi.ts` - removed default export
+- `src/components/ResultsGrid/ResultsGrid.tsx` - updated to use barrel imports
+
+### Notes
+
+- Build passes without errors
+- WebSocket unit tests (16 failures) are pre-existing issue documented in Phase 29H
+- All other tests pass (128/144)
+
+---
+
 ## Template for Further Entries
 
 ```markdown

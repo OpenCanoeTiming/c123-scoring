@@ -15,10 +15,8 @@ import { useRef, useEffect, useCallback, useMemo, useState, memo, type UIEvent }
 import type { C123ResultRow, C123RaceConfigData } from '../../types/c123server'
 import type { GateGroup, ResultsSortOption } from '../../types/ui'
 import type { PenaltyValue } from '../../types/scoring'
-import { useFocusNavigation } from '../../hooks/useFocusNavigation'
-import { useKeyboardInput } from '../../hooks/useKeyboardInput'
-import { useMultiTap } from '../../hooks/useCellInteraction'
-import { parseResultsGatesString } from '../../utils/gates'
+import { useFocusNavigation, useKeyboardInput, useMultiTap } from '../../hooks'
+import { parseResultsGatesString } from '../../utils'
 import { PenaltyContextMenu } from './PenaltyContextMenu'
 import styles from './ResultsGrid.module.css'
 

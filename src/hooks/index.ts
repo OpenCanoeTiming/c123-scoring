@@ -47,3 +47,4 @@ export {
   useFocusTrap,
   type UseFocusTrapOptions,
 } from './useFocusTrap'
+export { useMultiTap } from './useCellInteraction'
