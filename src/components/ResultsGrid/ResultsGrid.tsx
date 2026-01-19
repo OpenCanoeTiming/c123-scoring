@@ -31,6 +31,8 @@ interface PenaltyCellProps {
   gateIndex: number
   colIndex: number
   rowIndex: number
+  gateNumber: number
+  competitorBib: string
   isReverse: boolean
   isFocused: boolean
   isColFocus: boolean
@@ -51,6 +53,8 @@ const PenaltyCell = memo(function PenaltyCell({
   gateIndex,
   colIndex,
   rowIndex,
+  gateNumber,
+  competitorBib,
   isReverse,
   isFocused,
   isColFocus,
@@ -69,16 +73,20 @@ const PenaltyCell = memo(function PenaltyCell({
   // Build class name based on penalty value
   let className = styles.penaltyCell
   let value = ''
+  let penaltyLabel = 'empty'
 
   if (pen === 0) {
     className += ` ${styles.penaltyClear}`
     value = '0'
+    penaltyLabel = 'clear'
   } else if (pen === 2) {
     className += ` ${styles.penaltyTouch}`
     value = '2'
+    penaltyLabel = '2 seconds touch'
   } else if (pen === 50) {
     className += ` ${styles.penaltyMiss}`
     value = '50'
+    penaltyLabel = '50 seconds miss'
   } else {
     className += ` ${styles.penaltyEmpty}`
   }
@@ -100,8 +108,14 @@ const PenaltyCell = memo(function PenaltyCell({
     className += ` ${styles.penaltyBoundary}`
   }
 
+  // Build aria-label: "Gate 5, Bib 10, clear" or "Gate 5, Bib 10, empty"
+  const ariaLabel = `Gate ${gateNumber}, Bib ${competitorBib}, ${penaltyLabel}`
+
   return (
     <td
+      role="gridcell"
+      aria-label={ariaLabel}
+      tabIndex={isFocused ? 0 : -1}
       className={className}
       onClick={(e) => onCellClick(e, rowIndex, colIndex)}
       onMouseDown={(e) => onMouseDown(e, rowIndex, colIndex)}
@@ -506,6 +520,8 @@ export function ResultsGrid({
   return (
     <div
       className={styles.gridContainer}
+      role="grid"
+      aria-label="Penalty grid"
       onKeyDown={handleKeyDown}
       tabIndex={0}
     >
@@ -567,7 +583,12 @@ export function ResultsGrid({
                 if (isBoundary) className += ` ${styles.boundary}`
 
                 return (
-                  <th key={gateIndex} className={className}>
+                  <th
+                    key={gateIndex}
+                    className={className}
+                    role="columnheader"
+                    aria-label={`Gate ${gateNum}${isReverse ? ' (reverse)' : ''}`}
+                  >
                     {gateNum}
                   </th>
                 )
@@ -593,8 +614,8 @@ export function ResultsGrid({
               ].filter(Boolean).join(' ')
 
               return (
-                <tr key={row.bib} className={rowClasses || undefined}>
-                  <td className={styles.colBib}>{row.bib}</td>
+                <tr key={row.bib} className={rowClasses || undefined} role="row">
+                  <td className={styles.colBib} role="rowheader" aria-label={`Bib ${row.bib}`}>{row.bib}</td>
                   <td className={styles.colName}>{row.name}</td>
                   <td className={`${styles.colTime} ${isDisabled ? styles.colStatus : ''}`}>
                     {isDisabled ? row.status : formatTime(row.time ? parseFloat(row.time) : null)}
@@ -642,6 +663,8 @@ export function ResultsGrid({
                       gateIndex={gateIndex}
                       colIndex={colIndex}
                       rowIndex={rowIndex}
+                      gateNumber={gateNum}
+                      competitorBib={row.bib}
                       isReverse={isReverse}
                       isFocused={isFocused}
                       isColFocus={isColFocus}

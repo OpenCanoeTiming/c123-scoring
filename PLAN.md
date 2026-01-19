@@ -155,8 +155,13 @@ Estimated cleanup: **~1,800 lines** of dead code.
 
 ### 29E: Accessibility
 
-- [ ] **29E.1:** Add ARIA labels to grid cells in `ResultsGrid.tsx`
-  - `aria-label`, `role="gridcell"`, proper `tabIndex`
+- [x] **29E.1:** Add ARIA labels to grid cells in `ResultsGrid.tsx` ✓
+  - Added `role="grid"` and `aria-label="Penalty grid"` to main container
+  - Added `role="gridcell"`, `aria-label`, and dynamic `tabIndex` to PenaltyCell
+  - Added `role="columnheader"` and `aria-label` to gate headers
+  - Added `role="row"` to data rows
+  - Added `role="rowheader"` to bib cells
+  - Labels: "Gate X, Bib Y, clear/2 seconds touch/50 seconds miss/empty"
 
 ### 29F: Hook Fixes (Critical)
 

@@ -4,6 +4,35 @@ Development diary for the project. Records of what was done, what worked, what d
 
 ---
 
+## 2026-01-19 - Phase 29E: Accessibility
+
+### Completed
+
+- [x] **29E.1:** Add ARIA labels to grid cells in `ResultsGrid.tsx`
+
+### Changes
+
+Added comprehensive ARIA support to ResultsGrid for screen reader accessibility:
+
+1. **Grid container**: `role="grid"` with `aria-label="Penalty grid"`
+2. **PenaltyCell component**:
+   - Added `role="gridcell"`
+   - Added dynamic `aria-label` describing gate, bib, and penalty status
+   - Added `tabIndex={isFocused ? 0 : -1}` for proper focus management
+3. **Gate headers**: `role="columnheader"` with aria-label including reverse indicator
+4. **Data rows**: `role="row"` for proper row semantics
+5. **Bib cells**: `role="rowheader"` with aria-label
+
+Example aria-label for cells: "Gate 5, Bib 10, clear" or "Gate 5, Bib 10, 50 seconds miss"
+
+### Notes
+
+- Build passes without errors
+- WebSocket unit tests fail (16 failures) - pre-existing issue documented in PLAN.md Phase 29H
+- Two lint warnings (also pre-existing in ResultsGrid useEffect dependencies)
+
+---
+
 ## 2026-01-18 - Phase 20A-C: Bug fixes
 
 ### Completed
