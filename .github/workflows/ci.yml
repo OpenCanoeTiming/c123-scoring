@@ -40,7 +40,7 @@ jobs:
           sed -i 's|"github:OpenCanoeTiming/timing-design-system"|"file:./timing-design-system"|' package.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Lint
         run: npm run lint
@@ -95,7 +95,7 @@ jobs:
           sed -i 's|"github:OpenCanoeTiming/timing-design-system"|"file:./timing-design-system"|' package.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
