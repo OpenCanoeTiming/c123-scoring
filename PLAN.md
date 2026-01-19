@@ -5,19 +5,7 @@
 | Phase | Name | Status |
 |-------|------|--------|
 | 1-15 | Basic implementation (v1.0.0) | ✅ Done |
-| 16 | Design System integration | ✅ Done |
-| 17 | UX Polish (Header, Grid, Gate Groups, Footer, Sorting, Tablet, Settings) | ✅ Done |
-| 18 | Auto-load Gate Groups from Segments | ✅ Done |
-| 19 | E2E Test Refactoring | ✅ Done |
-| 20 | Bug fixes and UX feedback | ✅ Done |
-| 21 | Schedule WebSocket issue | ✅ Done |
-| 22 | Settings cleanup | ✅ Done |
-| 23 | Grid layout and sticky columns | ✅ Done |
-| 24 | Grid highlighting redesign | ✅ Done |
-| 25 | WebSocket connection management | ✅ Done |
-| 26 | Keyboard and scoring fixes | ✅ Done |
-| 27 | Grid UX and keyboard improvements | ✅ Done |
-| 28 | Grid layout fixes | ✅ Done |
+| 16-28 | Polish & UX (v1.1.0) | ✅ Done |
 | 29 | Code Review Cleanup | ✅ Done |
 | 30 | Hook Unit Tests | ✅ Done |
 
@@ -25,7 +13,7 @@
 
 ---
 
-## Completed Milestones Summary
+## Completed Milestones
 
 ### v1.0.0 - Basic Implementation (Phases 1-15)
 
@@ -53,6 +41,21 @@
 - WebSocket: single connection guard, Schedule on connect
 - Tablet optimization (1024px/1366px breakpoints, 48px touch targets)
 
+### Phase 29 - Code Review Cleanup
+
+- **-1,800+ lines** of dead code removed (unused components, hooks, types, utils)
+- Performance: memoized grid cells, debounced settings
+- Security: URL validation in scoringApi
+- Accessibility: ARIA labels for grid cells
+- Hook fixes: functional updates in useFocusNavigation
+- Cleaner imports: barrel files for hooks, utils, services
+
+### Phase 30 - Hook Unit Tests
+
+- **useScoring:** 22 tests (REST API, loading states, error handling, retry)
+- **useKeyboardInput:** 28 tests (penalty input, 50ms delay, shortcuts)
+- **194 total tests** passing
+
 ---
 
 ## Test Data
@@ -74,221 +77,12 @@ npm run dev
 
 ---
 
-## Phase 29: Code Review Cleanup
-
-Deep code review (2 passes) revealed **40+ issues** across dead code, hooks, imports, and performance.
-Estimated cleanup: **~1,800 lines** of dead code.
-
-### 29A: Dead Code Removal - Components
-
-- [x] **29A.1:** Delete unused components (~1,000 lines) ✓ -1,370 lines
-  - `src/components/OnCourseGrid/` (entire folder - 385 TS + 304 CSS)
-  - `src/components/TimingPanel/` (entire folder - 150 TS + 75 CSS)
-  - `src/components/CompetitorActions/` (entire folder - 208 TS + 114 CSS)
-  - `src/components/ConnectionStatus/` (entire folder - ~60 lines, replaced by Header)
-  - Update `src/components/index.ts`
-
-- [x] **29A.2:** Delete unused hooks (~80 lines) ✓ -82 lines
-  - `src/hooks/useGateGroupShortcuts.ts`
-  - Update `src/hooks/index.ts`
-
-### 29A: Dead Code Removal - Types
-
-- [x] **29A.3:** Remove unused types from `src/types/ui.ts` ✓ -128 lines
-  - `ViewMode`, `FilterOptions`, `SelectionState`, `NavigationDirection`
-  - `GridCellState`, `ModalState`, `ModalType`, `NotificationType`, `Notification`, `SortField`, `FocusPosition`, `SortDirection`
-
-- [x] **29A.4:** Remove unused types from `src/types/scoring.ts` ✓ -126 lines
-  - Functions: `parseGates()`, `isValidPenalty()`, `parseCheckedKey()`, `calculateTotalPenalty()`
-  - Types: `ParsedCompetitor`, `GatePenalty`, `CompetitorState`, `GateInfo`, `ApiResponse`, `CheckedStateMap`
-
-- [x] **29A.5:** Remove unused exports from `src/types/gateGroups.ts` ✓ -43 lines
-  - Functions: `filterGatesByGroup()`, `groupsOverlap()`, `findOverlappingGates()`
-  - Note: `CourseSegment`, `GateGroupsConfig`, `DEFAULT_GATE_GROUPS_CONFIG` are actually used
-
-### 29A: Dead Code Removal - Utils
-
-- [x] **29A.6:** Remove unused functions from `src/utils/gates.ts` ✓ -107 lines
-  - `parseGatesString()`, `parseGatesWithConfig()`, `parseResultsGatesWithConfig()`
-  - `calculateTotalPenalty()`, `calculateResultsTotalPenalty()`
-  - `formatPenalty()`, `getPenaltyClass()`, `parseGateConfig()`
-  - Types: `GateType`, `GatePenalty`
-  - Updated tests to only test used function `parseResultsGatesString()`
-
-- [x] **29A.7:** Delete unused file `src/utils/time.ts` ✓ -29 lines
-  - `formatTimeAsSeconds()` (never called)
-
-### 29B: Readability Improvements
-
-- [x] **29B.1:** Extract magic numbers in `ResultsGrid.tsx` ✓
-  - `SCROLL_PADDING = 4`, `SCROLLBAR_WIDTH = 14`, `SCROLL_BUFFER = 18`, `LONG_PRESS_DURATION = 500`
-
-- [x] **29B.2:** Remove unreachable code in `ResultsGrid.tsx` ✓
-  - Removed `isColFocus && isRowFocus` (crosshair) condition - logically impossible
-
-- [x] **29B.3:** Simplify `App.tsx` empty state cascade ✓
-  - Extracted 6-level ternary to `getViewState()` helper with typed `ViewState` union
-
-### 29C: Performance Optimizations
-
-- [x] **29C.1:** Memoize row penalties in `ResultsGrid.tsx` ✓
-  - Parse once per row, not per cell (625 → ~25 parses for 25x25 grid)
-  - Added `parsedPenaltiesMap: Map<bib, ParsedPenalties>` with useMemo
-
-- [x] **29C.2:** Add memoized `PenaltyCell` component ✓
-  - Extracted as `React.memo()` component with all logic inline
-  - Receives pre-parsed penalties array instead of parsing per-cell
-
-- [x] **29C.3:** Add debounce to `useSettings.ts` ✓
-  - Added 300ms debounce to localStorage saves
-  - Prevents thrashing on rapid setting changes
-
-### 29D: Critical Fixes
-
-- [x] **29D.1:** URL validation in `src/services/scoringApi.ts` ✓
-  - Added `isValidHttpUrl()` helper with URL constructor validation
-  - Falls back to default URL if localStorage contains invalid value
-
-- [x] **29D.2:** Keep console.error/warn in production (`vite.config.ts`) ✓
-  - Changed from `drop: ['console', 'debugger']` to `drop: ['debugger']`
-  - Added `pure: ['console.log', 'console.debug', 'console.trace']`
-  - Preserves console.error and console.warn for production debugging
-
-### 29E: Accessibility
-
-- [x] **29E.1:** Add ARIA labels to grid cells in `ResultsGrid.tsx` ✓
-  - Added `role="grid"` and `aria-label="Penalty grid"` to main container
-  - Added `role="gridcell"`, `aria-label`, and dynamic `tabIndex` to PenaltyCell
-  - Added `role="columnheader"` and `aria-label` to gate headers
-  - Added `role="row"` to data rows
-  - Added `role="rowheader"` to bib cells
-  - Labels: "Gate X, Bib Y, clear/2 seconds touch/50 seconds miss/empty"
-
-### 29F: Hook Fixes (Critical)
-
-- [x] **29F.1:** Review potential infinite loop in `useGateGroups.ts:178` ✓ Not an issue
-  - `loadCourses` has `[]` dependencies, so it's stable
-  - `raceId` in effect dependencies correctly reloads courses when race changes
-
-- [x] **29F.2:** Fix stale position closures in `useFocusNavigation.ts:156-170` ✓ Fixed
-  - `moveToRowStart`, `moveToRowEnd`, `pageUp`, `pageDown` captured stale `position`
-  - Solution: changed to functional updates with `setPositionInternal((current) => ...)`
-
-- [x] **29F.3:** Review event listener churn in `useFocusTrap.ts:117` ✓ Not an issue
-  - `handleKeyDown` and `getFocusableElements` are properly memoized with `useCallback`
-  - Effect dependencies are minimal and stable
-
-- [x] **29F.4:** Review callback thrashing in `useScoring.ts:146` ✓ Not an issue
-  - `addPending`, `removePending`, `setError` have `[]` dependencies and are stable
-  - Main callbacks properly reference stable helpers
-
-### 29G: Import/Export Cleanup
-
-- [x] **29G.1:** Add missing barrel export ✓
-  - Exported `useMultiTap` from `src/hooks/index.ts`
-  - Updated import in `ResultsGrid.tsx` to use barrel
-
-- [x] **29G.2:** Create `src/utils/index.ts` barrel file ✓
-  - Created barrel file exporting `parseResultsGatesString`
-  - Updated import in `ResultsGrid.tsx` to use barrel
-
-- [x] **29G.3:** Clean up service exports ✓
-  - Removed unused default exports from `scoringApi.ts`, `coursesApi.ts`
-  - Simplified `src/services/index.ts`
-
-- [x] **29G.4:** Already done - `ws` was already in devDependencies ✓
-
-### 29H: Test Infrastructure Review
-
-- [x] **29H.1:** Investigate failing `useC123WebSocket.test.ts` tests (16 failures) ✓
-  - Root cause: `MockWebSocket` class was missing static constants (`CONNECTING`, `OPEN`, `CLOSING`, `CLOSED`)
-  - Hook's guard `wsRef.current?.readyState === WebSocket.OPEN` compared `undefined === undefined` = `true`
-  - This caused early return from `connect()` function
-
-- [x] **29H.2:** Analyze mock WebSocket implementation ✓
-  - Mock was inline in test file, not external
-  - Problem was not timing or async - purely missing constants
-
-- [x] **29H.3:** Decide on test strategy ✓
-  - Solution: Fix mock to include WebSocket constants (Option A)
-
-- [x] **29H.4:** Implement chosen solution ✓
-  - Added static readonly constants to `MockWebSocket`: `CONNECTING=0`, `OPEN=1`, `CLOSING=2`, `CLOSED=3`
-  - Added `renderHookAsync()` helper for tests with `autoConnect: true` (fake timers + React effects)
-  - Result: 17 tests pass, 4 skipped (reconnection tests - intentionally skipped)
-
-### Verification
-
-```bash
-npm run build        # No errors
-npx tsc --noEmit     # No type errors
-npm run lint         # No unused warnings
-npm test             # All pass
-./scripts/take-screenshots.sh  # Screenshots match
-```
-
-### Impact
-
-- **-1,800+ lines** of dead code removed
-- **Cleaner imports** - proper barrel files, no deep imports
-- **Better performance** - memoized grid cells, fixed hook loops
-- **Improved security** - validated URLs
-- **Better a11y** - screen reader support
-
----
-
-## Phase 30: Hook Unit Tests
-
-Added comprehensive unit tests for critical hooks.
-
-### 30A: useScoring Hook Tests
-
-- [x] **30A.1:** Test initial state (empty pending, no loading, no error)
-- [x] **30A.2:** Test `setGatePenalty` - API call format, raceId inclusion
-- [x] **30A.3:** Test loading state during pending operations
-- [x] **30A.4:** Test duplicate operation prevention (same bib+gate)
-- [x] **30A.5:** Test API error handling (400, 503)
-- [x] **30A.6:** Test network error handling
-- [x] **30A.7:** Test `removeFromCourse` for DNS/DNF
-- [x] **30A.8:** Test `sendTimingImpulse` for Start/Finish
-- [x] **30A.9:** Test `isPending` for specific gate and any bib operation
-- [x] **30A.10:** Test `clearError` functionality
-- [x] **30A.11:** Test server URL from localStorage (with fallback for invalid URLs)
-- [x] **30A.12:** Test multiple concurrent operations tracking
-- [x] **30A.13:** Test C123 disconnected (503) and validation (400) error types
-
-### 30B: useKeyboardInput Hook Tests
-
-- [x] **30B.1:** Test initial state (null pending value)
-- [x] **30B.2:** Test penalty input keys (0, 2, 5, numpad variants)
-- [x] **30B.3:** Test 5→0 sequence for immediate 50
-- [x] **30B.4:** Test 5 alone with timeout submits 50
-- [x] **30B.5:** Test double 5 press submits 50 immediately
-- [x] **30B.6:** Test 2 after pending 5 cancels timeout
-- [x] **30B.7:** Test Enter key (with and without pending 5)
-- [x] **30B.8:** Test Escape key cancels pending value and timeout
-- [x] **30B.9:** Test Delete/Backspace clears value and cancels timeout
-- [x] **30B.10:** Test ? and F1 for help
-- [x] **30B.11:** Test enabled flag (ignore input when disabled)
-- [x] **30B.12:** Test unhandled keys return false
-- [x] **30B.13:** Test setPendingValue and clearPendingValue
-- [x] **30B.14:** Test cleanup on unmount (clear timeout)
-- [x] **30B.15:** Test React.KeyboardEvent compatibility
-
-### Impact
-
-- **+550 lines** of test code (22 tests for useScoring, 28 tests for useKeyboardInput)
-- **194 total tests** passing
-- Critical REST API and user input flows now covered
-
----
-
 ## Future Ideas
 
 - [ ] Test with real C123 hardware (scoring write verification)
-- [ ] Tablet screenshots in tests (currently postponed)
+- [ ] Tablet screenshots in tests
 - [ ] Performance profiling for large grids (30+ gates)
 
 ---
 
-*Last updated: 2026-01-19 (Phase 30 completed - 194 tests passing)*
+*Last updated: 2026-01-19*
