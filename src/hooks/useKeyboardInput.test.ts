@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
-import { useKeyboardInput, type PenaltyValue } from './useKeyboardInput'
+import { useKeyboardInput } from './useKeyboardInput'
 
 // =============================================================================
 // Helper Functions
