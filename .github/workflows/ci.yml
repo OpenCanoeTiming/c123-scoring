@@ -37,8 +37,7 @@ jobs:
 
       - name: Update package.json to use local design system
         run: |
-          # Replace file:../timing-design-system with file:./timing-design-system
-          sed -i 's|"file:../timing-design-system"|"file:./timing-design-system"|' package.json
+          sed -i 's|"github:OpenCanoeTiming/timing-design-system"|"file:./timing-design-system"|' package.json
 
       - name: Install dependencies
         run: npm ci
@@ -93,7 +92,7 @@ jobs:
 
       - name: Update package.json to use local design system
         run: |
-          sed -i 's|"file:../timing-design-system"|"file:./timing-design-system"|' package.json
+          sed -i 's|"github:OpenCanoeTiming/timing-design-system"|"file:./timing-design-system"|' package.json
 
       - name: Install dependencies
         run: npm ci
