@@ -1146,6 +1146,36 @@ Add option to explicitly switch between light/dark mode in Settings.
 
 ---
 
+## 2026-01-19 - Phase 29B: Readability Improvements
+
+### Iteration Goal
+
+Improve code readability by extracting magic numbers and simplifying complex conditionals.
+
+### Completed
+
+- [x] **29B.1:** Extracted magic numbers in `ResultsGrid.tsx`
+  - Added named constants: `SCROLL_PADDING`, `SCROLLBAR_WIDTH`, `SCROLL_BUFFER`, `LONG_PRESS_DURATION`
+  - Replaced 6 hardcoded values with descriptive constants
+
+- [x] **29B.2:** Removed unreachable code in `ResultsGrid.tsx`
+  - Removed `isColFocus && isRowFocus` (crosshair) condition
+  - This condition was logically impossible: `isColFocus` requires `rowIndex !== position.row` while `isRowFocus` requires `rowIndex === position.row`
+  - No CSS style `penaltyCellCrosshair` existed, confirming the code was dead
+
+- [x] **29B.3:** Simplified `App.tsx` empty state cascade
+  - Extracted 6-level ternary operator to `getViewState()` helper function
+  - Added typed `ViewState` discriminated union for type safety
+  - Replaced nested ternary with clean switch statement
+
+### Notes
+
+- WebSocket tests (16 failures) are a known issue from Phase 29H, not related to these changes
+- All other tests pass (128/144)
+- Build successful with no TypeScript errors
+
+---
+
 ## Template for Further Entries
 
 ```markdown

@@ -119,14 +119,14 @@ Estimated cleanup: **~1,800 lines** of dead code.
 
 ### 29B: Readability Improvements
 
-- [ ] **29B.1:** Extract magic numbers in `ResultsGrid.tsx`
+- [x] **29B.1:** Extract magic numbers in `ResultsGrid.tsx` ✓
   - `SCROLL_PADDING = 4`, `SCROLLBAR_WIDTH = 14`, `SCROLL_BUFFER = 18`, `LONG_PRESS_DURATION = 500`
 
-- [ ] **29B.2:** Remove unreachable code in `ResultsGrid.tsx` (line ~557)
-  - `isColFocus && isRowFocus` condition is impossible
+- [x] **29B.2:** Remove unreachable code in `ResultsGrid.tsx` ✓
+  - Removed `isColFocus && isRowFocus` (crosshair) condition - logically impossible
 
-- [ ] **29B.3:** Simplify `App.tsx` empty state cascade
-  - Extract 6-level ternary to `getViewState()` helper
+- [x] **29B.3:** Simplify `App.tsx` empty state cascade ✓
+  - Extracted 6-level ternary to `getViewState()` helper with typed `ViewState` union
 
 ### 29C: Performance Optimizations
 

@@ -33,6 +33,14 @@ interface ResultsGridProps {
   onPenaltySubmit: (bib: string, gate: number, value: PenaltyValue, raceId?: string) => void
 }
 
+// Scroll constants for auto-scrolling focused cell into view
+const SCROLL_PADDING = 4 // Padding when cell is at edge
+const SCROLLBAR_WIDTH = 14 // Approximate scrollbar width
+const SCROLL_BUFFER = 18 // Extra buffer to ensure visibility
+
+// Long press duration for context menu (ms)
+const LONG_PRESS_DURATION = 500
+
 // Format time - display in seconds only
 function formatTime(seconds: number | null | undefined): string {
   if (seconds == null) return ''
@@ -206,15 +214,15 @@ export function ResultsGrid({
     let scrollY = 0
 
     if (cellRect.left < contentRect.left) {
-      scrollX = cellRect.left - contentRect.left - 4
-    } else if (cellRect.right > contentRect.right - 14) {
-      scrollX = cellRect.right - contentRect.right + 18
+      scrollX = cellRect.left - contentRect.left - SCROLL_PADDING
+    } else if (cellRect.right > contentRect.right - SCROLLBAR_WIDTH) {
+      scrollX = cellRect.right - contentRect.right + SCROLL_BUFFER
     }
 
     if (cellRect.top < contentRect.top) {
-      scrollY = cellRect.top - contentRect.top - 4
-    } else if (cellRect.bottom > contentRect.bottom - 14) {
-      scrollY = cellRect.bottom - contentRect.bottom + 18
+      scrollY = cellRect.top - contentRect.top - SCROLL_PADDING
+    } else if (cellRect.bottom > contentRect.bottom - SCROLLBAR_WIDTH) {
+      scrollY = cellRect.bottom - contentRect.bottom + SCROLL_BUFFER
     }
 
     if (scrollX !== 0 || scrollY !== 0) {
@@ -336,7 +344,7 @@ export function ResultsGrid({
       longPressTriggered.current = false
       longPressTimer.current = setTimeout(() => {
         openContextMenu(rowIndex, colIndex, e.clientX, e.clientY)
-      }, 500)
+      }, LONG_PRESS_DURATION)
     },
     [clearLongPress, openContextMenu]
   )
@@ -359,7 +367,7 @@ export function ResultsGrid({
       const touch = e.touches[0]
       longPressTimer.current = setTimeout(() => {
         openContextMenu(rowIndex, colIndex, touch.clientX, touch.clientY)
-      }, 500)
+      }, LONG_PRESS_DURATION)
     },
     [clearLongPress, openContextMenu]
   )
@@ -554,8 +562,6 @@ export function ResultsGrid({
                   let cellClass = className
                   if (isFocused) {
                     cellClass += ` ${styles.penaltyCellFocused}`
-                  } else if (isColFocus && isRowFocus) {
-                    cellClass += ` ${styles.penaltyCellCrosshair}`
                   } else if (isColFocus) {
                     cellClass += ` ${styles.penaltyCellColFocus}`
                   } else if (isRowFocus) {

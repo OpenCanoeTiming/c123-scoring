@@ -10,6 +10,33 @@ import { useScoring } from './hooks/useScoring'
 
 const STORAGE_KEY_SELECTED_RACE = 'c123-scoring-selected-race'
 
+// View state types for main content area
+type ViewState =
+  | { type: 'loading' }
+  | { type: 'disconnected' }
+  | { type: 'no-races' }
+  | { type: 'select-race' }
+  | { type: 'no-competitors' }
+  | { type: 'loading-config' }
+  | { type: 'grid' }
+
+// Determine which view state to show based on connection and data
+function getViewState(
+  connectionState: string,
+  activeRacesCount: number,
+  selectedRace: unknown,
+  selectedRaceResults: { rows: unknown[] } | undefined,
+  raceConfig: unknown
+): ViewState {
+  if (connectionState === 'connecting') return { type: 'loading' }
+  if (connectionState === 'disconnected' || connectionState === 'error') return { type: 'disconnected' }
+  if (activeRacesCount === 0) return { type: 'no-races' }
+  if (!selectedRace) return { type: 'select-race' }
+  if (!selectedRaceResults || selectedRaceResults.rows.length === 0) return { type: 'no-competitors' }
+  if (!raceConfig) return { type: 'loading-config' }
+  return { type: 'grid' }
+}
+
 function App() {
   // Settings
   const { settings, updateSettings } = useSettings()
@@ -232,43 +259,57 @@ function App() {
       )}
 
       {/* Main content area with empty states */}
-      {connectionState === 'connecting' ? (
-        <EmptyState variant="loading" />
-      ) : connectionState === 'disconnected' || connectionState === 'error' ? (
-        <EmptyState
-          variant="disconnected"
-          action={{
-            label: 'Open Settings',
-            onClick: () => setShowSettings(true),
-          }}
-        />
-      ) : activeRaces.length === 0 ? (
-        <EmptyState variant="no-races" />
-      ) : !selectedRace ? (
-        <EmptyState
-          variant="no-races"
-          title="Select a race"
-          message="Choose a race from the selector above to start scoring."
-        />
-      ) : !selectedRaceResults || selectedRaceResults.rows.length === 0 ? (
-        <EmptyState variant="no-competitors" />
-      ) : !raceConfig ? (
-        // Wait for race config before rendering grid (gates not yet loaded)
-        <EmptyState variant="loading" />
-      ) : (
-        <ResultsGrid
-          // Key forces remount when gate count changes, ensuring sticky recalculates
-          key={`grid-${raceConfig?.nrGates ?? 0}`}
-          rows={selectedRaceResults.rows}
-          raceConfig={raceConfig}
-          raceId={effectiveSelectedRaceId}
-          activeGateGroup={activeGroup}
-          allGateGroups={allGroups}
-          sortBy={settings.sortBy}
-          onGroupSelect={setActiveGroup}
-          onPenaltySubmit={handlePenaltySubmit}
-        />
-      )}
+      {(() => {
+        const viewState = getViewState(
+          connectionState,
+          activeRaces.length,
+          selectedRace,
+          selectedRaceResults,
+          raceConfig
+        )
+        switch (viewState.type) {
+          case 'loading':
+          case 'loading-config':
+            return <EmptyState variant="loading" />
+          case 'disconnected':
+            return (
+              <EmptyState
+                variant="disconnected"
+                action={{
+                  label: 'Open Settings',
+                  onClick: () => setShowSettings(true),
+                }}
+              />
+            )
+          case 'no-races':
+            return <EmptyState variant="no-races" />
+          case 'select-race':
+            return (
+              <EmptyState
+                variant="no-races"
+                title="Select a race"
+                message="Choose a race from the selector above to start scoring."
+              />
+            )
+          case 'no-competitors':
+            return <EmptyState variant="no-competitors" />
+          case 'grid':
+            return (
+              <ResultsGrid
+                // Key forces remount when gate count changes, ensuring sticky recalculates
+                key={`grid-${raceConfig?.nrGates ?? 0}`}
+                rows={selectedRaceResults!.rows}
+                raceConfig={raceConfig!}
+                raceId={effectiveSelectedRaceId}
+                activeGateGroup={activeGroup}
+                allGateGroups={allGroups}
+                sortBy={settings.sortBy}
+                onGroupSelect={setActiveGroup}
+                onPenaltySubmit={handlePenaltySubmit}
+              />
+            )
+        }
+      })()}
     </Layout>
   )
 }
