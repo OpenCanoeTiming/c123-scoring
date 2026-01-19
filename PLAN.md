@@ -238,6 +238,8 @@ npm test             # All pass
 
 ## Future Ideas
 
+- [ ] Add unit tests for `useScoring` hook (critical - REST API for penalty writes)
+- [ ] Add unit tests for `useKeyboardInput` hook (user input handling)
 - [ ] Test with real C123 hardware (scoring write verification)
 - [ ] Tablet screenshots in tests (currently postponed)
 - [ ] Performance profiling for large grids (30+ gates)
