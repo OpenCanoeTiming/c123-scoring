@@ -20,16 +20,13 @@ C123 Penalty Check is a React-based web application designed for ergonomic penal
 
 ## Architecture
 
-```
-c123-penalty-check (this app)
-    │
-    ├─► WebSocket ws://server:27123/ws  (real-time data)
-    │     - OnCourse, Results, RaceConfig, Schedule
-    │
-    └─► REST API http://server:27123/api/c123/*  (write operations)
-          - POST /api/c123/scoring
-          - POST /api/c123/remove-from-course
-          - POST /api/c123/timing
+```mermaid
+graph LR
+    PC[c123-penalty-check]
+    SRV[c123-server :27123]
+
+    SRV -->|"WebSocket /ws<br/>OnCourse, Results,<br/>RaceConfig, Schedule"| PC
+    PC -->|"REST POST /api/c123/*<br/>scoring, remove-from-course,<br/>timing"| SRV
 ```
 
 ## Prerequisites
