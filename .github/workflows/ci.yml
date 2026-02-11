@@ -18,33 +18,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Checkout timing-design-system
-        uses: actions/checkout@v4
-        with:
-          repository: OpenCanoeTiming/timing-design-system
-          path: timing-design-system
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          registry-url: 'https://npm.pkg.github.com'
           cache: 'npm'
 
-      - name: Install design system dependencies
-        working-directory: timing-design-system
-        run: npm ci
-
-      - name: Build design system
-        working-directory: timing-design-system
-        run: npm run build
-
-      - name: Update package.json to use local design system
-        run: |
-          sed -i 's|"github:OpenCanoeTiming/timing-design-system"|"file:./timing-design-system"|' package.json
-
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Lint
         run: npm run lint
@@ -73,33 +57,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Checkout timing-design-system
-        uses: actions/checkout@v4
-        with:
-          repository: OpenCanoeTiming/timing-design-system
-          path: timing-design-system
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          registry-url: 'https://npm.pkg.github.com'
           cache: 'npm'
 
-      - name: Install design system dependencies
-        working-directory: timing-design-system
-        run: npm ci
-
-      - name: Build design system
-        working-directory: timing-design-system
-        run: npm run build
-
-      - name: Update package.json to use local design system
-        run: |
-          sed -i 's|"github:OpenCanoeTiming/timing-design-system"|"file:./timing-design-system"|' package.json
-
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
